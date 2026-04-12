@@ -210,25 +210,6 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
     setTimeout(() => wordInputRef.current?.focus(), 50);
   }, [entries]);
 
-  const handleFlipPage = useCallback(() => {
-    if (flipping || !hasNextPage) return;
-    playFlipSound();
-    setFlipping(true);
-    setTimeout(() => {
-      setCurrentPage((p) => p + 1);
-      setFlipping(false);
-    }, 1000);
-  }, [flipping, hasNextPage, playFlipSound]);
-
-  const handleFlipBack = useCallback(() => {
-    if (flipping || currentPage === 0) return;
-    playFlipSound();
-    setFlipping(true);
-    setTimeout(() => {
-      setCurrentPage((p) => p - 1);
-      setFlipping(false);
-    }, 1000);
-  }, [flipping, currentPage, playFlipSound]);
 
   const handleFinish = useCallback(() => {
     if (fadingOut || flipping) return;

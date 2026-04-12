@@ -64,7 +64,8 @@
 
 /* Handwriting font */
 .font-handwriting {
-  font-family: 'Marck Script', cursive;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
 }
 
 .font-calligraphy {
@@ -147,7 +148,8 @@
   position: relative;
   display: inline-block;
   padding: 6px 24px;
-  font-family: 'Marck Script', cursive;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
   font-size: 1.15rem;
   color: hsl(235 30% 20%);
   background: transparent;

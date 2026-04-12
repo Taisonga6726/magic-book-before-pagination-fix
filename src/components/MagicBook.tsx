@@ -105,16 +105,21 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
           type="text"
           value={word}
           onChange={(e) => { setWord(e.target.value); playPenSound(); }}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); descRef.current?.focus(); } }}
           placeholder="Слово"
+          className="magic-input w-full text-2xl font-semibold font-book mb-4 text-ink"
           className="magic-input w-full text-2xl font-semibold font-book mb-4 text-ink"
         />
 
         <div className="writing-zone rounded-sm mt-2" style={{ minHeight: "55%" }}>
           <textarea
+            ref={descRef}
             value={description}
             onChange={(e) => { setDescription(e.target.value); playPenSound(); }}
-            placeholder="Пишите от руки…"
+            placeholder="Описание…"
             className="magic-textarea w-full h-full font-handwriting text-lg notebook-lines magic-cursor-write"
+            style={{ minHeight: "160px", lineHeight: "32px" }}
+          />
             style={{ minHeight: "160px", lineHeight: "32px" }}
           />
         </div>

@@ -1,38 +1,63 @@
 
 
-# Скорректировать позиции плавающих слов, чтобы не уходили за край
+# Радужная анимация кнопок с полупрозрачным фоном
 
-## Проблема
-Слова с позициями `left: 1-2%`, `right: 1-2%`, `top: 2-3%`, `bottom: 3-5%` слишком близко к краям. Анимация `float-word` двигает их на `±20-50px`, из-за чего слова уходят за границу контейнера (который имеет `overflow-hidden`).
+## Изменения — 1 файл: `src/index.css`
 
-## Изменения
+Заменить текущие стили `.neon-btn-gold` (строки 127-147) на версию с rainbow-анимацией:
 
-### 1. `src/components/FloatingWords.tsx` — сдвинуть позиции внутрь
-Все позиции подвинуть дальше от краёв (минимум `8%` от любого края), чтобы даже с анимацией `translate(20px, -50px)` слова оставались видимыми:
+```css
+.neon-btn-gold {
+  position: relative;
+  display: inline-block;
+  padding: 5px 18px;
+  font-family: 'Marck Script', cursive;
+  font-size: 1.15rem;
+  color: #fff;
+  background: transparent;
+  border: none;
+  border-radius: 20px;
+  z-index: 0;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 10px hsl(265 90% 70% / 0.8), 0 0 25px hsl(265 80% 60% / 0.5);
+}
 
+/* Радужная рамка — псевдоэлемент под кнопкой */
+.neon-btn-gold::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 22px;
+  background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+  background-size: 400% 400%;
+  animation: rainbow 8s linear infinite;
+  z-index: -1;
+}
+
+/* Полупрозрачный внутренний фон */
+.neon-btn-gold::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 18px;
+  background: rgba(20, 10, 40, 0.4);
+  z-index: -1;
+}
+
+.neon-btn-gold:hover::after {
+  background: rgba(20, 10, 40, 0.55);
+}
+
+@keyframes rainbow {
+  0% { background-position: 0 0; }
+  50% { background-position: 400% 0; }
+  100% { background-position: 0 0; }
+}
 ```
-{ top: "8%", left: "6%" },
-{ top: "14%", right: "8%" },
-{ top: "25%", left: "7%" },
-{ top: "32%", right: "7%" },
-{ top: "50%", left: "5%" },
-{ top: "55%", right: "7%" },
-{ top: "68%", left: "6%" },
-{ top: "73%", right: "6%" },
-{ bottom: "18%", left: "6%" },
-{ bottom: "14%", right: "8%" },
-{ top: "8%", left: "32%" },
-{ top: "7%", right: "28%" },
-{ bottom: "10%", left: "28%" },
-{ bottom: "8%", right: "32%" },
-{ bottom: "22%", left: "8%" },
-```
 
-### 2. `src/index.css` — уменьшить амплитуду анимации
-Сократить `translate` в `float-word`, чтобы слова не вылетали за видимую область:
-- `translate(15px, -30px)` → `translate(10px, -15px)`
-- `translate(-10px, -50px)` → `translate(-8px, -20px)`
-- `translate(20px, -20px)` → `translate(12px, -10px)`
+Hover-стили `.neon-btn-gold:hover` (строки 141-147) — удалить старые, оставить только `::after` hover выше.
 
-2 файла, компактные правки.
+Никаких изменений в JSX — кнопки уже используют класс `.neon-btn-gold`.
 

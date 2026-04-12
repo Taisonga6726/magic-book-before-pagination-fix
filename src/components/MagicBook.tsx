@@ -19,6 +19,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
   const [description, setDescription] = useState("");
   const [burst, setBurst] = useState(false);
   const [writingIdx, setWritingIdx] = useState<number | null>(null);
+  const [editIdx, setEditIdx] = useState<number | null>(null);
 
   const handleSave = useCallback(() => {
     if (!word.trim()) return;
@@ -29,11 +30,12 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         copy[editIdx] = { word: word.trim(), description: description.trim() };
         return copy;
       });
+      setWritingIdx(editIdx);
       setEditIdx(null);
     } else {
+      const newIdx = entries.length;
       setEntries((prev) => [...prev, { word: word.trim(), description: description.trim() }]);
-      setNewEntryIdx(entries.length);
-      setTimeout(() => setNewEntryIdx(null), 800);
+      setWritingIdx(newIdx);
     }
 
     setBurst(false);
@@ -106,13 +108,29 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
           </p>
         ) : (
           <ol className="list-none space-y-3">
-            {entries.map((entry, i) => (
-              <li key={i} className={`text-ink text-base leading-relaxed ${i === newEntryIdx ? "animate-text-appear" : ""}`}>
-                <span className="font-semibold" style={{ color: "hsl(var(--ink) / 0.5)" }}>{i + 1}. </span>
-                <span className="font-semibold">{entry.word}</span>
-                {entry.description && <span className="font-handwriting"> — {entry.description}</span>}
-              </li>
-            ))}
+            {entries.map((entry, i) => {
+              const fullText = entry.description
+                ? `${entry.word} — ${entry.description}`
+                : entry.word;
+
+              return (
+                <li key={i} className="text-ink text-base leading-relaxed">
+                  <span className="font-semibold" style={{ color: "hsl(var(--ink) / 0.5)" }}>{i + 1}. </span>
+                  {i === writingIdx ? (
+                    <InkWriteEffect
+                      text={fullText}
+                      className="ink-fresh font-handwriting"
+                      onComplete={() => setWritingIdx(null)}
+                    />
+                  ) : (
+                    <>
+                      <span className="font-semibold">{entry.word}</span>
+                      {entry.description && <span className="font-handwriting"> — {entry.description}</span>}
+                    </>
+                  )}
+                </li>
+              );
+            })}
           </ol>
         )}
       </div>

@@ -102,7 +102,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         <div className="writing-zone rounded-sm mt-2" style={{ minHeight: "55%" }}>
           <textarea
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => { setDescription(e.target.value); playPenSound(); }}
             placeholder="Пишите от руки…"
             className="magic-textarea w-full h-full font-handwriting text-lg notebook-lines magic-cursor-write"
             style={{ minHeight: "160px", lineHeight: "32px" }}

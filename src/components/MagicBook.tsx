@@ -25,6 +25,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
   const [currentPage, setCurrentPage] = useState(0);
   const [flipping, setFlipping] = useState(false);
   const [showSavedOverlay, setShowSavedOverlay] = useState(false);
+  const [showFinishOverlay, setShowFinishOverlay] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
   const penAudio = useRef<HTMLAudioElement | null>(null);
   const flipAudio = useRef<HTMLAudioElement | null>(null);
@@ -114,6 +115,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
 
   const handleFinish = useCallback(() => {
     if (fadingOut || flipping) return;
+    setShowFinishOverlay(true);
     setTimeout(() => {
       setFlipping(true);
       playFlipSound();
@@ -272,7 +274,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
       {/* "далее →" — flip to next page */}
       {hasNextPage && (
         <div
-          className="absolute bottom-[15%] right-[14%] font-handwriting text-sm action-text cursor-pointer tracking-wider z-20"
+          className="absolute bottom-[15%] right-[14%] font-handwriting text-xl action-text cursor-pointer tracking-wider z-20"
           onClick={handleFlipPage}
         >
           далее →
@@ -282,11 +284,29 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
       {/* "завершить книгу" — gold text action */}
       {entries.length > 0 && (
         <div
-          className="absolute font-handwriting text-xs action-text-gold cursor-pointer tracking-wider z-20"
+          className="absolute font-handwriting text-base action-text-gold cursor-pointer tracking-wider z-20"
           onClick={handleFinish}
           style={{ bottom: hasNextPage ? "10%" : "12%", right: "14%" }}
         >
           завершить книгу ✦
+        </div>
+      )}
+
+      {/* "КНИГА СОЗДАНА ✦" magic overlay */}
+      {showFinishOverlay && (
+        <div className="absolute inset-0 z-50 pointer-events-none">
+          <span className="book-created-text">КНИГА СОЗДАНА ✦</span>
+          {[...Array(8)].map((_, i) => (
+            <span
+              key={i}
+              className="word-saved-spark"
+              style={{
+                left: `${50 + 12 * Math.cos((i * Math.PI * 2) / 8)}%`,
+                top: `${45 + 12 * Math.sin((i * Math.PI * 2) / 8)}%`,
+                animationDelay: `${i * 0.06}s`,
+              }}
+            />
+          ))}
         </div>
       )}
 

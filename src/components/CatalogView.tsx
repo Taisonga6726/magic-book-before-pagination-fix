@@ -61,7 +61,7 @@ const CatalogView = ({ entries, onBack }: CatalogViewProps) => {
 
       {/* Left page — catalog list */}
       <div
-        className="absolute font-book"
+        className="absolute font-handwriting"
         style={{
           left: "7%",
           top: "12%",
@@ -94,7 +94,7 @@ const CatalogView = ({ entries, onBack }: CatalogViewProps) => {
 
       {/* Right page — continuation or info */}
       <div
-        className="absolute font-book"
+        className="absolute font-handwriting"
         style={{
           right: "7%",
           top: "12%",
@@ -112,11 +112,11 @@ const CatalogView = ({ entries, onBack }: CatalogViewProps) => {
       </div>
 
       {/* Navigation */}
-      <div className="absolute bottom-[6%] left-[10%] font-book text-xs action-text cursor-pointer tracking-wider" onClick={onBack}>
+      <div className="absolute bottom-[6%] left-[10%] font-handwriting text-xs action-text cursor-pointer tracking-wider" onClick={onBack}>
         ← назад
       </div>
       {totalPages > 1 && (
-        <div className="absolute bottom-[6%] right-[10%] flex gap-4 font-book text-xs">
+        <div className="absolute bottom-[6%] right-[10%] flex gap-4 font-handwriting text-xs">
           {page > 0 && (
             <span className="action-text cursor-pointer" onClick={() => flipTo(page - 1)}>
               ← пред.

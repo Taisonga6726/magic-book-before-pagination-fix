@@ -101,7 +101,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
 
       {/* Left page — input */}
       <div
-        className="absolute font-book magic-cursor-write"
+        className="absolute font-handwriting magic-cursor-write"
         style={{ left: "18%", top: "18%", width: "22%", height: "60%", padding: "16px 24px 12px 32px" }}
       >
         <input
@@ -132,11 +132,11 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
 
       {/* Right page — results */}
       <div
-        className="absolute font-book"
+        className="absolute font-handwriting"
         style={{ left: "52%", top: "18%", width: "32%", height: "60%", padding: "16px 28px 12px 24px", overflowY: "auto", overflowWrap: "break-word", wordBreak: "break-word" }}
       >
         {entries.length === 0 && !liveText ? (
-          <p className="font-book italic text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
+          <p className="font-handwriting italic text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
             Здесь появятся ваши записи…
           </p>
         ) : (
@@ -153,7 +153,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
                     </span>
                   </div>
                   {entry.description && (
-                    <div className="font-book italic text-base mt-0.5 ml-4" style={{ color: "hsl(var(--ink) / 0.85)" }}>
+                    <div className="font-handwriting italic text-base mt-0.5 ml-4" style={{ color: "hsl(var(--ink) / 0.85)" }}>
                       — {entry.description}
                     </div>
                   )}
@@ -171,7 +171,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
                   </span>
                 </div>
                 {description && (
-                  <div className="font-book italic text-base mt-0.5 ml-4 ink-fresh" style={{ color: "hsl(var(--ink) / 0.85)" }}>
+                  <div className="font-handwriting italic text-base mt-0.5 ml-4 ink-fresh" style={{ color: "hsl(var(--ink) / 0.85)" }}>
                     — <InkWriteEffect text={description} className="" />
                   </div>
                 )}
@@ -181,7 +181,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         )}
       </div>
 
-      <div className="absolute bottom-[12%] right-[14%] font-book text-xs action-text cursor-pointer tracking-wider" onClick={onOpenCatalog}>
+      <div className="absolute bottom-[12%] right-[14%] font-handwriting text-xs action-text cursor-pointer tracking-wider" onClick={onOpenCatalog}>
         каталог →
       </div>
     </div>

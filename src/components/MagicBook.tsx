@@ -163,9 +163,9 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
             {/* Live preview row */}
             {liveText && (
               <div className="text-ink">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-xs" style={{ color: "hsl(var(--ink) / 0.35)" }}>{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>
-                  <span className="font-calligraphy text-xl leading-tight inline-flex items-end" style={{ textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
+               <div className="flex items-baseline gap-1">
+                  <span className="text-sm" style={{ color: "hsl(var(--ink) / 0.5)" }}>{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>
+                  <span className="font-book italic font-bold text-xl leading-tight inline-flex items-end" style={{ textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
                     <InkWriteEffect text={word} className="ink-fresh" />
                     <QuillPen visible={isTyping} />
                   </span>

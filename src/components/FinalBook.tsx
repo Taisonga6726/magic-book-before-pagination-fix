@@ -213,13 +213,11 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
       className={`relative w-full max-w-[1100px] mx-auto magic-cursor scene-fade-in ${fadingOut ? "scene-fade-out" : ""}`}
       style={{
         aspectRatio: "1.5 / 1",
-        maskImage: "radial-gradient(ellipse 95% 95% at center, black 55%, transparent 98%)",
-        WebkitMaskImage: "radial-gradient(ellipse 95% 95% at center, black 55%, transparent 98%)",
       }}
     >
       <div
         className="absolute inset-0 pointer-events-none z-10"
-        style={{ boxShadow: "inset 0 0 150px 80px rgba(0,0,0,0.9)", borderRadius: "8px" }}
+        style={{ boxShadow: "inset 0 0 80px 40px rgba(0,0,0,0.6)", borderRadius: "8px" }}
       />
       <img
         src={bookFinalImg}
@@ -235,8 +233,8 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
         ref={leftPageRef}
         className="absolute font-handwriting no-scroll z-20"
         style={{
-          left: "18%", top: "20%", width: "30%", height: "58%",
-          padding: "10px 14px 40px 24px",
+          left: "12%", top: "14%", width: "36%", height: "70%",
+          padding: "16px 20px 20px 20px",
           overflow: "hidden",
           perspective: "1200px",
         }}
@@ -257,8 +255,8 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
       <div
         className="absolute font-handwriting no-scroll z-20"
         style={{
-          left: "52%", top: "20%", width: "34%", height: "58%",
-          padding: "10px 18px 40px 18px",
+          left: "52%", top: "14%", width: "36%", height: "70%",
+          padding: "16px 20px 20px 20px",
           overflow: "hidden", overflowWrap: "break-word", wordBreak: "break-word",
           perspective: "1200px",
         }}

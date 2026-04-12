@@ -1,75 +1,39 @@
 
 
-# Реализация: MagicBook → FinalBook (полный сценарий)
+# Правки по результатам тестирования
 
-## Обзор
+## Изменения
 
-Реализуем полный flow: ввод слов → перелистывание → «завершить книгу» → плавный переход → FinalBook с просмотром всех записей и перелистыванием. Без скролла нигде.
+### 1. `src/pages/Index.tsx` — НЕТ localStorage.clear()
+Entries уже `useState<Entry[]>([])` — данные не персистятся. Ничего менять не нужно — книга уже открывается пустой. Если пользователь видит старые данные — это React hot-reload, решается обновлением страницы.
 
----
+### 2. `src/components/MagicBook.tsx` — «КНИГА СОЗДАНА ✦»
+- Добавить состояние `showFinishOverlay`
+- В `handleFinish`: после паузы 400ms, одновременно с flip — `setShowFinishOverlay(true)`
+- Рендер: абсолютно по центру книги (не fullscreen overlay), золотой текст, `opacity 0→1` + `scale 0.9→1` за 0.7s
+- Стиль через inline: `color: hsl(40 80% 55%)`, `textShadow` с золотым glow, `font-handwriting text-3xl`
+- 6-8 искр вокруг (аналог `word-saved-spark`)
 
-## Файлы и изменения
+### 3. `src/components/MagicBook.tsx` — кнопки
+- «далее →» (строка 275): `text-sm` → `text-xl`, добавить мягкий золотой `textShadow: "0 0 6px hsl(40 80% 55% / 0.4)"`, добавить hover через inline или CSS
+- «завершить книгу ✦» (строка 285): `text-xs` → `text-base`
 
-### 1. Ассеты
-- Скопировать `user-uploads://book_04-3.png` → `src/assets/book-final.png`
-- Скопировать `user-uploads://flipping_through_the_pages_of_a_book-2.MP3` → `public/page-flip.mp3` (перезапись)
+### 4. `src/components/FinalBook.tsx` — кнопки
+- «← к книге» (строка 178): `text-xs` → `text-lg`, добавить мягкий золотой glow
+- «← назад» (строка 188): `text-sm` → `text-xl`, золотой glow
+- «далее →» (строка 196): `text-sm` → `text-xl`, золотой glow
 
-### 2. `src/index.css` — новые стили
+### 5. `src/components/FinalBook.tsx` — текст записей
+- Номер: `color: "hsl(var(--ink) / 0.8)"` → `color: "#1a1440"`
+- Слово: усилить `textShadow` до `"0 0 10px hsl(var(--glow-purple) / 0.4), 0 0 3px hsl(var(--ink) / 0.2)"`
+- Описание: `color: "hsl(var(--ink) / 0.85)"` → `color: "#2a1f5a"`
+- Добавить лёгкую неровность чернил: на каждый символ слова — случайный `opacity: 0.85-1.0` через inline style (тонкий эффект)
 
-Добавить:
-- `.scene-fade-out` — мягкое затемнение `opacity: 1 → 0.3` за `0.6s ease` (не в чёрный, не полное исчезновение)
-- `.scene-fade-in` — появление `opacity: 0 → 1` за `0.8s ease`
-- Улучшить `.page-flip-anim` — добавить `box-shadow` на сгибе и `filter: brightness(0.85)` для затемнения уходящей страницы
-- `.no-scroll` — `overflow: hidden !important` для гарантии
+### 6. `src/index.css` — hover для action-text
+- Добавить `.action-text:hover` — `transform: scale(1.05)`, чуть ярче цвет
+- Убедиться `cursor: pointer` есть
 
-### 3. `src/components/MagicBook.tsx`
-
-**Что меняется:**
-- Строка 209: `overflowY: "auto"` → `overflow: "hidden"` (запрет скролла)
-- Добавить prop `onFinish: () => void`
-- Заменить блок «каталог →» (строки 272-279) на «завершить книгу» — класс `.action-text-gold`, текстовый, без фона
-- Добавить состояние `fadingOut` для CSS-класса на корневом div
-- Добавить `handleFinish`:
-  1. Пауза 400ms
-  2. `setFlipping(true)` + звук + `setBurst(true)` — одновременно
-  3. Через 600ms — `setFadingOut(true)` (CSS `scene-fade-out` на корневом div)
-  4. Через 1500ms — `onFinish()`
-
-**Что НЕ меняется:** handleSave, «СЛОВО ВНЕСЕНО!», InkWriteEffect, звук пера, SpineEffect
-
-### 4. Новый `src/components/FinalBook.tsx`
-
-Структура идентична MagicBook:
-- Та же маска `radial-gradient(ellipse 95% 95% ...)`, inset shadow, absolute позиционирование
-- Фон: `book-final.png` вместо `book.png`
-- Props: `entries: Entry[]`, `onBack: () => void`
-- Пагинация: строго 6 записей на страницу, глобальная нумерация (1..N)
-- Те же отступы от переплёта (left: 18%, width: 22% для левой; left: 52%, width: 32% для правой)
-- Та же типографика: `font-handwriting`, `text-ink`, `text-2xl`, Cormorant Garamond italic
-- Левая страница: записи 1-6 (или 1-3 и 4-6 — по аналогии с MagicBook), правая: продолжение
-- 3D перелистывание идентичное MagicBook: `perspective(1200px)`, `rotateY`, тень на сгибе, `brightness(0.85)`, звук синхронно
-- Один `flipAudio` ref (не пересоздаётся)
-- Кнопки текстом `.action-text`: «← назад» (предыдущая страница), «далее →» (следующая)
-- Кнопка «← к книге» (`.action-text`) — при клике: flip + звук → fade → `onBack()`
-- `overflow: hidden` на всех контейнерах
-- Подпись `podpis.png` на месте
-- Появление через `.scene-fade-in` на корневом div
-- Записи отображаются как чернила (цвет + glow), не как UI-список
-
-### 5. `src/pages/Index.tsx`
-
-- View тип: `"book" | "catalog" | "final"`
-- При `"final"` — `<FinalBook entries={entries} onBack={() => setView("book")} />`
-- FloatingWords и HeroWave **всегда** отрендерены (не размонтируются при переходе)
-- Передать `onFinish={() => setView("final")}` в MagicBook
-
----
-
-## Что НЕ меняется
-- `FloatingWords.tsx` — без изменений
-- `SpineEffect.tsx` — без изменений
-- `InkWriteEffect.tsx` — без изменений
-- HeroWave, фон — без изменений
-- «СЛОВО ВНЕСЕНО!» — без изменений
-- Звук пера — без изменений
+### Что НЕ меняется
+- InkWriteEffect, «СЛОВО ВНЕСЕНО!», звук пера, FloatingWords, HeroWave, SpineEffect
+- localStorage не трогаем вообще
 

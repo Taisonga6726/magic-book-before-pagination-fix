@@ -1,16 +1,41 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import FloatingWords from "@/components/FloatingWords";
+import MagicBook from "@/components/MagicBook";
+import CatalogView from "@/components/CatalogView";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+interface Entry {
+  word: string;
+  description: string;
+}
+
+const Index = () => {
+  const [view, setView] = useState<"book" | "catalog">("book");
+  const [entries, setEntries] = useState<Entry[]>([]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="cosmic-bg min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      <FloatingWords />
+
+      <div className="relative z-20 w-full flex items-center justify-center">
+        {view === "book" ? (
+          <MagicBook
+            entries={entries}
+            setEntries={setEntries}
+            onOpenCatalog={() => setView("catalog")}
+          />
+        ) : (
+          <CatalogView entries={entries} onBack={() => setView("book")} />
+        )}
+      </div>
+
+      <div
+        className="absolute bottom-3 right-6 font-handwriting text-sm z-30"
+        style={{ color: "hsl(40 80% 55% / 0.6)" }}
+      >
+        Tanya Gaiduk
+      </div>
     </div>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;

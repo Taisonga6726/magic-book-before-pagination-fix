@@ -184,16 +184,16 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
       <div className="absolute bottom-[12%] right-[14%] font-handwriting text-xs action-text cursor-pointer tracking-wider" onClick={onOpenCatalog}>
         каталог →
       </div>
-      <span
-        className="absolute font-handwriting text-xl z-20 pointer-events-none select-none"
+      <img
+        src="/src/assets/podpis.jpg"
+        alt="Tanya Gaiduk"
+        className="absolute w-44 z-20 pointer-events-none select-none"
         style={{
           bottom: "5%",
-          right: "15%",
-          color: "hsl(40 80% 55% / 0.6)",
+          right: "10%",
+          mixBlendMode: "screen",
         }}
-      >
-        Tanya Gaiduk
-      </span>
+      />
     </div>
   );
 };

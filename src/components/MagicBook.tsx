@@ -15,8 +15,6 @@ interface MagicBookProps {
   onFinish: () => void;
 }
 
-const ENTRIES_PER_PAGE = 6;
-
 const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookProps) => {
   const [word, setWord] = useState("");
   const [description, setDescription] = useState("");
@@ -25,13 +23,18 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
   const [currentPage, setCurrentPage] = useState(0);
   const [flipping, setFlipping] = useState(false);
   const [showSavedOverlay, setShowSavedOverlay] = useState(false);
+  const [showDuplicateOverlay, setShowDuplicateOverlay] = useState(false);
   const [showFinishOverlay, setShowFinishOverlay] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
+  const [pageBreaks, setPageBreaks] = useState<number[]>([0]);
+
   const penAudio = useRef<HTMLAudioElement | null>(null);
   const flipAudio = useRef<HTMLAudioElement | null>(null);
   const stopTimer = useRef<number | null>(null);
   const descRef = useRef<HTMLTextAreaElement>(null);
   const wordInputRef = useRef<HTMLInputElement>(null);
+  const rightContentRef = useRef<HTMLDivElement>(null);
+  const needsOverflowCheck = useRef(false);
 
   const playPenSound = useCallback(() => {
     if (!penAudio.current) {
@@ -57,16 +60,68 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
     flipAudio.current.play().catch(() => {});
   }, []);
 
+  // Compute current page entries from pageBreaks
+  const currentPageStart = pageBreaks[currentPage] ?? 0;
+  const currentPageEnd = pageBreaks[currentPage + 1] ?? entries.length;
+  const pageEntries = entries.slice(currentPageStart, currentPageEnd);
+  const totalPages = pageBreaks.length;
+  const hasNextPage = currentPage < totalPages - 1;
+  const isLastPage = currentPage === totalPages - 1;
+
+  // Navigate to last page when new entries added
   useEffect(() => {
-    const totalPages = Math.max(1, Math.ceil(entries.length / ENTRIES_PER_PAGE));
-    const lastPage = totalPages - 1;
-    if (currentPage < lastPage) {
+    const lastPage = pageBreaks.length - 1;
+    if (currentPage < lastPage && !flipping) {
       setCurrentPage(lastPage);
     }
+  }, [entries.length, pageBreaks.length]);
+
+  // Overflow detection after save
+  useEffect(() => {
+    if (!needsOverflowCheck.current || flipping) return;
+    const el = rightContentRef.current;
+    if (!el) return;
+
+    const id = requestAnimationFrame(() => {
+      if (el.scrollHeight > el.clientHeight) {
+        needsOverflowCheck.current = false;
+        const lastPageIdx = pageBreaks.length - 1;
+        const pageStart = pageBreaks[lastPageIdx] ?? 0;
+        const entriesOnPage = entries.length - pageStart;
+
+        if (entriesOnPage <= 1) return;
+
+        const newBreak = entries.length - 1;
+        const newPageBreaks = [...pageBreaks, newBreak];
+        setPageBreaks(newPageBreaks);
+
+        playFlipSound();
+        setFlipping(true);
+        setTimeout(() => {
+          setCurrentPage(newPageBreaks.length - 1);
+          setFlipping(false);
+        }, 1000);
+      } else {
+        needsOverflowCheck.current = false;
+      }
+    });
+    return () => cancelAnimationFrame(id);
   }, [entries.length]);
 
   const handleSave = useCallback(() => {
     if (!word.trim()) return;
+
+    // Duplicate check (only for new entries)
+    if (editIdx === null) {
+      const isDuplicate = entries.some(
+        (e) => e.word.toLowerCase() === word.trim().toLowerCase()
+      );
+      if (isDuplicate) {
+        setShowDuplicateOverlay(true);
+        setTimeout(() => setShowDuplicateOverlay(false), 1500);
+        return;
+      }
+    }
 
     if (editIdx !== null) {
       setEntries((prev) => {
@@ -77,6 +132,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
       setEditIdx(null);
     } else {
       setEntries((prev) => [...prev, { word: word.trim(), description: description.trim() }]);
+      needsOverflowCheck.current = true;
     }
 
     setBurst(false);
@@ -88,7 +144,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
 
     setShowSavedOverlay(true);
     setTimeout(() => setShowSavedOverlay(false), 1500);
-  }, [word, description, editIdx, setEntries]);
+  }, [word, description, editIdx, entries, setEntries]);
 
   const handleEdit = useCallback(() => {
     if (entries.length === 0) return;
@@ -101,17 +157,24 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
   }, [entries]);
 
   const handleFlipPage = useCallback(() => {
-    if (flipping) return;
-    const totalPages = Math.ceil(entries.length / ENTRIES_PER_PAGE);
-    if (currentPage >= totalPages - 1) return;
-
+    if (flipping || !hasNextPage) return;
     playFlipSound();
     setFlipping(true);
     setTimeout(() => {
       setCurrentPage((p) => p + 1);
       setFlipping(false);
     }, 1000);
-  }, [flipping, currentPage, entries.length, playFlipSound]);
+  }, [flipping, hasNextPage, playFlipSound]);
+
+  const handleFlipBack = useCallback(() => {
+    if (flipping || currentPage === 0) return;
+    playFlipSound();
+    setFlipping(true);
+    setTimeout(() => {
+      setCurrentPage((p) => p - 1);
+      setFlipping(false);
+    }, 1000);
+  }, [flipping, currentPage, playFlipSound]);
 
   const handleFinish = useCallback(() => {
     if (fadingOut || flipping) return;
@@ -122,22 +185,11 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
       setBurst(false);
       requestAnimationFrame(() => setBurst(true));
       setTimeout(() => setFadingOut(true), 600);
-      setTimeout(() => {
-        onFinish();
-      }, 1500);
+      setTimeout(() => onFinish(), 1500);
     }, 400);
   }, [fadingOut, flipping, playFlipSound, onFinish]);
 
-  const liveText = word
-    ? (description ? `${word} — ${description}` : word)
-    : "";
-
-  const pageStart = currentPage * ENTRIES_PER_PAGE;
-  const pageEnd = pageStart + ENTRIES_PER_PAGE;
-  const pageEntries = entries.slice(pageStart, pageEnd);
-  const totalPages = Math.max(1, Math.ceil(entries.length / ENTRIES_PER_PAGE));
-  const hasNextPage = currentPage < totalPages - 1;
-  const isLastPage = currentPage === totalPages - 1;
+  const liveText = word ? (description ? `${word} — ${description}` : word) : "";
 
   return (
     <div
@@ -160,8 +212,6 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
       />
 
       <SpineEffect burst={burst} />
-
-      {/* "СЛОВО ВНЕСЕНО" moved inside left page below buttons */}
 
       {/* Left page — input */}
       <div
@@ -218,6 +268,31 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
             </div>
           </div>
         )}
+
+        {showDuplicateOverlay && (
+          <div className="mt-2 flex justify-center pointer-events-none">
+            <div className="word-saved-overlay">
+              <span className="word-saved-text" style={{
+                color: "#ef4444",
+                fontWeight: 800,
+                fontSize: "0.85rem",
+                textShadow: "0 0 8px rgba(239,68,68,0.6), 0 0 20px rgba(239,68,68,0.3)",
+              }}>СЛОВО ЕСТЬ УЖЕ В СЛОВАРЕ!</span>
+              {[...Array(8)].map((_, i) => (
+                <span
+                  key={i}
+                  className="word-saved-spark"
+                  style={{
+                    left: `${50 + 40 * Math.cos((i * Math.PI * 2) / 8)}%`,
+                    top: `${50 + 40 * Math.sin((i * Math.PI * 2) / 8)}%`,
+                    animationDelay: `${i * 0.05}s`,
+                    background: "#ef4444",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Right page — results */}
@@ -230,55 +305,66 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
           perspective: "1200px",
         }}
       >
-        <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "left center" }}>
-          {pageEntries.length === 0 && !liveText ? (
-            <p className="font-handwriting text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
-              Здесь появятся ваши записи…
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {pageEntries.map((entry, i) => {
-                const globalIdx = pageStart + i;
-                if (editIdx === globalIdx && liveText) return null;
+        <div ref={rightContentRef} style={{ height: "100%", overflow: "hidden" }}>
+          <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "left center" }}>
+            {pageEntries.length === 0 && !liveText ? (
+              <p className="font-handwriting text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
+                Здесь появятся ваши записи…
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {pageEntries.map((entry, i) => {
+                  const globalIdx = currentPageStart + i;
+                  if (editIdx === globalIdx && liveText) return null;
 
-                return (
-                  <div key={globalIdx} className="text-ink">
+                  return (
+                    <div key={globalIdx} className="text-ink">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-bold" style={{ color: "#1a1440" }}>{globalIdx + 1}.</span>
+                        <span className="text-2xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)" }}>
+                          {entry.word}
+                        </span>
+                      </div>
+                      {entry.description && (
+                        <div className="font-handwriting text-lg mt-0.5 ml-7" style={{ color: "#2a1f5a" }}>
+                          — {entry.description}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+
+                {isLastPage && liveText && (
+                  <div className="text-ink">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-bold" style={{ color: "#1a1440" }}>{globalIdx + 1}.</span>
-                      <span className="text-2xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)" }}>
-                        {entry.word}
+                      <span className="text-2xl font-bold" style={{ color: "#1a1440" }}>{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>
+                      <span className="text-2xl leading-tight inline-flex items-end" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)" }}>
+                        <InkWriteEffect text={word} className="ink-fresh" />
                       </span>
                     </div>
-                    {entry.description && (
-                      <div className="font-handwriting text-lg mt-0.5 ml-7" style={{ color: "#2a1f5a" }}>
-                        — {entry.description}
+                    {description && (
+                      <div className="font-handwriting text-lg mt-0.5 ml-7 ink-fresh" style={{ color: "#2a1f5a" }}>
+                        — <InkWriteEffect text={description} className="" />
                       </div>
                     )}
                   </div>
-                );
-              })}
-
-              {isLastPage && liveText && (
-                <div className="text-ink">
-                 <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold" style={{ color: "#1a1440" }}>{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>
-                    <span className="text-2xl leading-tight inline-flex items-end" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)" }}>
-                      <InkWriteEffect text={word} className="ink-fresh" />
-                    </span>
-                  </div>
-                  {description && (
-                    <div className="font-handwriting text-lg mt-0.5 ml-7 ink-fresh" style={{ color: "#2a1f5a" }}>
-                      — <InkWriteEffect text={description} className="" />
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* "далее →" — flip to next page */}
+      {/* Page navigation */}
+      {currentPage > 0 && (
+        <div
+          className="absolute bottom-[18%] left-[52%] font-handwriting text-xl action-text cursor-pointer tracking-wider z-20"
+          onClick={handleFlipBack}
+        >
+          ← назад
+        </div>
+      )}
+
       {hasNextPage && (
         <div
           className="absolute bottom-[18%] right-[14%] font-handwriting text-2xl font-bold action-text cursor-pointer tracking-wider z-20"
@@ -288,18 +374,18 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
         </div>
       )}
 
-      {/* "завершить книгу" — gold text action */}
+      {/* "завершить книгу" — left page bottom */}
       {entries.length > 0 && (
         <div
           className="absolute font-handwriting text-base action-text-gold cursor-pointer tracking-wider z-20"
           onClick={handleFinish}
-          style={{ bottom: hasNextPage ? "14%" : "16%", right: "14%" }}
+          style={{ bottom: "16%", left: "18%" }}
         >
           завершить книгу ✦
         </div>
       )}
 
-      {/* "КНИГА СОЗДАНА ✦" magic overlay */}
+      {/* "КНИГА СОЗДАНА ✦" overlay */}
       {showFinishOverlay && (
         <div className="absolute inset-0 z-50 pointer-events-none">
           <span className="book-created-text">КНИГА СОЗДАНА ✦</span>
@@ -316,7 +402,6 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
           ))}
         </div>
       )}
-
     </div>
   );
 };

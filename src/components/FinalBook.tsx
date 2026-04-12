@@ -12,20 +12,87 @@ interface FinalBookProps {
   onBack: () => void;
 }
 
-const ENTRIES_PER_PAGE = 6;
-
 const FinalBook = ({ entries, onBack }: FinalBookProps) => {
   const [currentSpread, setCurrentSpread] = useState(0);
   const [flipping, setFlipping] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
   const [burst, setBurst] = useState(false);
+  const [pages, setPages] = useState<Entry[][]>([]);
   const flipAudio = useRef<HTMLAudioElement | null>(null);
+  const leftPageRef = useRef<HTMLDivElement>(null);
 
-  // Initialize audio once
   useEffect(() => {
     flipAudio.current = new Audio("/page-flip.mp3");
     flipAudio.current.volume = 0.5;
   }, []);
+
+  // Compute pages dynamically based on height measurement
+  useEffect(() => {
+    if (entries.length === 0) {
+      setPages([]);
+      return;
+    }
+
+    const computePages = () => {
+      const container = leftPageRef.current;
+      if (!container) {
+        // Fallback: estimate 7 entries per page
+        const fallback: Entry[][] = [];
+        for (let i = 0; i < entries.length; i += 7) {
+          fallback.push(entries.slice(i, i + 7));
+        }
+        setPages(fallback);
+        return;
+      }
+
+      const style = getComputedStyle(container);
+      const paddingTop = parseFloat(style.paddingTop);
+      const paddingBottom = parseFloat(style.paddingBottom);
+      const availableHeight = container.clientHeight - paddingTop - paddingBottom;
+      const contentWidth = container.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+
+      // Measure entries using a hidden container
+      const measureDiv = document.createElement("div");
+      measureDiv.style.cssText = `position:fixed;visibility:hidden;top:-9999px;left:-9999px;width:${contentWidth}px;`;
+      document.body.appendChild(measureDiv);
+
+      const result: Entry[][] = [];
+      let currentPageEntries: Entry[] = [];
+      let currentHeight = 0;
+      let globalIdx = 0;
+
+      entries.forEach((entry) => {
+        const el = document.createElement("div");
+        el.style.marginBottom = "4px";
+        el.innerHTML = `
+          <div style="display:flex;align-items:baseline;gap:4px">
+            <span style="font-size:1.5rem;font-weight:700;color:#1a1440">${globalIdx + 1}.</span>
+            <span style="font-size:1.5rem;line-height:1.25;font-family:'Cormorant Garamond',serif;font-style:italic;color:#1a1440">${entry.word}</span>
+          </div>
+          ${entry.description ? `<div style="font-size:1.125rem;margin-top:2px;margin-left:28px;color:#2a1f5a">— ${entry.description}</div>` : ""}
+        `;
+        measureDiv.appendChild(el);
+        const h = el.offsetHeight + 4;
+        measureDiv.removeChild(el);
+
+        if (currentHeight + h > availableHeight && currentPageEntries.length > 0) {
+          result.push(currentPageEntries);
+          currentPageEntries = [entry];
+          currentHeight = h;
+        } else {
+          currentPageEntries.push(entry);
+          currentHeight += h;
+        }
+        globalIdx++;
+      });
+
+      if (currentPageEntries.length > 0) result.push(currentPageEntries);
+      document.body.removeChild(measureDiv);
+      setPages(result.length > 0 ? result : [[]]);
+    };
+
+    requestAnimationFrame(computePages);
+  }, [entries]);
 
   const playFlipSound = useCallback(() => {
     if (flipAudio.current) {
@@ -34,15 +101,22 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
     }
   }, []);
 
-  // Each spread shows 2 pages (left + right), each page has ENTRIES_PER_PAGE entries
-  const entriesPerSpread = ENTRIES_PER_PAGE * 2;
-  const totalSpreads = Math.max(1, Math.ceil(entries.length / entriesPerSpread));
+  // Each spread shows 2 pages (left + right)
+  const totalSpreads = Math.max(1, Math.ceil(pages.length / 2));
   const hasNext = currentSpread < totalSpreads - 1;
   const hasPrev = currentSpread > 0;
 
-  const spreadStart = currentSpread * entriesPerSpread;
-  const leftEntries = entries.slice(spreadStart, spreadStart + ENTRIES_PER_PAGE);
-  const rightEntries = entries.slice(spreadStart + ENTRIES_PER_PAGE, spreadStart + entriesPerSpread);
+  const leftPageIdx = currentSpread * 2;
+  const rightPageIdx = currentSpread * 2 + 1;
+  const leftEntries = pages[leftPageIdx] || [];
+  const rightEntries = pages[rightPageIdx] || [];
+
+  // Compute global start indices
+  let leftGlobalStart = 0;
+  for (let i = 0; i < leftPageIdx; i++) {
+    leftGlobalStart += (pages[i]?.length || 0);
+  }
+  const rightGlobalStart = leftGlobalStart + leftEntries.length;
 
   const handleFlip = useCallback((direction: "next" | "prev") => {
     if (flipping) return;
@@ -84,29 +158,18 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
   const renderEntry = (entry: Entry, globalIdx: number) => (
     <div key={globalIdx} className="text-ink">
       <div className="flex items-baseline gap-1">
-        <span
-          className="text-2xl font-bold"
-          style={{ color: "#1a1440" }}
-        >
-          {globalIdx + 1}.
-        </span>
-        <span
-          className="text-2xl leading-tight"
-          style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontStyle: "italic",
-            color: "#1a1440",
-            textShadow: "0 0 2px rgba(20,10,50,0.15)",
-          }}
-        >
+        <span className="text-2xl font-bold" style={{ color: "#1a1440" }}>{globalIdx + 1}.</span>
+        <span className="text-2xl leading-tight" style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontStyle: "italic",
+          color: "#1a1440",
+          textShadow: "0 0 2px rgba(20,10,50,0.15)",
+        }}>
           {renderInkWord(entry.word)}
         </span>
       </div>
       {entry.description && (
-        <div
-          className="font-handwriting text-lg mt-0.5 ml-7"
-          style={{ color: "#2a1f5a", textShadow: "0 0 2px rgba(20,10,50,0.1)" }}
-        >
+        <div className="font-handwriting text-lg mt-0.5 ml-7" style={{ color: "#2a1f5a", textShadow: "0 0 2px rgba(20,10,50,0.1)" }}>
           — {entry.description}
         </div>
       )}
@@ -122,7 +185,6 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
         WebkitMaskImage: "radial-gradient(ellipse 95% 95% at center, black 55%, transparent 98%)",
       }}
     >
-      {/* Inset shadow overlay */}
       <div
         className="absolute inset-0 pointer-events-none z-10"
         style={{ boxShadow: "inset 0 0 150px 80px rgba(0,0,0,0.9)", borderRadius: "8px" }}
@@ -138,6 +200,7 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
 
       {/* Left page */}
       <div
+        ref={leftPageRef}
         className="absolute font-handwriting no-scroll"
         style={{
           left: "18%", top: "20%", width: "30%", height: "58%",
@@ -148,7 +211,7 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
       >
         <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "right center" }}>
           <div className="space-y-1">
-            {leftEntries.map((entry, i) => renderEntry(entry, spreadStart + i))}
+            {leftEntries.map((entry, i) => renderEntry(entry, leftGlobalStart + i))}
           </div>
           {leftEntries.length === 0 && (
             <p className="font-handwriting text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
@@ -170,41 +233,29 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
       >
         <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "left center" }}>
           <div className="space-y-1">
-            {rightEntries.map((entry, i) => renderEntry(entry, spreadStart + ENTRIES_PER_PAGE + i))}
+            {rightEntries.map((entry, i) => renderEntry(entry, rightGlobalStart + i))}
           </div>
           {rightEntries.length === 0 && leftEntries.length > 0 && (
             <p className="font-handwriting text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
-              
+              {" "}
             </p>
           )}
         </div>
       </div>
 
-      {/* Navigation — text actions */}
+      {/* Navigation */}
       <div className="absolute bottom-[12%] left-[18%] right-[14%] flex justify-between items-center z-20">
-        {/* Left: back to book */}
-        <span
-          className="font-handwriting text-lg action-text cursor-pointer tracking-wider"
-          onClick={handleBack}
-        >
+        <span className="font-handwriting text-lg action-text cursor-pointer tracking-wider" onClick={handleBack}>
           ← к книге
         </span>
-
-        {/* Right: page navigation */}
         <div className="flex items-center gap-4">
           {hasPrev && (
-            <span
-              className="font-handwriting text-xl action-text cursor-pointer tracking-wider"
-              onClick={() => handleFlip("prev")}
-            >
+            <span className="font-handwriting text-xl action-text cursor-pointer tracking-wider" onClick={() => handleFlip("prev")}>
               ← назад
             </span>
           )}
           {hasNext && (
-            <span
-              className="font-handwriting text-xl action-text cursor-pointer tracking-wider"
-              onClick={() => handleFlip("next")}
-            >
+            <span className="font-handwriting text-xl action-text cursor-pointer tracking-wider" onClick={() => handleFlip("next")}>
               далее →
             </span>
           )}
@@ -218,7 +269,6 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
       >
         {currentSpread + 1} / {totalSpreads}
       </div>
-
     </div>
   );
 };

@@ -1,5 +1,4 @@
-import { useState, useCallback, useRef, Dispatch, SetStateAction } from "react";
-import { toast } from "sonner";
+import { useState, useCallback, useRef, useEffect, Dispatch, SetStateAction } from "react";
 import bookImg from "@/assets/book.png";
 import SpineEffect from "./SpineEffect";
 import InkWriteEffect from "./InkWriteEffect";
@@ -15,14 +14,21 @@ interface MagicBookProps {
   onOpenCatalog: () => void;
 }
 
+const ENTRIES_PER_PAGE = 6;
+
 const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
   const [word, setWord] = useState("");
   const [description, setDescription] = useState("");
   const [burst, setBurst] = useState(false);
   const [editIdx, setEditIdx] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [flipping, setFlipping] = useState(false);
+  const [showSavedOverlay, setShowSavedOverlay] = useState(false);
   const penAudio = useRef<HTMLAudioElement | null>(null);
+  const flipAudio = useRef<HTMLAudioElement | null>(null);
   const stopTimer = useRef<number | null>(null);
   const descRef = useRef<HTMLTextAreaElement>(null);
+  const wordInputRef = useRef<HTMLInputElement>(null);
 
   const playPenSound = useCallback(() => {
     if (!penAudio.current) {
@@ -38,6 +44,15 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
       penAudio.current?.pause();
     }, 1000);
   }, []);
+
+  // Auto-advance to last page when new entry added
+  useEffect(() => {
+    const totalPages = Math.max(1, Math.ceil(entries.length / ENTRIES_PER_PAGE));
+    const lastPage = totalPages - 1;
+    if (currentPage < lastPage) {
+      setCurrentPage(lastPage);
+    }
+  }, [entries.length]);
 
   const handleSave = useCallback(() => {
     if (!word.trim()) return;
@@ -59,7 +74,10 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
 
     setWord("");
     setDescription("");
-    toast("Запись внесена");
+
+    // Show magic overlay
+    setShowSavedOverlay(true);
+    setTimeout(() => setShowSavedOverlay(false), 1500);
   }, [word, description, editIdx, setEntries]);
 
   const handleEdit = useCallback(() => {
@@ -69,12 +87,41 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
     setWord(entry.word);
     setDescription(entry.description);
     setEditIdx(lastIdx);
+    setTimeout(() => wordInputRef.current?.focus(), 50);
   }, [entries]);
+
+  const handleFlipPage = useCallback(() => {
+    if (flipping) return;
+    const totalPages = Math.ceil(entries.length / ENTRIES_PER_PAGE);
+    if (currentPage >= totalPages - 1) return;
+
+    // Play flip sound
+    if (!flipAudio.current) {
+      flipAudio.current = new Audio("/page-flip.mp3");
+      flipAudio.current.volume = 0.5;
+    }
+    flipAudio.current.currentTime = 0;
+    flipAudio.current.play().catch(() => {});
+
+    setFlipping(true);
+    setTimeout(() => {
+      setCurrentPage((p) => p + 1);
+      setFlipping(false);
+    }, 1000);
+  }, [flipping, currentPage, entries.length]);
 
   // Build live preview text
   const liveText = word
     ? (description ? `${word} — ${description}` : word)
     : "";
+
+  // Pagination
+  const pageStart = currentPage * ENTRIES_PER_PAGE;
+  const pageEnd = pageStart + ENTRIES_PER_PAGE;
+  const pageEntries = entries.slice(pageStart, pageEnd);
+  const totalPages = Math.max(1, Math.ceil(entries.length / ENTRIES_PER_PAGE));
+  const hasNextPage = currentPage < totalPages - 1;
+  const isLastPage = currentPage === totalPages - 1;
 
   return (
     <div
@@ -99,12 +146,34 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
 
       <SpineEffect burst={burst} />
 
+      {/* "СЛОВО ВНЕСЕНО!" overlay */}
+      {showSavedOverlay && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none">
+          <div className="word-saved-overlay">
+            <span className="word-saved-text">СЛОВО ВНЕСЕНО!</span>
+            {/* Sparks */}
+            {[...Array(8)].map((_, i) => (
+              <span
+                key={i}
+                className="word-saved-spark"
+                style={{
+                  left: `${50 + 40 * Math.cos((i * Math.PI * 2) / 8)}%`,
+                  top: `${50 + 40 * Math.sin((i * Math.PI * 2) / 8)}%`,
+                  animationDelay: `${i * 0.05}s`,
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Left page — input */}
       <div
         className="absolute font-handwriting magic-cursor-write"
         style={{ left: "18%", top: "18%", width: "22%", height: "60%", padding: "16px 24px 12px 32px" }}
       >
         <input
+          ref={wordInputRef}
           type="text"
           value={word}
           onChange={(e) => { setWord(e.target.value); playPenSound(); }}
@@ -124,66 +193,91 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
           />
         </div>
 
-        <div className="mt-3 flex justify-center gap-4">
-          <span className="neon-btn-gold cursor-pointer" onClick={handleSave}>сохранить</span>
-          <span className="neon-btn-gold cursor-pointer" onClick={handleEdit}>редактировать</span>
+        <div className="mt-3 flex justify-center items-center gap-2">
+          <span className="action-text cursor-pointer font-handwriting text-base" onClick={handleSave}>сохранить</span>
+          <span className="font-handwriting text-base" style={{ color: "hsl(var(--ink) / 0.3)" }}>|</span>
+          <span className="action-text cursor-pointer font-handwriting text-base" onClick={handleEdit}>редактировать</span>
         </div>
       </div>
 
       {/* Right page — results */}
       <div
         className="absolute font-handwriting"
-        style={{ left: "52%", top: "18%", width: "32%", height: "60%", padding: "16px 28px 12px 24px", overflowY: "auto", overflowWrap: "break-word", wordBreak: "break-word" }}
+        style={{
+          left: "52%", top: "18%", width: "32%", height: "60%",
+          padding: "16px 28px 12px 24px",
+          overflowY: "auto", overflowWrap: "break-word", wordBreak: "break-word",
+          perspective: "1200px",
+        }}
       >
-        {entries.length === 0 && !liveText ? (
-          <p className="font-handwriting text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
-            Здесь появятся ваши записи…
-          </p>
-        ) : (
-          <div className="space-y-4">
-            {entries.map((entry, i) => {
-              if (editIdx === i && liveText) return null;
+        <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "left center" }}>
+          {pageEntries.length === 0 && !liveText ? (
+            <p className="font-handwriting text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
+              Здесь появятся ваши записи…
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {pageEntries.map((entry, i) => {
+                const globalIdx = pageStart + i;
+                if (editIdx === globalIdx && liveText) return null;
 
-              return (
-                <div key={i} className="text-ink">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-lg font-bold" style={{ color: "hsl(var(--ink) / 0.8)" }}>{i + 1}.</span>
-                    <span className="text-2xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
-                      {entry.word}
+                return (
+                  <div key={globalIdx} className="text-ink">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-2xl font-bold" style={{ color: "hsl(var(--ink) / 0.8)" }}>{globalIdx + 1}.</span>
+                      <span className="text-2xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
+                        {entry.word}
+                      </span>
+                    </div>
+                    {entry.description && (
+                      <div className="font-handwriting text-lg mt-0.5 ml-7" style={{ color: "hsl(var(--ink) / 0.85)" }}>
+                        — {entry.description}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* Live preview row — only on last page */}
+              {isLastPage && liveText && (
+                <div className="text-ink">
+                 <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-bold" style={{ color: "hsl(var(--ink) / 0.8)" }}>{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>
+                    <span className="text-2xl leading-tight inline-flex items-end" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
+                      <InkWriteEffect text={word} className="ink-fresh" />
                     </span>
                   </div>
-                  {entry.description && (
-                    <div className="font-handwriting text-lg mt-0.5 ml-5" style={{ color: "hsl(var(--ink) / 0.85)" }}>
-                      — {entry.description}
+                  {description && (
+                    <div className="font-handwriting text-lg mt-0.5 ml-7 ink-fresh" style={{ color: "hsl(var(--ink) / 0.85)" }}>
+                      — <InkWriteEffect text={description} className="" />
                     </div>
                   )}
                 </div>
-              );
-            })}
-
-            {/* Live preview row */}
-            {liveText && (
-              <div className="text-ink">
-               <div className="flex items-baseline gap-1">
-                   <span className="text-lg font-bold" style={{ color: "hsl(var(--ink) / 0.8)" }}>{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>
-                   <span className="text-2xl leading-tight inline-flex items-end" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
-                    <InkWriteEffect text={word} className="ink-fresh" />
-                  </span>
-                </div>
-                {description && (
-                  <div className="font-handwriting text-lg mt-0.5 ml-5 ink-fresh" style={{ color: "hsl(var(--ink) / 0.85)" }}>
-                    — <InkWriteEffect text={description} className="" />
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="absolute bottom-[12%] right-[14%] font-handwriting text-xs action-text cursor-pointer tracking-wider" onClick={onOpenCatalog}>
+      {/* "далее →" button — bottom right on ornament */}
+      {hasNextPage && (
+        <div
+          className="absolute bottom-[15%] right-[14%] font-handwriting text-sm action-text cursor-pointer tracking-wider z-20"
+          onClick={handleFlipPage}
+        >
+          далее →
+        </div>
+      )}
+
+      {/* "каталог →" — bottom right */}
+      <div
+        className="absolute bottom-[12%] right-[14%] font-handwriting text-xs action-text cursor-pointer tracking-wider"
+        onClick={onOpenCatalog}
+        style={{ bottom: hasNextPage ? "10%" : "12%" }}
+      >
         каталог →
       </div>
+
       <img
         src="/src/assets/podpis.png"
         alt="Tanya Gaiduk"

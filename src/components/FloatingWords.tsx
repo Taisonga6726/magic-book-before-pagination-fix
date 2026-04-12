@@ -31,7 +31,7 @@ const POSITIONS = [
   { top: "6%", left: "30%" },
   { top: "5%", right: "26%" },
   { bottom: "8%", left: "26%" },
-  { bottom: "6%", right: "30%" },
+  { bottom: "6%", right: "40%" },
   { bottom: "20%", left: "12%" },
 ];
 

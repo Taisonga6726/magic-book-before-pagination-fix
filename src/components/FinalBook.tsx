@@ -96,7 +96,7 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
             color: "#1a1440",
-            textShadow: "0 0 10px hsl(var(--glow-purple) / 0.4), 0 0 3px hsl(var(--ink) / 0.2)",
+            textShadow: "0 0 2px rgba(20,10,50,0.15)",
           }}
         >
           {renderInkWord(entry.word)}
@@ -105,7 +105,7 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
       {entry.description && (
         <div
           className="font-handwriting text-lg mt-0.5 ml-7"
-          style={{ color: "#2a1f5a", textShadow: "0 0 4px hsl(var(--ink) / 0.15)" }}
+          style={{ color: "#2a1f5a", textShadow: "0 0 2px rgba(20,10,50,0.1)" }}
         >
           — {entry.description}
         </div>

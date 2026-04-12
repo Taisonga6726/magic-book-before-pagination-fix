@@ -134,25 +134,25 @@
 
 /* Action text — gold glow */
 .action-text-gold {
-  color: hsl(40 80% 50%);
-  text-shadow: 0 0 8px hsl(40 90% 55% / 0.5), 0 0 20px hsl(40 90% 55% / 0.25);
+  color: #2a1f5a;
+  text-shadow: 0 0 2px rgba(20, 10, 50, 0.15);
   transition: all 0.4s ease;
 }
 .action-text-gold:hover {
-  color: hsl(40 85% 58%);
-  text-shadow: 0 0 12px hsl(40 90% 55% / 0.7), 0 0 30px hsl(40 90% 55% / 0.4), 0 0 50px hsl(40 90% 55% / 0.2);
+  color: #3a2f7a;
+  text-shadow: 0 0 3px rgba(20, 10, 50, 0.2);
 }
 
 /* Action text hover */
 .action-text {
-  color: hsl(40 75% 50%);
-  text-shadow: 0 0 6px hsl(40 80% 55% / 0.4);
+  color: #2a1f5a;
+  text-shadow: 0 0 2px rgba(20, 10, 50, 0.15);
   transition: all 0.3s ease;
   cursor: pointer;
 }
 .action-text:hover {
-  color: hsl(40 85% 58%);
-  text-shadow: 0 0 10px hsl(40 80% 55% / 0.6), 0 0 20px hsl(40 80% 55% / 0.3);
+  color: #3a2f7a;
+  text-shadow: 0 0 3px rgba(20, 10, 50, 0.2);
   transform: scale(1.05);
 }
 
@@ -172,11 +172,10 @@
   font-style: italic;
   font-size: 2rem;
   font-weight: 600;
-  color: hsl(40 90% 55%);
+  color: #1a1440;
   text-shadow:
-    0 0 12px hsl(40 90% 55% / 0.8),
-    0 0 30px hsl(40 90% 55% / 0.5),
-    0 0 50px hsl(265 80% 60% / 0.3);
+    0 0 4px rgba(20, 10, 50, 0.25),
+    0 0 12px rgba(42, 31, 90, 0.15);
   white-space: nowrap;
   animation: book-created 0.7s ease-out forwards;
   pointer-events: none;

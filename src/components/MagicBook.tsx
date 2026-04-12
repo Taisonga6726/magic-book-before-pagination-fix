@@ -237,13 +237,13 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
                 return (
                   <div key={globalIdx} className="text-ink">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-bold" style={{ color: "hsl(var(--ink) / 0.8)" }}>{globalIdx + 1}.</span>
-                      <span className="text-2xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
+                      <span className="text-2xl font-bold" style={{ color: "#1a1440" }}>{globalIdx + 1}.</span>
+                      <span className="text-2xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)" }}>
                         {entry.word}
                       </span>
                     </div>
                     {entry.description && (
-                      <div className="font-handwriting text-lg mt-0.5 ml-7" style={{ color: "hsl(var(--ink) / 0.85)" }}>
+                      <div className="font-handwriting text-lg mt-0.5 ml-7" style={{ color: "#2a1f5a" }}>
                         — {entry.description}
                       </div>
                     )}
@@ -254,13 +254,13 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
               {isLastPage && liveText && (
                 <div className="text-ink">
                  <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold" style={{ color: "hsl(var(--ink) / 0.8)" }}>{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>
-                    <span className="text-2xl leading-tight inline-flex items-end" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
+                    <span className="text-2xl font-bold" style={{ color: "#1a1440" }}>{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>
+                    <span className="text-2xl leading-tight inline-flex items-end" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)" }}>
                       <InkWriteEffect text={word} className="ink-fresh" />
                     </span>
                   </div>
                   {description && (
-                    <div className="font-handwriting text-lg mt-0.5 ml-7 ink-fresh" style={{ color: "hsl(var(--ink) / 0.85)" }}>
+                    <div className="font-handwriting text-lg mt-0.5 ml-7 ink-fresh" style={{ color: "#2a1f5a" }}>
                       — <InkWriteEffect text={description} className="" />
                     </div>
                   )}

@@ -1,4 +1,4 @@
-import { useState, useCallback, Dispatch, SetStateAction } from "react";
+import { useState, useCallback, useRef, Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import bookImg from "@/assets/book.png";
 import SpineEffect from "./SpineEffect";
@@ -20,6 +20,16 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
   const [description, setDescription] = useState("");
   const [burst, setBurst] = useState(false);
   const [editIdx, setEditIdx] = useState<number | null>(null);
+  const penAudio = useRef<HTMLAudioElement | null>(null);
+
+  const playPenSound = useCallback(() => {
+    if (!penAudio.current) {
+      penAudio.current = new Audio("/pen-scratch.mp3");
+      penAudio.current.volume = 0.3;
+    }
+    penAudio.current.currentTime = Math.random() * 0.3;
+    penAudio.current.play().catch(() => {});
+  }, []);
 
   const handleSave = useCallback(() => {
     if (!word.trim()) return;
@@ -77,7 +87,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         <input
           type="text"
           value={word}
-          onChange={(e) => setWord(e.target.value)}
+          onChange={(e) => { setWord(e.target.value); playPenSound(); }}
           placeholder="Слово"
           className="magic-input w-full text-2xl font-semibold font-book mb-4 text-ink"
         />
@@ -103,7 +113,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
       {/* Right page — results */}
       <div
         className="absolute font-book"
-        style={{ right: "13%", top: "18%", width: "28%", height: "60%", padding: "16px 20px 12px 24px", overflowY: "auto", overflowWrap: "break-word", wordBreak: "break-word" }}
+        style={{ left: "52%", top: "18%", width: "35%", height: "60%", padding: "16px 20px 12px 24px", overflowY: "auto", overflowWrap: "break-word", wordBreak: "break-word" }}
       >
         {entries.length === 0 && !liveText ? (
           <p className="font-handwriting text-base italic mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>

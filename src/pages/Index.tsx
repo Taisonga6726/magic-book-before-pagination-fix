@@ -13,7 +13,7 @@ const Index = () => {
   const [entries, setEntries] = useState<Entry[]>([]);
 
   return (
-    <div className="cosmic-bg min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="cosmic-bg w-full h-screen flex items-center justify-center p-4 relative overflow-hidden">
       <FloatingWords />
 
       <div className="relative z-20 w-full flex items-center justify-center">

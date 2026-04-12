@@ -54,7 +54,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
   }, [entries]);
 
   return (
-    <div className="relative w-full max-w-[960px] mx-auto magic-cursor" style={{ aspectRatio: "1.5 / 1" }}>
+    <div className="relative w-full max-w-[1100px] mx-auto magic-cursor" style={{ aspectRatio: "1.5 / 1" }}>
       <img
         src={bookImg}
         alt=""
@@ -67,7 +67,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
       {/* Left page — input */}
       <div
         className="absolute font-book magic-cursor-write"
-        style={{ left: "8%", top: "12%", width: "35%", height: "72%", padding: "12px 24px 12px 20px" }}
+        style={{ left: "10%", top: "15%", width: "32%", height: "65%", padding: "16px 24px 12px 20px" }}
       >
         <input
           type="text"
@@ -98,7 +98,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
       {/* Right page — results */}
       <div
         className="absolute font-book"
-        style={{ right: "8%", top: "12%", width: "35%", height: "72%", padding: "12px 24px 12px 20px", overflowY: "auto", overflowWrap: "break-word", wordBreak: "break-word" }}
+        style={{ right: "10%", top: "15%", width: "32%", height: "65%", padding: "16px 24px 12px 20px", overflowY: "auto", overflowWrap: "break-word", wordBreak: "break-word" }}
       >
         {entries.length === 0 ? (
           <p className="font-handwriting text-base italic mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
@@ -117,7 +117,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         )}
       </div>
 
-      <div className="absolute bottom-[6%] right-[12%] font-book text-xs action-text cursor-pointer tracking-wider" onClick={onOpenCatalog}>
+      <div className="absolute bottom-[12%] right-[14%] font-book text-xs action-text cursor-pointer tracking-wider" onClick={onOpenCatalog}>
         каталог →
       </div>
     </div>

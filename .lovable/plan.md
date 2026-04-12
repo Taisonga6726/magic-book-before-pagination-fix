@@ -1,39 +1,49 @@
 
 
-# Правки по результатам тестирования
+# Правки цветов — тёмные чернила вместо золота
 
-## Изменения
+## Суть
+Заменить все золотые/неоновые цвета на тёмно-чернильные. Текст и кнопки должны выглядеть как настоящие чернила на бумаге.
 
-### 1. `src/pages/Index.tsx` — НЕТ localStorage.clear()
-Entries уже `useState<Entry[]>([])` — данные не персистятся. Ничего менять не нужно — книга уже открывается пустой. Если пользователь видит старые данные — это React hot-reload, решается обновлением страницы.
+## Файлы и изменения
 
-### 2. `src/components/MagicBook.tsx` — «КНИГА СОЗДАНА ✦»
-- Добавить состояние `showFinishOverlay`
-- В `handleFinish`: после паузы 400ms, одновременно с flip — `setShowFinishOverlay(true)`
-- Рендер: абсолютно по центру книги (не fullscreen overlay), золотой текст, `opacity 0→1` + `scale 0.9→1` за 0.7s
-- Стиль через inline: `color: hsl(40 80% 55%)`, `textShadow` с золотым glow, `font-handwriting text-3xl`
-- 6-8 искр вокруг (аналог `word-saved-spark`)
+### 1. `src/index.css`
 
-### 3. `src/components/MagicBook.tsx` — кнопки
-- «далее →» (строка 275): `text-sm` → `text-xl`, добавить мягкий золотой `textShadow: "0 0 6px hsl(40 80% 55% / 0.4)"`, добавить hover через inline или CSS
-- «завершить книгу ✦» (строка 285): `text-xs` → `text-base`
+**`.action-text`** (строки 147-157):
+- `color: hsl(40 75% 50%)` → `color: #2a1f5a`
+- `text-shadow` → `0 0 2px rgba(20, 10, 50, 0.15)`
+- hover: `color: #3a2f7a`, `text-shadow: 0 0 3px rgba(20, 10, 50, 0.2)`, keep `scale(1.05)`
 
-### 4. `src/components/FinalBook.tsx` — кнопки
-- «← к книге» (строка 178): `text-xs` → `text-lg`, добавить мягкий золотой glow
-- «← назад» (строка 188): `text-sm` → `text-xl`, золотой glow
-- «далее →» (строка 196): `text-sm` → `text-xl`, золотой glow
+**`.action-text-gold`** (строки 136-144):
+- `color` → `#2a1f5a`
+- `text-shadow` → `0 0 2px rgba(20, 10, 50, 0.15)`
+- hover: `#3a2f7a`, минимальный glow
 
-### 5. `src/components/FinalBook.tsx` — текст записей
+**`.book-created-text`** (строки 166-184):
+- `color: hsl(40 90% 55%)` → `#1a1440`
+- `text-shadow` → `0 0 4px rgba(20, 10, 50, 0.25), 0 0 12px rgba(42, 31, 90, 0.15)`
+
+### 2. `src/components/MagicBook.tsx`
+
+**Записи** (строки 240-248):
 - Номер: `color: "hsl(var(--ink) / 0.8)"` → `color: "#1a1440"`
-- Слово: усилить `textShadow` до `"0 0 10px hsl(var(--glow-purple) / 0.4), 0 0 3px hsl(var(--ink) / 0.2)"`
+- Слово: `textShadow: "0 0 8px ..."` → `textShadow: "0 0 2px rgba(20,10,50,0.15)"`
 - Описание: `color: "hsl(var(--ink) / 0.85)"` → `color: "#2a1f5a"`
-- Добавить лёгкую неровность чернил: на каждый символ слова — случайный `opacity: 0.85-1.0` через inline style (тонкий эффект)
 
-### 6. `src/index.css` — hover для action-text
-- Добавить `.action-text:hover` — `transform: scale(1.05)`, чуть ярче цвет
-- Убедиться `cursor: pointer` есть
+**Live text** (строки 257-263): те же изменения
 
-### Что НЕ меняется
-- InkWriteEffect, «СЛОВО ВНЕСЕНО!», звук пера, FloatingWords, HeroWave, SpineEffect
-- localStorage не трогаем вообще
+### 3. `src/components/FinalBook.tsx`
+
+Записи уже частично исправлены, но:
+- Слово `textShadow`: `"0 0 10px hsl(...)"` → `"0 0 2px rgba(20,10,50,0.15)"`
+- Описание `textShadow`: `"0 0 4px hsl(...)"` → `"0 0 2px rgba(20,10,50,0.1)"`
+
+### 4. `src/components/CatalogView.tsx`
+
+Использует `.action-text` — подхватит из CSS автоматически.
+
+## Что НЕ меняется
+- FloatingWords (они фоновые, там glow уместен)
+- SpineEffect, InkWriteEffect, QuillPen
+- Логика ввода, звуки, анимации
 

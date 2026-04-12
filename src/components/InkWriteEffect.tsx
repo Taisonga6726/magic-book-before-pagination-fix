@@ -8,19 +8,29 @@ interface InkWriteEffectProps {
 
 const InkWriteEffect = ({ text, onComplete, className = "" }: InkWriteEffectProps) => {
   const [visibleCount, setVisibleCount] = useState(0);
-  const completedRef = useRef(false);
+  const prevTextRef = useRef("");
 
   useEffect(() => {
-    setVisibleCount(0);
-    completedRef.current = false;
+    const prev = prevTextRef.current;
+    prevTextRef.current = text;
+
+    if (text.startsWith(prev) && prev.length > 0) {
+      // User is appending — keep visibleCount, animate new chars
+      // visibleCount stays as is, the interval below will pick up
+    } else if (prev.startsWith(text) && text.length < prev.length) {
+      // User deleted chars — show all instantly
+      setVisibleCount(text.length);
+      return;
+    } else {
+      // Text changed drastically — show all instantly
+      setVisibleCount(text.length);
+      return;
+    }
   }, [text]);
 
   useEffect(() => {
     if (visibleCount >= text.length) {
-      if (!completedRef.current) {
-        completedRef.current = true;
-        onComplete?.();
-      }
+      onComplete?.();
       return;
     }
     const timer = setInterval(() => {

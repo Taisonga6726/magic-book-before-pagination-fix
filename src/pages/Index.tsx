@@ -3,6 +3,7 @@ import FloatingWords from "@/components/FloatingWords";
 import MagicBook from "@/components/MagicBook";
 import CatalogView from "@/components/CatalogView";
 import HeroWave from "@/components/ui/dynamic-wave-canvas-background";
+import FontPreview from "@/components/FontPreview";
 interface Entry {
   word: string;
   description: string;

@@ -128,7 +128,7 @@
 .neon-btn-gold {
   position: relative;
   display: inline-block;
-  padding: 5px 18px;
+  padding: 6px 24px;
   font-family: 'Marck Script', cursive;
   font-size: 1.15rem;
   color: #fff;
@@ -148,9 +148,9 @@
   position: absolute;
   inset: -3px;
   border-radius: 23px;
-  background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+  background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8);
   background-size: 400% 400%;
-  animation: rainbow 8s linear infinite;
+  animation: rainbow 16s linear infinite;
   z-index: -1;
   filter: blur(1px);
   box-shadow: 0 0 12px 2px hsl(300 80% 55% / 0.4), 0 0 30px 4px hsl(265 80% 55% / 0.25);

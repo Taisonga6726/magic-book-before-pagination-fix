@@ -78,8 +78,16 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
   const totalPages = pageBreaks.length;
   const hasNextPage = currentPage < totalPages - 1;
   const isLastPage = currentPage === totalPages - 1;
+  const hasPrevPage = currentPage > 0;
 
-  // Recalculate pageBreaks from entries (entries = source of truth)
+  useEffect(() => {
+    onPageNav?.({
+      hasPrev: hasPrevPage,
+      hasNext: hasNextPage,
+      onPrev: () => setCurrentPage((p) => Math.max(0, p - 1)),
+      onNext: () => setCurrentPage((p) => p + 1),
+    });
+  }, [hasPrevPage, hasNextPage, onPageNav]);
   useEffect(() => {
     if (entries.length === 0) {
       setPageBreaks([0]);

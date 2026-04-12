@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Dancing+Script:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Dancing+Script:wght@400;600;700&family=Great+Vibes&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -65,6 +65,10 @@
 /* Handwriting font */
 .font-handwriting {
   font-family: 'Dancing Script', cursive;
+}
+
+.font-calligraphy {
+  font-family: 'Great Vibes', cursive;
 }
 
 .font-book {
@@ -143,6 +147,31 @@
 .ink-fresh {
   color: hsl(250, 60%, 20%);
   text-shadow: 0 0 6px hsl(250 70% 40% / 0.4);
+}
+
+/* Quill pen animation */
+@keyframes quill-write {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(3deg); }
+  75% { transform: rotate(-3deg); }
+}
+.quill-pen {
+  animation: quill-write 0.8s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+/* Ink drops */
+@keyframes ink-drop {
+  0% { opacity: 0.8; r: 1; }
+  100% { opacity: 0; r: 0; transform: translateY(4px); }
+}
+.ink-drop-1 {
+  animation: ink-drop 0.6s ease-out infinite;
+  animation-delay: 0s;
+}
+.ink-drop-2 {
+  animation: ink-drop 0.6s ease-out infinite;
+  animation-delay: 0.3s;
 }
 
 /* Page flip */

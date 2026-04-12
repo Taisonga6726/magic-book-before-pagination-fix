@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import bookImg from "@/assets/book.png";
 import SpineEffect from "./SpineEffect";
 import InkWriteEffect from "./InkWriteEffect";
+import QuillPen from "./QuillPen";
 
 interface Entry {
   word: string;
@@ -20,8 +21,11 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
   const [description, setDescription] = useState("");
   const [burst, setBurst] = useState(false);
   const [editIdx, setEditIdx] = useState<number | null>(null);
+  const [isTyping, setIsTyping] = useState(false);
   const penAudio = useRef<HTMLAudioElement | null>(null);
   const stopTimer = useRef<number | null>(null);
+  const typingTimer = useRef<number | null>(null);
+  const descRef = useRef<HTMLTextAreaElement>(null);
 
   const playPenSound = useCallback(() => {
     if (!penAudio.current) {
@@ -35,6 +39,12 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
     if (stopTimer.current) clearTimeout(stopTimer.current);
     stopTimer.current = window.setTimeout(() => {
       penAudio.current?.pause();
+    }, 1000);
+
+    setIsTyping(true);
+    if (typingTimer.current) clearTimeout(typingTimer.current);
+    typingTimer.current = window.setTimeout(() => {
+      setIsTyping(false);
     }, 1000);
   }, []);
 
@@ -95,15 +105,17 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
           type="text"
           value={word}
           onChange={(e) => { setWord(e.target.value); playPenSound(); }}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); descRef.current?.focus(); } }}
           placeholder="Слово"
           className="magic-input w-full text-2xl font-semibold font-book mb-4 text-ink"
         />
 
         <div className="writing-zone rounded-sm mt-2" style={{ minHeight: "55%" }}>
           <textarea
+            ref={descRef}
             value={description}
             onChange={(e) => { setDescription(e.target.value); playPenSound(); }}
-            placeholder="Пишите от руки…"
+            placeholder="Описание…"
             className="magic-textarea w-full h-full font-handwriting text-lg notebook-lines magic-cursor-write"
             style={{ minHeight: "160px", lineHeight: "32px" }}
           />
@@ -123,37 +135,46 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         style={{ left: "52%", top: "18%", width: "35%", height: "60%", padding: "16px 20px 12px 24px", overflowY: "auto", overflowWrap: "break-word", wordBreak: "break-word" }}
       >
         {entries.length === 0 && !liveText ? (
-          <p className="font-handwriting text-base italic mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
+          <p className="font-calligraphy text-2xl italic mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
             Здесь появятся ваши записи…
           </p>
         ) : (
-          <ol className="list-none space-y-3">
+          <div className="space-y-4">
             {entries.map((entry, i) => {
-              // If editing this entry, skip it — live preview replaces it
               if (editIdx === i && liveText) return null;
 
               return (
-                <li key={i} className="text-ink text-base leading-relaxed">
-                  <span className="font-semibold" style={{ color: "hsl(var(--ink) / 0.5)" }}>{i + 1}. </span>
-                  <span className="font-semibold">{entry.word}</span>
-                  {entry.description && <span className="font-handwriting"> — {entry.description}</span>}
-                </li>
+                <div key={i} className="text-ink">
+                  <div className="font-calligraphy text-3xl leading-tight" style={{ textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
+                    {entry.word}
+                  </div>
+                  {entry.description && (
+                    <div className="font-book italic text-sm mt-1 ml-1" style={{ color: "hsl(var(--ink) / 0.7)" }}>
+                      — {entry.description}
+                    </div>
+                  )}
+                </div>
               );
             })}
 
             {/* Live preview row */}
             {liveText && (
-              <li className="text-ink text-base leading-relaxed">
-                <span className="font-semibold" style={{ color: "hsl(var(--ink) / 0.5)" }}>
-                  {editIdx !== null ? editIdx + 1 : entries.length + 1}.{" "}
-                </span>
-                <InkWriteEffect
-                  text={liveText}
-                  className="ink-fresh font-handwriting"
-                />
-              </li>
+              <div className="text-ink">
+                <div className="font-calligraphy text-3xl leading-tight inline-flex items-end" style={{ textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
+                  <InkWriteEffect
+                    text={word}
+                    className="ink-fresh"
+                  />
+                  <QuillPen visible={isTyping} />
+                </div>
+                {description && (
+                  <div className="font-book italic text-sm mt-1 ml-1 ink-fresh" style={{ color: "hsl(var(--ink) / 0.7)" }}>
+                    — <InkWriteEffect text={description} className="" />
+                  </div>
+                )}
+              </div>
             )}
-          </ol>
+          </div>
         )}
       </div>
 

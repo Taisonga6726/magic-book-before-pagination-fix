@@ -139,35 +139,32 @@
   overflow: visible;
   cursor: pointer;
   transition: all 0.3s ease;
-  filter: drop-shadow(0 0 8px hsl(265 90% 65% / 0.5)) drop-shadow(0 0 20px hsl(300 80% 55% / 0.3));
+  filter: drop-shadow(0 0 6px hsl(265 70% 65% / 0.3));
 }
 
 .neon-btn-gold::before {
   content: '';
   position: absolute;
-  inset: -3px;
-  border-radius: 23px;
-  background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8);
-  background-size: 400% 400%;
-  animation: rainbow 16s linear infinite;
+  inset: -2px;
+  border-radius: 22px;
+  background: transparent;
+  border: 1.5px solid hsl(265 60% 65% / 0.4);
   z-index: -1;
-  filter: blur(1px);
-  box-shadow: 0 0 12px 2px hsl(300 80% 55% / 0.4), 0 0 30px 4px hsl(265 80% 55% / 0.25);
+  box-shadow: 0 0 8px 1px hsl(265 70% 60% / 0.3), 0 0 20px 2px hsl(300 60% 55% / 0.15);
+  animation: glow-pulse 4s ease-in-out infinite;
 }
 
 .neon-btn-gold:hover {
-  filter: drop-shadow(0 0 14px hsl(265 90% 65% / 0.7)) drop-shadow(0 0 35px hsl(300 80% 55% / 0.5));
+  filter: drop-shadow(0 0 10px hsl(265 70% 65% / 0.5));
 }
 
 .neon-btn-gold:hover::before {
-  filter: blur(2px);
-  box-shadow: 0 0 18px 4px hsl(300 80% 55% / 0.5), 0 0 40px 8px hsl(265 80% 55% / 0.35);
+  box-shadow: 0 0 12px 2px hsl(265 70% 60% / 0.45), 0 0 28px 4px hsl(300 60% 55% / 0.25);
 }
 
-@keyframes rainbow {
-  0% { background-position: 0 0; }
-  50% { background-position: 400% 0; }
-  100% { background-position: 0 0; }
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 8px 1px hsl(265 70% 60% / 0.3), 0 0 20px 2px hsl(300 60% 55% / 0.15); }
+  50% { box-shadow: 0 0 12px 2px hsl(265 70% 60% / 0.45), 0 0 28px 3px hsl(300 60% 55% / 0.25); }
 }
 
 /* Action text hover (legacy) */

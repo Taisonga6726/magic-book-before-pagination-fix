@@ -124,25 +124,26 @@
   text-shadow: 0 0 12px hsl(40 90% 55% / 0.7), 0 0 30px hsl(40 90% 55% / 0.4), 0 0 50px hsl(40 90% 55% / 0.2);
 }
 
-/* Neon gold button */
+/* Neon cosmic button */
 .neon-btn-gold {
   display: inline-block;
-  padding: 4px 14px;
+  padding: 5px 16px;
   font-family: 'Marck Script', cursive;
-  font-size: 1.1rem;
-  color: hsl(40 90% 65%);
-  background: hsl(40 60% 20% / 0.35);
-  border: 1px solid hsl(40 80% 50% / 0.5);
+  font-size: 1.15rem;
+  color: hsl(265 90% 80%);
+  background: hsl(265 50% 15% / 0.6);
+  border: 1.5px solid hsl(265 80% 65% / 0.6);
   border-radius: 20px;
-  text-shadow: 0 0 8px hsl(40 90% 55% / 0.6), 0 0 20px hsl(40 90% 55% / 0.3);
-  box-shadow: 0 0 8px hsl(40 80% 50% / 0.3), inset 0 0 6px hsl(40 80% 50% / 0.15);
+  text-shadow: 0 0 10px hsl(265 90% 70% / 0.8), 0 0 25px hsl(265 80% 60% / 0.5), 0 0 40px hsl(330 80% 60% / 0.3);
+  box-shadow: 0 0 10px hsl(265 80% 60% / 0.4), 0 0 25px hsl(265 80% 60% / 0.15), inset 0 0 8px hsl(265 80% 60% / 0.15);
   transition: all 0.3s ease;
 }
 .neon-btn-gold:hover {
-  color: hsl(40 95% 75%);
-  background: hsl(40 60% 25% / 0.5);
-  text-shadow: 0 0 12px hsl(40 90% 60% / 0.8), 0 0 30px hsl(40 90% 55% / 0.5);
-  box-shadow: 0 0 14px hsl(40 80% 55% / 0.5), inset 0 0 8px hsl(40 80% 50% / 0.25);
+  color: hsl(280 95% 88%);
+  background: hsl(265 50% 20% / 0.75);
+  border-color: hsl(265 85% 70% / 0.8);
+  text-shadow: 0 0 14px hsl(265 95% 75% / 1), 0 0 35px hsl(265 85% 65% / 0.7), 0 0 50px hsl(330 80% 60% / 0.4);
+  box-shadow: 0 0 16px hsl(265 85% 65% / 0.6), 0 0 35px hsl(265 80% 60% / 0.25), inset 0 0 10px hsl(265 80% 60% / 0.2);
 }
 
 /* Action text hover (legacy) */
@@ -224,13 +225,22 @@
 /* Cosmic background */
 .cosmic-bg {
   background:
-    radial-gradient(ellipse at 20% 30%, hsl(265 60% 18% / 0.7), transparent 55%),
-    radial-gradient(ellipse at 80% 70%, hsl(330 60% 18% / 0.5), transparent 55%),
-    radial-gradient(ellipse at 50% 0%, hsl(350 70% 20% / 0.4), transparent 60%),
-    radial-gradient(ellipse at 0% 50%, hsl(280 50% 15% / 0.5), transparent 50%),
-    radial-gradient(ellipse at 100% 50%, hsl(220 60% 15% / 0.4), transparent 50%),
-    radial-gradient(ellipse at 50% 100%, hsl(300 50% 14% / 0.5), transparent 50%),
-    linear-gradient(135deg, hsl(260 30% 10%), hsl(280 25% 8%), hsl(240 20% 8%));
+    radial-gradient(ellipse 120% 100% at 20% 30%, hsl(265 60% 20% / 0.8), transparent 60%),
+    radial-gradient(ellipse 120% 100% at 80% 70%, hsl(330 55% 20% / 0.6), transparent 60%),
+    radial-gradient(ellipse 140% 80% at 50% 0%, hsl(280 60% 22% / 0.5), transparent 65%),
+    radial-gradient(ellipse 80% 120% at 0% 50%, hsl(260 50% 18% / 0.6), transparent 55%),
+    radial-gradient(ellipse 80% 120% at 100% 50%, hsl(300 50% 16% / 0.5), transparent 55%),
+    radial-gradient(ellipse 140% 80% at 50% 100%, hsl(270 45% 16% / 0.6), transparent 60%),
+    linear-gradient(135deg, hsl(260 35% 12%), hsl(280 30% 10%), hsl(250 25% 10%));
+}
+
+/* Cosmic glow overlay layer */
+.cosmic-glow-layer {
+  background:
+    radial-gradient(circle at 30% 40%, hsl(265 70% 40% / 0.15), transparent 50%),
+    radial-gradient(circle at 70% 60%, hsl(330 70% 40% / 0.12), transparent 50%),
+    radial-gradient(circle at 50% 50%, hsl(280 60% 30% / 0.1), transparent 60%);
+  pointer-events: none;
 }
 
 /* Writing zone soft highlight */

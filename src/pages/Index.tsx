@@ -14,9 +14,13 @@ const Index = () => {
 
   return (
     <div className="cosmic-bg w-full h-screen flex items-center justify-center p-4 relative overflow-hidden">
-      <FloatingWords />
+      {/* Cosmic glow layer behind everything */}
+      <div className="absolute inset-0 z-0 cosmic-glow-layer" />
 
       <div className="relative z-40 w-full flex items-center justify-center">
+        {/* FloatingWords now inside the scene container */}
+        <FloatingWords />
+
         {view === "book" ? (
           <MagicBook
             entries={entries}

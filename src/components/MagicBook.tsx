@@ -21,14 +21,21 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
   const [burst, setBurst] = useState(false);
   const [editIdx, setEditIdx] = useState<number | null>(null);
   const penAudio = useRef<HTMLAudioElement | null>(null);
+  const stopTimer = useRef<number | null>(null);
 
   const playPenSound = useCallback(() => {
     if (!penAudio.current) {
       penAudio.current = new Audio("/pen-scratch.mp3");
       penAudio.current.volume = 0.3;
     }
-    penAudio.current.currentTime = Math.random() * 0.3;
-    penAudio.current.play().catch(() => {});
+    if (penAudio.current.paused) {
+      penAudio.current.currentTime = 0;
+      penAudio.current.play().catch(() => {});
+    }
+    if (stopTimer.current) clearTimeout(stopTimer.current);
+    stopTimer.current = window.setTimeout(() => {
+      penAudio.current?.pause();
+    }, 1000);
   }, []);
 
   const handleSave = useCallback(() => {
@@ -95,7 +102,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         <div className="writing-zone rounded-sm mt-2" style={{ minHeight: "55%" }}>
           <textarea
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => { setDescription(e.target.value); playPenSound(); }}
             placeholder="Пишите от руки…"
             className="magic-textarea w-full h-full font-handwriting text-lg notebook-lines magic-cursor-write"
             style={{ minHeight: "160px", lineHeight: "32px" }}

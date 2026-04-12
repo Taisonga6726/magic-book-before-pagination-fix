@@ -244,18 +244,30 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
       </div>
 
       {/* Navigation */}
-      <div className="absolute bottom-[12%] left-[18%] right-[14%] flex justify-between items-center z-20">
-        <span className="font-handwriting text-lg action-text cursor-pointer tracking-wider" onClick={handleBack}>
+      <div className="absolute bottom-[18%] left-[18%] right-[14%] flex justify-between items-center z-50">
+        <span
+          className="font-handwriting text-lg action-text cursor-pointer tracking-wider hover:scale-105 transition-transform"
+          onClick={handleBack}
+          style={{ color: "#1a1440", fontWeight: 700, textShadow: "0 0 3px rgba(0,0,0,0.15)", background: "rgba(255,255,255,0.6)", padding: "4px 10px", borderRadius: "6px", backdropFilter: "blur(2px)" }}
+        >
           ← к книге
         </span>
         <div className="flex items-center gap-4">
           {hasPrev && (
-            <span className="font-handwriting text-xl action-text cursor-pointer tracking-wider" onClick={() => handleFlip("prev")}>
+            <span
+              className="font-handwriting text-xl action-text cursor-pointer tracking-wider hover:scale-105 transition-transform"
+              onClick={() => handleFlip("prev")}
+              style={{ color: "#1a1440", fontWeight: 700, textShadow: "0 0 3px rgba(0,0,0,0.15)", background: "rgba(255,255,255,0.6)", padding: "4px 10px", borderRadius: "6px", backdropFilter: "blur(2px)" }}
+            >
               ← назад
             </span>
           )}
           {hasNext && (
-            <span className="font-handwriting text-xl action-text cursor-pointer tracking-wider" onClick={() => handleFlip("next")}>
+            <span
+              className="font-handwriting text-xl action-text cursor-pointer tracking-wider hover:scale-105 transition-transform"
+              onClick={() => handleFlip("next")}
+              style={{ color: "#1a1440", fontWeight: 700, textShadow: "0 0 3px rgba(0,0,0,0.15)", background: "rgba(255,255,255,0.6)", padding: "4px 10px", borderRadius: "6px", backdropFilter: "blur(2px)" }}
+            >
               далее →
             </span>
           )}

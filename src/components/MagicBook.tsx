@@ -195,7 +195,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
       {/* Left page — input */}
       <div
         className="absolute font-handwriting magic-cursor-write no-scroll"
-        style={{ left: "12%", top: "18%", width: "36%", height: "60%", padding: "12px 16px 10px 28px" }}
+        style={{ left: "16%", top: "18%", width: "32%", height: "60%", padding: "12px 16px 40px 28px" }}
       >
         <input
           ref={wordInputRef}
@@ -230,7 +230,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
         className="absolute font-handwriting no-scroll"
         style={{
           left: "52%", top: "18%", width: "36%", height: "60%",
-          padding: "12px 20px 10px 20px",
+          padding: "12px 20px 40px 20px",
           overflow: "hidden", overflowWrap: "break-word", wordBreak: "break-word",
           perspective: "1200px",
         }}

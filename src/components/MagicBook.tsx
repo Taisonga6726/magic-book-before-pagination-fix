@@ -134,17 +134,8 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         className="absolute font-book"
         style={{ left: "52%", top: "18%", width: "35%", height: "60%", padding: "16px 20px 12px 24px", overflowY: "auto", overflowWrap: "break-word", wordBreak: "break-word" }}
       >
-        {/* Font preview — временное сравнение */}
-        <div className="mb-4 pb-3 space-y-1" style={{ borderBottom: "1px solid hsl(var(--ink) / 0.15)" }}>
-          <div className="text-xs mb-2" style={{ color: "hsl(var(--ink) / 0.4)" }}>Превью шрифтов:</div>
-          <div className="font-calligraphy text-xl text-ink">Great Vibes: Магия</div>
-          <div className="text-xl text-ink" style={{ fontFamily: "'Dancing Script', cursive" }}>Dancing Script: Магия</div>
-          <div className="text-xl text-ink" style={{ fontFamily: "'Marck Script', cursive" }}>Marck Script: Магия</div>
-          <div className="font-book italic text-xl text-ink">Cormorant Garamond: Магия</div>
-        </div>
-
         {entries.length === 0 && !liveText ? (
-          <p className="font-calligraphy text-xl italic mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
+          <p className="font-book italic text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
             Здесь появятся ваши записи…
           </p>
         ) : (
@@ -155,8 +146,8 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
               return (
                 <div key={i} className="text-ink">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-xs" style={{ color: "hsl(var(--ink) / 0.35)" }}>{i + 1}.</span>
-                    <span className="font-calligraphy text-xl leading-tight" style={{ textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
+                    <span className="text-sm" style={{ color: "hsl(var(--ink) / 0.5)" }}>{i + 1}.</span>
+                    <span className="font-book italic font-bold text-xl leading-tight" style={{ textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
                       {entry.word}
                     </span>
                   </div>
@@ -172,9 +163,9 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
             {/* Live preview row */}
             {liveText && (
               <div className="text-ink">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-xs" style={{ color: "hsl(var(--ink) / 0.35)" }}>{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>
-                  <span className="font-calligraphy text-xl leading-tight inline-flex items-end" style={{ textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
+               <div className="flex items-baseline gap-1">
+                  <span className="text-sm" style={{ color: "hsl(var(--ink) / 0.5)" }}>{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>
+                  <span className="font-book italic font-bold text-xl leading-tight inline-flex items-end" style={{ textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
                     <InkWriteEffect text={word} className="ink-fresh" />
                     <QuillPen visible={isTyping} />
                   </span>

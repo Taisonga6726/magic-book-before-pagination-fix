@@ -143,51 +143,7 @@
   text-shadow: 0 0 12px hsl(40 90% 55% / 0.7), 0 0 30px hsl(40 90% 55% / 0.4), 0 0 50px hsl(40 90% 55% / 0.2);
 }
 
-/* Neon cosmic button with rainbow border */
-.neon-btn-gold {
-  position: relative;
-  display: inline-block;
-  padding: 6px 24px;
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 1.15rem;
-  color: hsl(235 30% 20%);
-  background: transparent;
-  border: none;
-  border-radius: 20px;
-  z-index: 0;
-  overflow: visible;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  filter: drop-shadow(0 0 6px hsl(265 70% 65% / 0.3));
-}
-
-.neon-btn-gold::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: 22px;
-  background: transparent;
-  border: 1.5px solid hsl(265 60% 65% / 0.4);
-  z-index: -1;
-  box-shadow: 0 0 8px 1px hsl(265 70% 60% / 0.3), 0 0 20px 2px hsl(300 60% 55% / 0.15);
-  animation: glow-pulse 4s ease-in-out infinite;
-}
-
-.neon-btn-gold:hover {
-  filter: drop-shadow(0 0 10px hsl(265 70% 65% / 0.5));
-}
-
-.neon-btn-gold:hover::before {
-  box-shadow: 0 0 12px 2px hsl(265 70% 60% / 0.45), 0 0 28px 4px hsl(300 60% 55% / 0.25);
-}
-
-@keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 8px 1px hsl(265 70% 60% / 0.3), 0 0 20px 2px hsl(300 60% 55% / 0.15); }
-  50% { box-shadow: 0 0 12px 2px hsl(265 70% 60% / 0.45), 0 0 28px 3px hsl(300 60% 55% / 0.25); }
-}
-
-/* Action text hover (legacy) */
+/* Action text hover */
 .action-text {
   color: hsl(var(--ink) / 0.6);
   text-shadow: 0 0 4px hsl(var(--glow-purple) / 0);
@@ -232,6 +188,15 @@
   text-shadow: 0 0 6px hsl(250 70% 40% / 0.4);
 }
 
+/* Ink absorption effect */
+@keyframes ink-absorb {
+  0% { opacity: 0.7; filter: blur(0.5px); color: hsl(250 70% 30%); }
+  100% { opacity: 1; filter: blur(0); color: hsl(250 50% 25%); }
+}
+.ink-absorb {
+  animation: ink-absorb 0.8s ease-out forwards;
+}
+
 /* Quill pen animation */
 @keyframes quill-write {
   0%, 100% { transform: rotate(0deg); }
@@ -257,17 +222,77 @@
   animation-delay: 0.3s;
 }
 
-/* Page flip */
+/* Page flip animation */
 @keyframes page-flip {
-  0% { transform: perspective(1200px) rotateY(0deg); }
-  100% { transform: perspective(1200px) rotateY(-180deg); }
+  0% { transform: rotateY(0deg); opacity: 1; }
+  50% { transform: rotateY(-90deg); opacity: 0.5; }
+  100% { transform: rotateY(-180deg); opacity: 0; }
+}
+.page-flip-anim {
+  animation: page-flip 1s ease-in-out forwards;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
+/* "СЛОВО ВНЕСЕНО!" overlay */
+@keyframes word-saved {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+  15% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+  25% { transform: translate(-50%, -50%) scale(1); }
+  75% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.15); }
+}
+.word-saved-overlay {
+  position: relative;
+  width: 320px;
+  height: 80px;
+}
+.word-saved-text {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: hsl(40 90% 55%);
+  text-shadow:
+    0 0 10px hsl(40 90% 55% / 0.8),
+    0 0 30px hsl(40 90% 55% / 0.5),
+    0 0 50px hsl(265 80% 60% / 0.3);
+  white-space: nowrap;
+  animation: word-saved 1.5s ease-out forwards;
+}
 
+/* Sparks around saved text */
+@keyframes spark-fly {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
+}
+.word-saved-spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: hsl(40 90% 65%);
+  box-shadow: 0 0 6px hsl(40 90% 55% / 0.8);
+  animation: spark-fly 1s ease-out forwards;
+  --tx: 0px;
+  --ty: 0px;
+}
+.word-saved-spark:nth-child(2) { --tx: 20px; --ty: -30px; }
+.word-saved-spark:nth-child(3) { --tx: -25px; --ty: -20px; }
+.word-saved-spark:nth-child(4) { --tx: 30px; --ty: 10px; }
+.word-saved-spark:nth-child(5) { --tx: -20px; --ty: 25px; }
+.word-saved-spark:nth-child(6) { --tx: 15px; --ty: -35px; }
+.word-saved-spark:nth-child(7) { --tx: -30px; --ty: -10px; }
+.word-saved-spark:nth-child(8) { --tx: 25px; --ty: 20px; }
+.word-saved-spark:nth-child(9) { --tx: -15px; --ty: 30px; }
 
 /* Writing zone soft highlight */
 .writing-zone {
-  background: radial-gradient(ellipse at center, hsl(45 40% 90% / 0.08), transparent 70%);
+  background: radial-gradient(ellipse at center, hsl(45 40% 90% / 0.12), transparent 70%);
 }
 
 /* Textarea reset */
@@ -291,7 +316,7 @@
 .magic-input {
   background: transparent;
   border: none;
-  border-bottom: 1px solid hsl(var(--ink) / 0.2);
+  border-bottom: 1px solid hsl(var(--ink) / 0.3);
   outline: none;
   color: hsl(var(--ink));
   caret-color: hsl(var(--glow-purple));

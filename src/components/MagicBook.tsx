@@ -23,7 +23,6 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
   const penAudio = useRef<HTMLAudioElement | null>(null);
   const stopTimer = useRef<number | null>(null);
   const descRef = useRef<HTMLTextAreaElement>(null);
-  const descRef = useRef<HTMLTextAreaElement>(null);
 
   const playPenSound = useCallback(() => {
     if (!penAudio.current) {
@@ -37,12 +36,6 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
     if (stopTimer.current) clearTimeout(stopTimer.current);
     stopTimer.current = window.setTimeout(() => {
       penAudio.current?.pause();
-    }, 1000);
-
-    setIsTyping(true);
-    if (typingTimer.current) clearTimeout(typingTimer.current);
-    typingTimer.current = window.setTimeout(() => {
-      setIsTyping(false);
     }, 1000);
   }, []);
 

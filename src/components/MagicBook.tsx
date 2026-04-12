@@ -161,36 +161,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
 
       <SpineEffect burst={burst} />
 
-      {showSavedOverlay && (
-        <div
-          className="absolute z-50 pointer-events-none"
-          style={{
-            left: "8%",
-            top: "82%",
-            width: "30%",
-          }}
-        >
-          <div className="word-saved-overlay" style={{ margin: "0 auto" }}>
-            <span className="word-saved-text" style={{
-              color: "#22c55e",
-              fontWeight: 800,
-              textShadow: "0 0 8px rgba(34,197,94,0.6), 0 0 20px rgba(34,197,94,0.3)",
-            }}>СЛОВО ВНЕСЕНО!</span>
-            {[...Array(8)].map((_, i) => (
-              <span
-                key={i}
-                className="word-saved-spark"
-                style={{
-                  left: `${50 + 40 * Math.cos((i * Math.PI * 2) / 8)}%`,
-                  top: `${50 + 40 * Math.sin((i * Math.PI * 2) / 8)}%`,
-                  animationDelay: `${i * 0.05}s`,
-                  background: "#22c55e",
-                }}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+      {/* "СЛОВО ВНЕСЕНО" moved inside left page below buttons */}
 
       {/* Left page — input */}
       <div

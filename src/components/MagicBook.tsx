@@ -230,7 +230,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
         className="absolute font-handwriting no-scroll"
         style={{
           left: "52%", top: "18%", width: "36%", height: "60%",
-          padding: "12px 20px 10px 20px",
+          padding: "12px 20px 40px 20px",
           overflow: "hidden", overflowWrap: "break-word", wordBreak: "break-word",
           perspective: "1200px",
         }}

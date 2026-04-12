@@ -16,7 +16,7 @@ const Index = () => {
     <div className="cosmic-bg w-full h-screen flex items-center justify-center p-4 relative overflow-hidden">
       <FloatingWords />
 
-      <div className="relative z-20 w-full flex items-center justify-center">
+      <div className="relative z-40 w-full flex items-center justify-center">
         {view === "book" ? (
           <MagicBook
             entries={entries}

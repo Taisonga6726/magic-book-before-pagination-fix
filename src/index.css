@@ -93,18 +93,38 @@
   line-height: 32px;
 }
 
-/* Glow text effects */
+/* Glow text effects — neon */
 .glow-text-purple {
-  text-shadow: 0 0 10px hsl(var(--glow-purple) / 0.8), 0 0 30px hsl(var(--glow-purple) / 0.4);
+  color: hsl(var(--glow-purple));
+  text-shadow: 0 0 8px hsl(var(--glow-purple) / 0.9), 0 0 20px hsl(var(--glow-purple) / 0.6), 0 0 40px hsl(var(--glow-purple) / 0.3);
 }
 .glow-text-blue {
-  text-shadow: 0 0 10px hsl(var(--glow-blue) / 0.8), 0 0 30px hsl(var(--glow-blue) / 0.4);
+  color: hsl(var(--glow-blue));
+  text-shadow: 0 0 8px hsl(var(--glow-blue) / 0.9), 0 0 20px hsl(var(--glow-blue) / 0.6), 0 0 40px hsl(var(--glow-blue) / 0.3);
 }
 .glow-text-pink {
-  text-shadow: 0 0 10px hsl(var(--glow-pink) / 0.8), 0 0 30px hsl(var(--glow-pink) / 0.4);
+  color: hsl(var(--glow-pink));
+  text-shadow: 0 0 8px hsl(var(--glow-pink) / 0.9), 0 0 20px hsl(var(--glow-pink) / 0.6), 0 0 40px hsl(var(--glow-pink) / 0.3);
 }
 
-/* Action text hover */
+/* Neon pulse animation */
+@keyframes neon-pulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.4) drop-shadow(0 0 8px currentColor); }
+}
+
+/* Action text — gold glow */
+.action-text-gold {
+  color: hsl(40 80% 50%);
+  text-shadow: 0 0 8px hsl(40 90% 55% / 0.5), 0 0 20px hsl(40 90% 55% / 0.25);
+  transition: all 0.4s ease;
+}
+.action-text-gold:hover {
+  color: hsl(40 85% 58%);
+  text-shadow: 0 0 12px hsl(40 90% 55% / 0.7), 0 0 30px hsl(40 90% 55% / 0.4), 0 0 50px hsl(40 90% 55% / 0.2);
+}
+
+/* Action text hover (legacy) */
 .action-text {
   color: hsl(var(--ink) / 0.6);
   text-shadow: 0 0 4px hsl(var(--glow-purple) / 0);
@@ -117,11 +137,11 @@
 
 /* Floating word animation */
 @keyframes float-word {
-  0% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
-  25% { transform: translate(15px, -30px) rotate(3deg); opacity: 0.7; }
-  50% { transform: translate(-10px, -50px) rotate(-2deg); opacity: 0.4; }
-  75% { transform: translate(20px, -20px) rotate(4deg); opacity: 0.8; }
-  100% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 0.6; }
+  25% { transform: translate(15px, -30px) rotate(3deg); opacity: 0.9; }
+  50% { transform: translate(-10px, -50px) rotate(-2deg); opacity: 0.7; }
+  75% { transform: translate(20px, -20px) rotate(4deg); opacity: 1; }
+  100% { transform: translate(0, 0) rotate(0deg); opacity: 0.6; }
 }
 
 /* Spine glow */

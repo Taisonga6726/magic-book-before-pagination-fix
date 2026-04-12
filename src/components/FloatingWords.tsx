@@ -29,11 +29,11 @@ const POSITIONS = [
   { top: "75%", left: "2%" },
 ];
 
-const SIZES = [14, 18, 12, 20, 16, 22, 13, 17, 15, 19, 14, 21, 16, 18, 13];
+const SIZES = [24, 30, 22, 34, 28, 36, 20, 26, 24, 32, 22, 34, 28, 30, 20];
 
 const FloatingWords = () => {
   return (
-    <div className="fixed inset-0 pointer-events-none z-10 overflow-hidden">
+    <div className="fixed inset-0 pointer-events-none z-30 overflow-hidden">
       {WORDS.map((word, i) => {
         const duration = 20 + Math.random() * 20;
         const delay = Math.random() * -20;
@@ -48,8 +48,8 @@ const FloatingWords = () => {
             style={{
               ...POSITIONS[i],
               fontSize: `${SIZES[i]}px`,
-              animation: `float-word ${duration}s ease-in-out ${delay}s infinite`,
-              opacity: 0.4,
+              animation: `float-word ${duration}s ease-in-out ${delay}s infinite, neon-pulse ${3 + Math.random() * 2}s ease-in-out ${Math.random() * -3}s infinite`,
+              opacity: 0.75,
             }}
           >
             {word.text}

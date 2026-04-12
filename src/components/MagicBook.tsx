@@ -121,12 +121,11 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
           />
         </div>
 
-        <div className="mt-3 font-book text-sm tracking-wide">
-          <span className="action-text cursor-pointer" onClick={handleSave}>сохранить</span>
-          <span className="mx-2" style={{ color: "hsl(var(--ink) / 0.3)" }}>|</span>
-          <span className="action-text cursor-pointer" onClick={handleEdit}>редактировать</span>
+        <div className="mt-3 font-book text-base tracking-wide">
+          <span className="action-text-gold cursor-pointer" onClick={handleSave}>сохранить</span>
+          <span className="mx-2" style={{ color: "hsl(40 80% 50% / 0.4)" }}>|</span>
+          <span className="action-text-gold cursor-pointer" onClick={handleEdit}>редактировать</span>
         </div>
-        <div className="mt-2 text-xs" style={{ color: "hsl(var(--ink) / 0.25)" }}>Реакции</div>
       </div>
 
       {/* Right page — results */}

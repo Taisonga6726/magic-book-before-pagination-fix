@@ -67,7 +67,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
       {/* Left page — input */}
       <div
         className="absolute font-book magic-cursor-write"
-        style={{ left: "12%", top: "18%", width: "28%", height: "60%", padding: "16px 24px 12px 28px" }}
+        style={{ left: "15%", top: "18%", width: "25%", height: "60%", padding: "16px 24px 12px 32px" }}
       >
         <input
           type="text"

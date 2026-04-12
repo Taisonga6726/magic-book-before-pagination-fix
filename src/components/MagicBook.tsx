@@ -12,11 +12,12 @@ interface MagicBookProps {
   entries: Entry[];
   setEntries: Dispatch<SetStateAction<Entry[]>>;
   onOpenCatalog: () => void;
+  onFinish: () => void;
 }
 
 const ENTRIES_PER_PAGE = 6;
 
-const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
+const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookProps) => {
   const [word, setWord] = useState("");
   const [description, setDescription] = useState("");
   const [burst, setBurst] = useState(false);
@@ -24,6 +25,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [flipping, setFlipping] = useState(false);
   const [showSavedOverlay, setShowSavedOverlay] = useState(false);
+  const [fadingOut, setFadingOut] = useState(false);
   const penAudio = useRef<HTMLAudioElement | null>(null);
   const flipAudio = useRef<HTMLAudioElement | null>(null);
   const stopTimer = useRef<number | null>(null);
@@ -45,7 +47,15 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
     }, 1000);
   }, []);
 
-  // Auto-advance to last page when new entry added
+  const playFlipSound = useCallback(() => {
+    if (!flipAudio.current) {
+      flipAudio.current = new Audio("/page-flip.mp3");
+      flipAudio.current.volume = 0.5;
+    }
+    flipAudio.current.currentTime = 0;
+    flipAudio.current.play().catch(() => {});
+  }, []);
+
   useEffect(() => {
     const totalPages = Math.max(1, Math.ceil(entries.length / ENTRIES_PER_PAGE));
     const lastPage = totalPages - 1;
@@ -75,7 +85,6 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
     setWord("");
     setDescription("");
 
-    // Show magic overlay
     setShowSavedOverlay(true);
     setTimeout(() => setShowSavedOverlay(false), 1500);
   }, [word, description, editIdx, setEntries]);
@@ -95,27 +104,32 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
     const totalPages = Math.ceil(entries.length / ENTRIES_PER_PAGE);
     if (currentPage >= totalPages - 1) return;
 
-    // Play flip sound
-    if (!flipAudio.current) {
-      flipAudio.current = new Audio("/page-flip.mp3");
-      flipAudio.current.volume = 0.5;
-    }
-    flipAudio.current.currentTime = 0;
-    flipAudio.current.play().catch(() => {});
-
+    playFlipSound();
     setFlipping(true);
     setTimeout(() => {
       setCurrentPage((p) => p + 1);
       setFlipping(false);
     }, 1000);
-  }, [flipping, currentPage, entries.length]);
+  }, [flipping, currentPage, entries.length, playFlipSound]);
 
-  // Build live preview text
+  const handleFinish = useCallback(() => {
+    if (fadingOut || flipping) return;
+    setTimeout(() => {
+      setFlipping(true);
+      playFlipSound();
+      setBurst(false);
+      requestAnimationFrame(() => setBurst(true));
+      setTimeout(() => setFadingOut(true), 600);
+      setTimeout(() => {
+        onFinish();
+      }, 1500);
+    }, 400);
+  }, [fadingOut, flipping, playFlipSound, onFinish]);
+
   const liveText = word
     ? (description ? `${word} — ${description}` : word)
     : "";
 
-  // Pagination
   const pageStart = currentPage * ENTRIES_PER_PAGE;
   const pageEnd = pageStart + ENTRIES_PER_PAGE;
   const pageEntries = entries.slice(pageStart, pageEnd);
@@ -125,14 +139,13 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
 
   return (
     <div
-      className="relative w-full max-w-[1100px] mx-auto magic-cursor"
+      className={`relative w-full max-w-[1100px] mx-auto magic-cursor ${fadingOut ? "scene-fade-out" : ""}`}
       style={{
         aspectRatio: "1.5 / 1",
         maskImage: "radial-gradient(ellipse 95% 95% at center, black 55%, transparent 98%)",
         WebkitMaskImage: "radial-gradient(ellipse 95% 95% at center, black 55%, transparent 98%)",
       }}
     >
-      {/* Inset shadow overlay to further blend edges */}
       <div
         className="absolute inset-0 pointer-events-none z-10"
         style={{ boxShadow: "inset 0 0 150px 80px rgba(0,0,0,0.9)", borderRadius: "8px" }}
@@ -146,12 +159,10 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
 
       <SpineEffect burst={burst} />
 
-      {/* "СЛОВО ВНЕСЕНО!" overlay */}
       {showSavedOverlay && (
         <div className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none">
           <div className="word-saved-overlay">
             <span className="word-saved-text">СЛОВО ВНЕСЕНО!</span>
-            {/* Sparks */}
             {[...Array(8)].map((_, i) => (
               <span
                 key={i}
@@ -169,7 +180,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
 
       {/* Left page — input */}
       <div
-        className="absolute font-handwriting magic-cursor-write"
+        className="absolute font-handwriting magic-cursor-write no-scroll"
         style={{ left: "18%", top: "18%", width: "22%", height: "60%", padding: "16px 24px 12px 32px" }}
       >
         <input
@@ -202,11 +213,11 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
 
       {/* Right page — results */}
       <div
-        className="absolute font-handwriting"
+        className="absolute font-handwriting no-scroll"
         style={{
           left: "52%", top: "18%", width: "32%", height: "60%",
           padding: "16px 28px 12px 24px",
-          overflowY: "auto", overflowWrap: "break-word", wordBreak: "break-word",
+          overflow: "hidden", overflowWrap: "break-word", wordBreak: "break-word",
           perspective: "1200px",
         }}
       >
@@ -238,7 +249,6 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
                 );
               })}
 
-              {/* Live preview row — only on last page */}
               {isLastPage && liveText && (
                 <div className="text-ink">
                  <div className="flex items-baseline gap-1">
@@ -259,7 +269,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         </div>
       </div>
 
-      {/* "далее →" button — bottom right on ornament */}
+      {/* "далее →" — flip to next page */}
       {hasNextPage && (
         <div
           className="absolute bottom-[15%] right-[14%] font-handwriting text-sm action-text cursor-pointer tracking-wider z-20"
@@ -269,14 +279,16 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         </div>
       )}
 
-      {/* "каталог →" — bottom right */}
-      <div
-        className="absolute bottom-[12%] right-[14%] font-handwriting text-xs action-text cursor-pointer tracking-wider"
-        onClick={onOpenCatalog}
-        style={{ bottom: hasNextPage ? "10%" : "12%" }}
-      >
-        каталог →
-      </div>
+      {/* "завершить книгу" — gold text action */}
+      {entries.length > 0 && (
+        <div
+          className="absolute font-handwriting text-xs action-text-gold cursor-pointer tracking-wider z-20"
+          onClick={handleFinish}
+          style={{ bottom: hasNextPage ? "10%" : "12%", right: "14%" }}
+        >
+          завершить книгу ✦
+        </div>
+      )}
 
       <img
         src="/src/assets/podpis.png"

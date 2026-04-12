@@ -195,7 +195,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
       {/* Left page — input */}
       <div
         className="absolute font-handwriting magic-cursor-write no-scroll"
-        style={{ left: "18%", top: "18%", width: "22%", height: "60%", padding: "16px 24px 12px 32px" }}
+        style={{ left: "12%", top: "18%", width: "36%", height: "60%", padding: "12px 16px 10px 28px" }}
       >
         <input
           ref={wordInputRef}
@@ -214,11 +214,11 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
             onChange={(e) => { setDescription(e.target.value); playPenSound(); }}
             placeholder="Описание…"
             className="magic-textarea w-full h-full font-handwriting text-lg notebook-lines magic-cursor-write"
-            style={{ minHeight: "160px", lineHeight: "32px" }}
+            style={{ minHeight: "160px", lineHeight: "28px" }}
           />
         </div>
 
-        <div className="mt-3 flex justify-center items-center gap-2">
+        <div className="mt-1 flex justify-center items-center gap-2">
           <span className="action-text cursor-pointer font-handwriting text-base font-medium" onClick={handleSave}>сохранить</span>
           <span className="font-handwriting text-base font-medium" style={{ color: "hsl(var(--ink) / 0.3)" }}>|</span>
           <span className="action-text cursor-pointer font-handwriting text-base font-medium" onClick={handleEdit}>редактировать</span>
@@ -229,8 +229,8 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
       <div
         className="absolute font-handwriting no-scroll"
         style={{
-          left: "52%", top: "18%", width: "32%", height: "60%",
-          padding: "16px 28px 12px 24px",
+          left: "52%", top: "18%", width: "36%", height: "60%",
+          padding: "12px 20px 10px 20px",
           overflow: "hidden", overflowWrap: "break-word", wordBreak: "break-word",
           perspective: "1200px",
         }}
@@ -241,7 +241,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
               Здесь появятся ваши записи…
             </p>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-2">
               {pageEntries.map((entry, i) => {
                 const globalIdx = pageStart + i;
                 if (editIdx === globalIdx && liveText) return null;
@@ -286,7 +286,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
       {/* "далее →" — flip to next page */}
       {hasNextPage && (
         <div
-          className="absolute bottom-[15%] right-[14%] font-handwriting text-xl action-text cursor-pointer tracking-wider z-20"
+          className="absolute bottom-[18%] right-[14%] font-handwriting text-2xl font-bold action-text cursor-pointer tracking-wider z-20"
           onClick={handleFlipPage}
         >
           далее →
@@ -298,7 +298,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
         <div
           className="absolute font-handwriting text-base action-text-gold cursor-pointer tracking-wider z-20"
           onClick={handleFinish}
-          style={{ bottom: hasNextPage ? "10%" : "12%", right: "14%" }}
+          style={{ bottom: hasNextPage ? "14%" : "16%", right: "14%" }}
         >
           завершить книгу ✦
         </div>
@@ -322,16 +322,6 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
         </div>
       )}
 
-      <img
-        src="/src/assets/podpis-clean.png"
-        alt="Tanya Gaiduk"
-        className="absolute w-44 z-20 pointer-events-none select-none"
-        style={{
-          bottom: "5%",
-          right: "10%",
-          mixBlendMode: "screen",
-        }}
-      />
     </div>
   );
 };

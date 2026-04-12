@@ -140,14 +140,14 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
       <div
         className="absolute font-handwriting no-scroll"
         style={{
-          left: "18%", top: "18%", width: "22%", height: "60%",
-          padding: "16px 24px 12px 32px",
+          left: "12%", top: "18%", width: "36%", height: "60%",
+          padding: "12px 16px 10px 28px",
           overflow: "hidden",
           perspective: "1200px",
         }}
       >
         <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "right center" }}>
-          <div className="space-y-4">
+          <div className="space-y-2">
             {leftEntries.map((entry, i) => renderEntry(entry, spreadStart + i))}
           </div>
           {leftEntries.length === 0 && (
@@ -162,14 +162,14 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
       <div
         className="absolute font-handwriting no-scroll"
         style={{
-          left: "52%", top: "18%", width: "32%", height: "60%",
-          padding: "16px 28px 12px 24px",
+          left: "52%", top: "18%", width: "36%", height: "60%",
+          padding: "12px 20px 10px 20px",
           overflow: "hidden", overflowWrap: "break-word", wordBreak: "break-word",
           perspective: "1200px",
         }}
       >
         <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "left center" }}>
-          <div className="space-y-4">
+          <div className="space-y-2">
             {rightEntries.map((entry, i) => renderEntry(entry, spreadStart + ENTRIES_PER_PAGE + i))}
           </div>
           {rightEntries.length === 0 && leftEntries.length > 0 && (
@@ -219,16 +219,6 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
         {currentSpread + 1} / {totalSpreads}
       </div>
 
-      <img
-        src="/src/assets/podpis-clean.png"
-        alt="Tanya Gaiduk"
-        className="absolute w-44 z-20 pointer-events-none select-none"
-        style={{
-          bottom: "5%",
-          right: "10%",
-          mixBlendMode: "screen",
-        }}
-      />
     </div>
   );
 };

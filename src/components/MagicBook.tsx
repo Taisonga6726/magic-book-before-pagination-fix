@@ -34,7 +34,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
   const descRef = useRef<HTMLTextAreaElement>(null);
   const wordInputRef = useRef<HTMLInputElement>(null);
   const rightContentRef = useRef<HTMLDivElement>(null);
-  const needsOverflowCheck = useRef(false);
+  const prevPageBreaksLen = useRef(1);
 
   const playPenSound = useCallback(() => {
     if (!penAudio.current) {

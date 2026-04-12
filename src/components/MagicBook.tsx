@@ -20,10 +20,9 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
   const [description, setDescription] = useState("");
   const [burst, setBurst] = useState(false);
   const [editIdx, setEditIdx] = useState<number | null>(null);
-  const [isTyping, setIsTyping] = useState(false);
   const penAudio = useRef<HTMLAudioElement | null>(null);
   const stopTimer = useRef<number | null>(null);
-  const typingTimer = useRef<number | null>(null);
+  const descRef = useRef<HTMLTextAreaElement>(null);
   const descRef = useRef<HTMLTextAreaElement>(null);
 
   const playPenSound = useCallback(() => {

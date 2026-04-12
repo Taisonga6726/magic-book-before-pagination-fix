@@ -98,7 +98,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
           onChange={(e) => { setWord(e.target.value); playPenSound(); }}
           onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); descRef.current?.focus(); } }}
           placeholder="Слово"
-          className="magic-input w-full text-2xl font-semibold font-book mb-4 text-ink"
+          className="magic-input w-full text-2xl font-semibold font-handwriting mb-4 text-ink"
         />
 
         <div className="writing-zone rounded-sm mt-2" style={{ minHeight: "55%" }}>

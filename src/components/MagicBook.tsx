@@ -67,7 +67,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
       {/* Left page — input */}
       <div
         className="absolute font-book magic-cursor-write"
-        style={{ left: "7%", top: "12%", width: "38%", height: "72%", padding: "8px 16px" }}
+        style={{ left: "8%", top: "12%", width: "35%", height: "72%", padding: "12px 24px 12px 20px" }}
       >
         <input
           type="text"
@@ -98,7 +98,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
       {/* Right page — results */}
       <div
         className="absolute font-book"
-        style={{ right: "7%", top: "12%", width: "38%", height: "72%", padding: "8px 16px", overflowY: "auto" }}
+        style={{ right: "8%", top: "12%", width: "35%", height: "72%", padding: "12px 24px 12px 20px", overflowY: "auto", overflowWrap: "break-word", wordBreak: "break-word" }}
       >
         {entries.length === 0 ? (
           <p className="font-handwriting text-base italic mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
@@ -117,7 +117,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         )}
       </div>
 
-      <div className="absolute bottom-[6%] right-[10%] font-book text-xs action-text cursor-pointer tracking-wider" onClick={onOpenCatalog}>
+      <div className="absolute bottom-[6%] right-[12%] font-book text-xs action-text cursor-pointer tracking-wider" onClick={onOpenCatalog}>
         каталог →
       </div>
     </div>

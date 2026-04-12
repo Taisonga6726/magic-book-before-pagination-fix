@@ -148,7 +148,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
                 <div key={i} className="text-ink">
                   <div className="flex items-baseline gap-1">
                     <span className="text-base font-bold" style={{ color: "hsl(var(--ink) / 0.8)" }}>{i + 1}.</span>
-                    <span className="text-xl leading-tight" style={{ fontFamily: "'Marck Script', cursive", textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
+                    <span className="text-xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
                       {entry.word}
                     </span>
                   </div>
@@ -166,7 +166,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
               <div className="text-ink">
                <div className="flex items-baseline gap-1">
                   <span className="text-base font-bold" style={{ color: "hsl(var(--ink) / 0.8)" }}>{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>
-                  <span className="text-xl leading-tight inline-flex items-end" style={{ fontFamily: "'Marck Script', cursive", textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
+                  <span className="text-xl leading-tight inline-flex items-end" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
                     <InkWriteEffect text={word} className="ink-fresh" />
                   </span>
                 </div>

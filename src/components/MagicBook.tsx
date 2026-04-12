@@ -185,7 +185,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         каталог →
       </div>
       <img
-        src="/src/assets/podpis.jpg"
+        src="/src/assets/podpis.png"
         alt="Tanya Gaiduk"
         className="absolute w-44 z-20 pointer-events-none select-none"
         style={{

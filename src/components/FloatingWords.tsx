@@ -1,19 +1,19 @@
 const WORDS = [
   { text: "VIBE", color: "purple" },
-  { text: "CODE", color: "blue" },
-  { text: "AI", color: "purple" },
+  { text: "CODE", color: "cyan" },
+  { text: "AI", color: "gold" },
   { text: "FLOW", color: "blue" },
-  { text: "FOCUS", color: "purple" },
-  { text: "MAGIC", color: "blue" },
+  { text: "FOCUS", color: "green" },
+  { text: "MAGIC", color: "cyan" },
   { text: "IDEA", color: "purple" },
-  { text: "SPEED", color: "blue" },
-  { text: "ПОТОК", color: "purple" },
+  { text: "SPEED", color: "gold" },
+  { text: "ПОТОК", color: "green" },
   { text: "ФОКУС", color: "blue" },
-  { text: "МАГИЯ", color: "purple" },
-  { text: "СМЫСЛ", color: "blue" },
+  { text: "МАГИЯ", color: "cyan" },
+  { text: "СМЫСЛ", color: "gold" },
   { text: "НЕЙРО", color: "purple" },
-  { text: "ВАЙБ", color: "blue" },
-  { text: "КОД", color: "purple" },
+  { text: "ВАЙБ", color: "green" },
+  { text: "КОД", color: "cyan" },
 ];
 
 // Positions around the book edges — left, right, top, bottom margins
@@ -35,7 +35,7 @@ const POSITIONS = [
   { bottom: "22%", left: "2%" },
 ];
 
-const SIZES = [16, 20, 15, 22, 18, 24, 14, 18, 16, 22, 15, 22, 18, 20, 14];
+const SIZES = [11, 14, 10, 15, 12, 16, 10, 12, 11, 15, 10, 15, 12, 14, 10];
 
 const FloatingWords = () => {
   return (
@@ -43,9 +43,7 @@ const FloatingWords = () => {
       {WORDS.map((word, i) => {
         const duration = 20 + Math.random() * 20;
         const delay = Math.random() * -20;
-        const glowClass =
-          word.color === "purple" ? "glow-text-purple" :
-          word.color === "blue" ? "glow-text-blue" : "glow-text-pink";
+        const glowClass = `glow-text-${word.color}`;
 
         return (
           <span

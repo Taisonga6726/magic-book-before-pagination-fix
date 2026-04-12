@@ -71,13 +71,13 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
 
       entries.forEach((entry) => {
         const el = document.createElement("div");
-        el.style.marginBottom = "4px";
+        el.style.marginBottom = "2px";
         el.innerHTML = `
           <div style="display:flex;align-items:baseline;gap:4px">
             <span style="font-size:1.5rem;font-weight:700;color:#1a1440">${globalIdx + 1}.</span>
             <span style="font-size:1.5rem;line-height:1.25;font-family:'Cormorant Garamond',serif;font-style:italic;color:#1a1440">${entry.word}</span>
           </div>
-          ${entry.description ? `<div style="font-size:1.125rem;margin-top:2px;margin-left:28px;color:#2a1f5a">— ${entry.description}</div>` : ""}
+          ${entry.description ? `<div style="font-size:0.875rem;margin-top:0;margin-left:24px;color:#2a1f5a">— ${entry.description}</div>` : ""}
         `;
         measureDiv.appendChild(el);
         const h = el.offsetHeight + 4;
@@ -99,7 +99,7 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
       setPages(result.length > 0 ? result : [[]]);
     };
 
-    requestAnimationFrame(computePages);
+    setTimeout(computePages, 100);
   }, [entries]);
 
   const playFlipSound = useCallback(() => {
@@ -201,7 +201,7 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
         </span>
       </div>
       {entry.description && (
-        <div className="font-handwriting text-lg mt-0.5 ml-7" style={{ color: "#2a1f5a", textShadow: "0 0 2px rgba(20,10,50,0.1)" }}>
+        <div className="font-handwriting text-sm ml-6" style={{ color: "#2a1f5a", textShadow: "0 0 2px rgba(20,10,50,0.1)" }}>
           — {entry.description}
         </div>
       )}
@@ -233,7 +233,7 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
       {/* Left page */}
       <div
         ref={leftPageRef}
-        className="absolute font-handwriting no-scroll"
+        className="absolute font-handwriting no-scroll z-20"
         style={{
           left: "18%", top: "20%", width: "30%", height: "58%",
           padding: "10px 14px 40px 24px",
@@ -242,7 +242,7 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
         }}
       >
         <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "right center" }}>
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             {leftEntries.map((entry, i) => renderEntry(entry, leftGlobalStart + i))}
           </div>
           {leftEntries.length === 0 && (
@@ -255,7 +255,7 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
 
       {/* Right page */}
       <div
-        className="absolute font-handwriting no-scroll"
+        className="absolute font-handwriting no-scroll z-20"
         style={{
           left: "52%", top: "20%", width: "34%", height: "58%",
           padding: "10px 18px 40px 18px",
@@ -264,7 +264,7 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
         }}
       >
         <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "left center" }}>
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             {rightEntries.map((entry, i) => renderEntry(entry, rightGlobalStart + i))}
           </div>
           {rightEntries.length === 0 && leftEntries.length > 0 && (

@@ -114,14 +114,29 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
   const hasNext = currentSpread < totalSpreads - 1;
   const hasPrev = currentSpread > 0;
 
+  const handleFlipFromBar = useCallback((direction: "next" | "prev") => {
+    if (flipping) return;
+    if (direction === "next" && !hasNext) return;
+    if (direction === "prev" && !hasPrev) return;
+    playFlipSound();
+    setFlipping(true);
+    setBurst(false);
+    requestAnimationFrame(() => setBurst(true));
+    setTimeout(() => {
+      setCurrentSpread((s) => direction === "next" ? s + 1 : s - 1);
+      setFlipping(false);
+      setBurst(false);
+    }, 1000);
+  }, [flipping, hasNext, hasPrev, playFlipSound]);
+
   useEffect(() => {
     onPageNav?.({
       hasPrev,
       hasNext,
-      onPrev: () => setCurrentSpread((s) => Math.max(0, s - 1)),
-      onNext: () => setCurrentSpread((s) => s + 1),
+      onPrev: () => handleFlipFromBar("prev"),
+      onNext: () => handleFlipFromBar("next"),
     });
-  }, [hasPrev, hasNext, onPageNav]);
+  }, [hasPrev, hasNext, onPageNav, handleFlipFromBar]);
 
   const leftPageIdx = currentSpread * 2;
   const rightPageIdx = currentSpread * 2 + 1;

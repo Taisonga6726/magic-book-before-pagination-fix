@@ -128,8 +128,9 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
 
     // Duplicate check (only for new entries)
     if (editIdx === null) {
+      const normalize = (s: string) => s.trim().toLowerCase().replace(/[^a-zа-яё0-9]/gi, "");
       const isDuplicate = entries.some(
-        (e) => e.word.trim().toLowerCase() === word.trim().toLowerCase()
+        (e) => normalize(e.word) === normalize(word)
       );
       if (isDuplicate) {
         setShowDuplicateOverlay(true);

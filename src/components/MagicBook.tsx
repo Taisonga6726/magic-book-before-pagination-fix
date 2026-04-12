@@ -87,7 +87,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         <input
           type="text"
           value={word}
-          onChange={(e) => setWord(e.target.value)}
+          onChange={(e) => { setWord(e.target.value); playPenSound(); }}
           placeholder="Слово"
           className="magic-input w-full text-2xl font-semibold font-book mb-4 text-ink"
         />

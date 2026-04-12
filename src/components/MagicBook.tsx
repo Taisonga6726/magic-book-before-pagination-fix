@@ -77,7 +77,14 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
     : "";
 
   return (
-    <div className="relative w-full max-w-[1100px] mx-auto magic-cursor" style={{ aspectRatio: "1.5 / 1" }}>
+    <div
+      className="relative w-full max-w-[1100px] mx-auto magic-cursor"
+      style={{
+        aspectRatio: "1.5 / 1",
+        maskImage: "radial-gradient(ellipse 90% 88% at center, black 55%, transparent 100%)",
+        WebkitMaskImage: "radial-gradient(ellipse 90% 88% at center, black 55%, transparent 100%)",
+      }}
+    >
       <img
         src={bookImg}
         alt=""

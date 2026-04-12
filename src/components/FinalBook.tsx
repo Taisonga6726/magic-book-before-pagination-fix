@@ -140,14 +140,14 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
       <div
         className="absolute font-handwriting no-scroll"
         style={{
-          left: "16%", top: "18%", width: "32%", height: "60%",
-          padding: "12px 16px 40px 28px",
+          left: "18%", top: "20%", width: "30%", height: "58%",
+          padding: "10px 14px 40px 24px",
           overflow: "hidden",
           perspective: "1200px",
         }}
       >
         <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "right center" }}>
-          <div className="space-y-2">
+          <div className="space-y-1">
             {leftEntries.map((entry, i) => renderEntry(entry, spreadStart + i))}
           </div>
           {leftEntries.length === 0 && (
@@ -162,8 +162,8 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
       <div
         className="absolute font-handwriting no-scroll"
         style={{
-          left: "52%", top: "18%", width: "36%", height: "60%",
-          padding: "12px 20px 40px 20px",
+          left: "52%", top: "20%", width: "34%", height: "58%",
+          padding: "10px 18px 40px 18px",
           overflow: "hidden", overflowWrap: "break-word", wordBreak: "break-word",
           perspective: "1200px",
         }}

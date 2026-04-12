@@ -31,12 +31,6 @@ const Index = () => {
         )}
       </div>
 
-      <div
-        className="absolute bottom-3 right-6 font-handwriting text-sm z-30"
-        style={{ color: "hsl(40 80% 55% / 0.6)" }}
-      >
-        Tanya Gaiduk
-      </div>
     </div>
   );
 };

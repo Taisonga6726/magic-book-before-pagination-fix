@@ -195,7 +195,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
       {/* Left page — input */}
       <div
         className="absolute font-handwriting magic-cursor-write no-scroll"
-        style={{ left: "16%", top: "18%", width: "32%", height: "60%", padding: "12px 16px 40px 28px", overflow: "hidden" }}
+        style={{ left: "18%", top: "20%", width: "30%", height: "58%", padding: "10px 14px 40px 24px", overflow: "hidden" }}
       >
         <input
           ref={wordInputRef}
@@ -214,7 +214,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
             onChange={(e) => { setDescription(e.target.value); playPenSound(); }}
             placeholder="Описание…"
             className="magic-textarea w-full h-full font-handwriting text-lg notebook-lines magic-cursor-write"
-            style={{ minHeight: "160px", lineHeight: "28px" }}
+            style={{ minHeight: "160px", lineHeight: "22px" }}
           />
         </div>
 

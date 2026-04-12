@@ -1,4 +1,4 @@
-import { useState, useCallback, Dispatch, SetStateAction } from "react";
+import { useState, useCallback, useRef, Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
 import bookImg from "@/assets/book.png";
 import SpineEffect from "./SpineEffect";

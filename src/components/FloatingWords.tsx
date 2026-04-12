@@ -1,19 +1,19 @@
 const WORDS = [
   { text: "VIBE", color: "purple" },
   { text: "CODE", color: "blue" },
-  { text: "AI", color: "pink" },
-  { text: "FLOW", color: "purple" },
-  { text: "FOCUS", color: "blue" },
-  { text: "MAGIC", color: "pink" },
+  { text: "AI", color: "purple" },
+  { text: "FLOW", color: "blue" },
+  { text: "FOCUS", color: "purple" },
+  { text: "MAGIC", color: "blue" },
   { text: "IDEA", color: "purple" },
   { text: "SPEED", color: "blue" },
-  { text: "ПОТОК", color: "pink" },
-  { text: "ФОКУС", color: "purple" },
-  { text: "МАГИЯ", color: "blue" },
-  { text: "СМЫСЛ", color: "pink" },
+  { text: "ПОТОК", color: "purple" },
+  { text: "ФОКУС", color: "blue" },
+  { text: "МАГИЯ", color: "purple" },
+  { text: "СМЫСЛ", color: "blue" },
   { text: "НЕЙРО", color: "purple" },
   { text: "ВАЙБ", color: "blue" },
-  { text: "КОД", color: "pink" },
+  { text: "КОД", color: "purple" },
 ];
 
 // Positions around the book edges — left, right, top, bottom margins
@@ -35,7 +35,7 @@ const POSITIONS = [
   { bottom: "22%", left: "2%" },
 ];
 
-const SIZES = [24, 30, 22, 34, 28, 36, 20, 26, 24, 32, 22, 34, 28, 30, 20];
+const SIZES = [16, 20, 15, 22, 18, 24, 14, 18, 16, 22, 15, 22, 18, 20, 14];
 
 const FloatingWords = () => {
   return (

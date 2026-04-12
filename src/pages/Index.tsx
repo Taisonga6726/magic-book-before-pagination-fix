@@ -3,9 +3,14 @@ import FloatingWords from "@/components/FloatingWords";
 import MagicBook from "@/components/MagicBook";
 import CatalogView from "@/components/CatalogView";
 
+interface Entry {
+  word: string;
+  description: string;
+}
+
 const Index = () => {
   const [view, setView] = useState<"book" | "catalog">("book");
-  const [entries, setEntries] = useState<{ word: string; description: string }[]>([]);
+  const [entries, setEntries] = useState<Entry[]>([]);
 
   return (
     <div className="cosmic-bg min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
@@ -13,13 +18,16 @@ const Index = () => {
 
       <div className="relative z-20 w-full flex items-center justify-center">
         {view === "book" ? (
-          <MagicBook onOpenCatalog={() => setView("catalog")} />
+          <MagicBook
+            entries={entries}
+            setEntries={setEntries}
+            onOpenCatalog={() => setView("catalog")}
+          />
         ) : (
           <CatalogView entries={entries} onBack={() => setView("book")} />
         )}
       </div>
 
-      {/* Footer credit */}
       <div
         className="absolute bottom-3 right-6 font-handwriting text-sm z-30"
         style={{ color: "hsl(40 80% 55% / 0.6)" }}

@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, Dispatch, SetStateAction } from "react";
 import bookImg from "@/assets/book.png";
 import SpineEffect from "./SpineEffect";
 
@@ -8,17 +8,17 @@ interface Entry {
 }
 
 interface MagicBookProps {
+  entries: Entry[];
+  setEntries: Dispatch<SetStateAction<Entry[]>>;
   onOpenCatalog: () => void;
 }
 
-const MagicBook = ({ onOpenCatalog }: MagicBookProps) => {
+const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
   const [word, setWord] = useState("");
   const [description, setDescription] = useState("");
-  const [entries, setEntries] = useState<Entry[]>([]);
   const [burst, setBurst] = useState(false);
   const [newEntryIdx, setNewEntryIdx] = useState<number | null>(null);
   const [editIdx, setEditIdx] = useState<number | null>(null);
-  const burstKey = useRef(0);
 
   const handleSave = useCallback(() => {
     if (!word.trim()) return;
@@ -31,20 +31,18 @@ const MagicBook = ({ onOpenCatalog }: MagicBookProps) => {
       });
       setEditIdx(null);
     } else {
-      const newEntry = { word: word.trim(), description: description.trim() };
-      setEntries((prev) => [...prev, newEntry]);
+      setEntries((prev) => [...prev, { word: word.trim(), description: description.trim() }]);
       setNewEntryIdx(entries.length);
       setTimeout(() => setNewEntryIdx(null), 800);
     }
 
-    burstKey.current++;
     setBurst(false);
     requestAnimationFrame(() => setBurst(true));
     setTimeout(() => setBurst(false), 1200);
 
     setWord("");
     setDescription("");
-  }, [word, description, editIdx, entries.length]);
+  }, [word, description, editIdx, entries.length, setEntries]);
 
   const handleEdit = useCallback(() => {
     if (entries.length === 0) return;
@@ -57,7 +55,6 @@ const MagicBook = ({ onOpenCatalog }: MagicBookProps) => {
 
   return (
     <div className="relative w-full max-w-[960px] mx-auto magic-cursor" style={{ aspectRatio: "1.5 / 1" }}>
-      {/* Book background image */}
       <img
         src={bookImg}
         alt=""
@@ -65,31 +62,21 @@ const MagicBook = ({ onOpenCatalog }: MagicBookProps) => {
         draggable={false}
       />
 
-      {/* Spine effect */}
       <SpineEffect burst={burst} />
 
       {/* Left page — input */}
       <div
         className="absolute font-book magic-cursor-write"
-        style={{
-          left: "7%",
-          top: "12%",
-          width: "38%",
-          height: "72%",
-          padding: "8px 16px",
-        }}
+        style={{ left: "7%", top: "12%", width: "38%", height: "72%", padding: "8px 16px" }}
       >
-        {/* Word input */}
         <input
           type="text"
           value={word}
           onChange={(e) => setWord(e.target.value)}
           placeholder="Слово"
           className="magic-input w-full text-2xl font-semibold font-book mb-4 text-ink"
-          style={{ textShadow: "0 0 8px hsl(265 60% 50% / 0.3)" }}
         />
 
-        {/* Description */}
         <div className="writing-zone rounded-sm mt-2" style={{ minHeight: "55%" }}>
           <textarea
             value={description}
@@ -100,67 +87,37 @@ const MagicBook = ({ onOpenCatalog }: MagicBookProps) => {
           />
         </div>
 
-        {/* Actions */}
         <div className="mt-3 font-book text-sm tracking-wide">
-          <span className="action-text cursor-pointer" onClick={handleSave}>
-            сохранить
-          </span>
+          <span className="action-text cursor-pointer" onClick={handleSave}>сохранить</span>
           <span className="mx-2" style={{ color: "hsl(var(--ink) / 0.3)" }}>|</span>
-          <span className="action-text cursor-pointer" onClick={handleEdit}>
-            редактировать
-          </span>
+          <span className="action-text cursor-pointer" onClick={handleEdit}>редактировать</span>
         </div>
-        <div className="mt-2 text-xs" style={{ color: "hsl(var(--ink) / 0.25)" }}>
-          Реакции
-        </div>
+        <div className="mt-2 text-xs" style={{ color: "hsl(var(--ink) / 0.25)" }}>Реакции</div>
       </div>
 
       {/* Right page — results */}
       <div
         className="absolute font-book"
-        style={{
-          right: "7%",
-          top: "12%",
-          width: "38%",
-          height: "72%",
-          padding: "8px 16px",
-          overflowY: "auto",
-        }}
+        style={{ right: "7%", top: "12%", width: "38%", height: "72%", padding: "8px 16px", overflowY: "auto" }}
       >
         {entries.length === 0 ? (
-          <p
-            className="font-handwriting text-base italic mt-8 text-center"
-            style={{ color: "hsl(var(--ink) / 0.25)" }}
-          >
+          <p className="font-handwriting text-base italic mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
             Здесь появятся ваши записи…
           </p>
         ) : (
           <ol className="list-none space-y-3">
             {entries.map((entry, i) => (
-              <li
-                key={i}
-                className={`text-ink text-base leading-relaxed ${
-                  i === newEntryIdx ? "animate-text-appear" : ""
-                }`}
-              >
-                <span className="font-semibold" style={{ color: "hsl(var(--ink) / 0.5)" }}>
-                  {i + 1}.{" "}
-                </span>
+              <li key={i} className={`text-ink text-base leading-relaxed ${i === newEntryIdx ? "animate-text-appear" : ""}`}>
+                <span className="font-semibold" style={{ color: "hsl(var(--ink) / 0.5)" }}>{i + 1}. </span>
                 <span className="font-semibold">{entry.word}</span>
-                {entry.description && (
-                  <span className="font-handwriting"> — {entry.description}</span>
-                )}
+                {entry.description && <span className="font-handwriting"> — {entry.description}</span>}
               </li>
             ))}
           </ol>
         )}
       </div>
 
-      {/* Catalog link */}
-      <div
-        className="absolute bottom-[6%] right-[10%] font-book text-xs action-text cursor-pointer tracking-wider"
-        onClick={onOpenCatalog}
-      >
+      <div className="absolute bottom-[6%] right-[10%] font-book text-xs action-text cursor-pointer tracking-wider" onClick={onOpenCatalog}>
         каталог →
       </div>
     </div>

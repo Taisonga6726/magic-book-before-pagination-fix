@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import FloatingWords from "@/components/FloatingWords";
 import MagicBook from "@/components/MagicBook";
-import CatalogView from "@/components/CatalogView";
 import FinalBook from "@/components/FinalBook";
+import ControlBar from "@/components/ControlBar";
 import HeroWave from "@/components/ui/dynamic-wave-canvas-background";
+import { toast } from "@/hooks/use-toast";
 
 interface Entry {
   word: string;
@@ -11,7 +12,7 @@ interface Entry {
 }
 
 const Index = () => {
-  const [view, setView] = useState<"book" | "catalog" | "final">("book");
+  const [mode, setMode] = useState<"edit" | "read" | "final">("edit");
   const [entries, setEntries] = useState<Entry[]>(() => {
     const saved = localStorage.getItem("magic-book-entries");
     return saved ? JSON.parse(saved) : [];
@@ -21,6 +22,19 @@ const Index = () => {
     localStorage.setItem("magic-book-entries", JSON.stringify(entries));
   }, [entries]);
 
+  const handleAddWord = () => {
+    setMode("edit");
+  };
+
+  const handleRestart = () => {
+    setEntries([]);
+    setMode("edit");
+  };
+
+  const handleShare = () => {
+    toast({ title: "Функция скоро появится!", description: "Поделиться книгой можно будет в следующем обновлении." });
+  };
+
   return (
     <div className="w-full h-screen flex items-center justify-center p-4 relative overflow-hidden bg-black">
       <HeroWave />
@@ -28,21 +42,26 @@ const Index = () => {
       <div className="relative z-40 w-full flex items-center justify-center">
         <FloatingWords />
 
-        {view === "book" && (
+        {mode === "edit" && (
           <MagicBook
             entries={entries}
             setEntries={setEntries}
-            onOpenCatalog={() => setView("catalog")}
-            onFinish={() => setView("final")}
+            onOpenCatalog={() => setMode("read")}
+            onFinish={() => setMode("final")}
           />
         )}
-        {view === "catalog" && (
-          <CatalogView entries={entries} onBack={() => setView("book")} />
-        )}
-        {view === "final" && (
-          <FinalBook entries={entries} onBack={() => setView("book")} />
+        {(mode === "read" || mode === "final") && (
+          <FinalBook entries={entries} onBack={() => setMode("edit")} />
         )}
       </div>
+
+      <ControlBar
+        mode={mode}
+        setMode={setMode}
+        onAddWord={handleAddWord}
+        onRestart={handleRestart}
+        onShare={handleShare}
+      />
     </div>
   );
 };

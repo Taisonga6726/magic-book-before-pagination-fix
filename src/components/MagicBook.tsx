@@ -80,14 +80,34 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
   const isLastPage = currentPage === totalPages - 1;
   const hasPrevPage = currentPage > 0;
 
+  const handleFlipNext = useCallback(() => {
+    if (flipping || !hasNextPage) return;
+    playFlipSound();
+    setFlipping(true);
+    setTimeout(() => {
+      setCurrentPage((p) => p + 1);
+      setFlipping(false);
+    }, 1000);
+  }, [flipping, hasNextPage, playFlipSound]);
+
+  const handleFlipPrev = useCallback(() => {
+    if (flipping || currentPage === 0) return;
+    playFlipSound();
+    setFlipping(true);
+    setTimeout(() => {
+      setCurrentPage((p) => p - 1);
+      setFlipping(false);
+    }, 1000);
+  }, [flipping, currentPage, playFlipSound]);
+
   useEffect(() => {
     onPageNav?.({
       hasPrev: hasPrevPage,
       hasNext: hasNextPage,
-      onPrev: () => setCurrentPage((p) => Math.max(0, p - 1)),
-      onNext: () => setCurrentPage((p) => p + 1),
+      onPrev: handleFlipPrev,
+      onNext: handleFlipNext,
     });
-  }, [hasPrevPage, hasNextPage, onPageNav]);
+  }, [hasPrevPage, hasNextPage, onPageNav, handleFlipPrev, handleFlipNext]);
   useEffect(() => {
     if (entries.length === 0) {
       setPageBreaks([0]);
@@ -190,25 +210,6 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
     setTimeout(() => wordInputRef.current?.focus(), 50);
   }, [entries]);
 
-  const handleFlipPage = useCallback(() => {
-    if (flipping || !hasNextPage) return;
-    playFlipSound();
-    setFlipping(true);
-    setTimeout(() => {
-      setCurrentPage((p) => p + 1);
-      setFlipping(false);
-    }, 1000);
-  }, [flipping, hasNextPage, playFlipSound]);
-
-  const handleFlipBack = useCallback(() => {
-    if (flipping || currentPage === 0) return;
-    playFlipSound();
-    setFlipping(true);
-    setTimeout(() => {
-      setCurrentPage((p) => p - 1);
-      setFlipping(false);
-    }, 1000);
-  }, [flipping, currentPage, playFlipSound]);
 
   const handleFinish = useCallback(() => {
     if (fadingOut || flipping) return;

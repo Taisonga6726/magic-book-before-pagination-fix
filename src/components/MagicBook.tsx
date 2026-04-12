@@ -23,7 +23,7 @@ interface MagicBookProps {
   onPageNav?: (nav: PageNav) => void;
 }
 
-const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookProps) => {
+const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: MagicBookProps) => {
   const [word, setWord] = useState("");
   const [description, setDescription] = useState("");
 

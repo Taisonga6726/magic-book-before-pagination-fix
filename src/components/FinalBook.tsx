@@ -20,7 +20,7 @@ interface FinalBookProps {
   onPageNav?: (nav: PageNav) => void;
 }
 
-const FinalBook = ({ entries, onBack }: FinalBookProps) => {
+const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
   const [currentSpread, setCurrentSpread] = useState(0);
   const [flipping, setFlipping] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);

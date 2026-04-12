@@ -132,7 +132,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
     // Duplicate check (only for new entries)
     if (editIdx === null) {
       const normalize = (s: string) => s.trim().toLowerCase().replace(/[^a-zа-яё0-9]/gi, "");
-      const isDuplicate = entries.some(
+      const isDuplicate = entriesRef.current.some(
         (e) => normalize(e.word) === normalize(word)
       );
       if (isDuplicate) {

@@ -373,37 +373,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
         </div>
       </div>
 
-      {/* Page navigation */}
-      {currentPage > 0 && (
-        <div
-          className="absolute bottom-[22%] left-[52%] font-handwriting text-xl action-text cursor-pointer tracking-wider z-50 hover:scale-105 transition-transform"
-          onClick={handleFlipBack}
-          style={{ color: "#1a1440", fontWeight: 700, textShadow: "0 0 3px rgba(0,0,0,0.15)", background: "rgba(255,255,255,0.6)", padding: "4px 10px", borderRadius: "6px", backdropFilter: "blur(2px)" }}
-        >
-          ← назад
-        </div>
-      )}
-
-      {hasNextPage && (
-        <div
-          className="absolute bottom-[22%] right-[14%] font-handwriting text-2xl font-bold action-text cursor-pointer tracking-wider z-50 hover:scale-105 transition-transform"
-          onClick={handleFlipPage}
-          style={{ color: "#1a1440", fontWeight: 700, textShadow: "0 0 3px rgba(0,0,0,0.15)", background: "rgba(255,255,255,0.6)", padding: "4px 10px", borderRadius: "6px", backdropFilter: "blur(2px)" }}
-        >
-          далее →
-        </div>
-      )}
-
-      {/* "завершить книгу" — left page bottom */}
-      {entries.length > 0 && (
-        <div
-          className="absolute font-handwriting text-base action-text-gold cursor-pointer tracking-wider z-50 hover:scale-105 transition-transform"
-          onClick={handleFinish}
-          style={{ bottom: "20%", left: "18%", color: "#1a1440", fontWeight: 700, textShadow: "0 0 3px rgba(0,0,0,0.15)", background: "rgba(255,255,255,0.6)", padding: "4px 10px", borderRadius: "6px", backdropFilter: "blur(2px)" }}
-        >
-          завершить книгу ✦
-        </div>
-      )}
+      {/* Navigation buttons hidden — managed by ControlBar */}
 
       {/* "КНИГА СОЗДАНА ✦" overlay */}
       {showFinishOverlay && (

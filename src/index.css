@@ -222,26 +222,7 @@
   100% { transform: perspective(1200px) rotateY(-180deg); }
 }
 
-/* Cosmic background */
-.cosmic-bg {
-  background:
-    radial-gradient(ellipse 120% 100% at 20% 30%, hsl(265 60% 20% / 0.8), transparent 60%),
-    radial-gradient(ellipse 120% 100% at 80% 70%, hsl(330 55% 20% / 0.6), transparent 60%),
-    radial-gradient(ellipse 140% 80% at 50% 0%, hsl(280 60% 22% / 0.5), transparent 65%),
-    radial-gradient(ellipse 80% 120% at 0% 50%, hsl(260 50% 18% / 0.6), transparent 55%),
-    radial-gradient(ellipse 80% 120% at 100% 50%, hsl(300 50% 16% / 0.5), transparent 55%),
-    radial-gradient(ellipse 140% 80% at 50% 100%, hsl(270 45% 16% / 0.6), transparent 60%),
-    linear-gradient(135deg, hsl(260 35% 12%), hsl(280 30% 10%), hsl(250 25% 10%));
-}
 
-/* Cosmic glow overlay layer */
-.cosmic-glow-layer {
-  background:
-    radial-gradient(circle at 30% 40%, hsl(265 70% 40% / 0.15), transparent 50%),
-    radial-gradient(circle at 70% 60%, hsl(330 70% 40% / 0.12), transparent 50%),
-    radial-gradient(circle at 50% 50%, hsl(280 60% 30% / 0.1), transparent 60%);
-  pointer-events: none;
-}
 
 /* Writing zone soft highlight */
 .writing-zone {

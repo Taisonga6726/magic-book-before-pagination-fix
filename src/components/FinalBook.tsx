@@ -169,7 +169,7 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
         }}
       >
         <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "left center" }}>
-          <div className="space-y-2">
+          <div className="space-y-1">
             {rightEntries.map((entry, i) => renderEntry(entry, spreadStart + ENTRIES_PER_PAGE + i))}
           </div>
           {rightEntries.length === 0 && leftEntries.length > 0 && (

@@ -32,6 +32,7 @@ const Index = () => {
         )}
       </div>
 
+      <FontPreview />
     </div>
   );
 };

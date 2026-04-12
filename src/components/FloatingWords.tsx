@@ -53,7 +53,7 @@ const FloatingWords = () => {
               ...POSITIONS[i],
               fontSize: `${SIZES[i]}px`,
               animation: `float-word ${duration}s ease-in-out ${delay}s infinite, magic-glow ${5 + Math.random() * 3}s ease-in-out ${Math.random() * -5}s infinite`,
-              opacity: 0.55,
+              opacity: 0.3,
             }}
           >
             {word.text}

@@ -96,38 +96,38 @@
 /* Glow text effects — soft neon */
 .glow-text-purple {
   color: hsl(var(--glow-purple));
-  text-shadow: 0 0 6px hsl(var(--glow-purple) / 0.5), 0 0 14px hsl(var(--glow-purple) / 0.3), 0 0 30px hsl(var(--glow-purple) / 0.15);
+  text-shadow: 0 0 3px hsl(var(--glow-purple) / 0.25), 0 0 7px hsl(var(--glow-purple) / 0.15), 0 0 15px hsl(var(--glow-purple) / 0.08);
 }
 .glow-text-blue {
   color: hsl(var(--glow-blue));
-  text-shadow: 0 0 6px hsl(var(--glow-blue) / 0.5), 0 0 14px hsl(var(--glow-blue) / 0.3), 0 0 30px hsl(var(--glow-blue) / 0.15);
+  text-shadow: 0 0 3px hsl(var(--glow-blue) / 0.25), 0 0 7px hsl(var(--glow-blue) / 0.15), 0 0 15px hsl(var(--glow-blue) / 0.08);
 }
 .glow-text-pink {
   color: hsl(var(--glow-pink));
-  text-shadow: 0 0 6px hsl(var(--glow-pink) / 0.5), 0 0 14px hsl(var(--glow-pink) / 0.3), 0 0 30px hsl(var(--glow-pink) / 0.15);
+  text-shadow: 0 0 3px hsl(var(--glow-pink) / 0.25), 0 0 7px hsl(var(--glow-pink) / 0.15), 0 0 15px hsl(var(--glow-pink) / 0.08);
 }
 .glow-text-cyan {
   color: hsl(180 100% 60%);
-  text-shadow: 0 0 6px hsl(180 100% 60% / 0.5), 0 0 14px hsl(180 100% 60% / 0.3), 0 0 30px hsl(180 100% 60% / 0.15);
+  text-shadow: 0 0 3px hsl(180 100% 60% / 0.25), 0 0 7px hsl(180 100% 60% / 0.15), 0 0 15px hsl(180 100% 60% / 0.08);
 }
 .glow-text-gold {
   color: hsl(45 100% 55%);
-  text-shadow: 0 0 6px hsl(45 100% 55% / 0.5), 0 0 14px hsl(45 100% 55% / 0.3), 0 0 30px hsl(45 100% 55% / 0.15);
+  text-shadow: 0 0 3px hsl(45 100% 55% / 0.25), 0 0 7px hsl(45 100% 55% / 0.15), 0 0 15px hsl(45 100% 55% / 0.08);
 }
 .glow-text-green {
   color: hsl(140 80% 55%);
-  text-shadow: 0 0 6px hsl(140 80% 55% / 0.5), 0 0 14px hsl(140 80% 55% / 0.3), 0 0 30px hsl(140 80% 55% / 0.15);
+  text-shadow: 0 0 3px hsl(140 80% 55% / 0.25), 0 0 7px hsl(140 80% 55% / 0.15), 0 0 15px hsl(140 80% 55% / 0.08);
 }
 
 /* Magic glow animation — soft pulsing neon */
 @keyframes magic-glow {
   0%, 100% {
     filter: brightness(0.9);
-    text-shadow: 0 0 4px currentColor, 0 0 8px currentColor;
+    text-shadow: 0 0 2px currentColor;
   }
   50% {
-    filter: brightness(1.15);
-    text-shadow: 0 0 8px currentColor, 0 0 20px currentColor, 0 0 40px currentColor;
+    filter: brightness(1.05);
+    text-shadow: 0 0 4px currentColor, 0 0 10px currentColor;
   }
 }
 

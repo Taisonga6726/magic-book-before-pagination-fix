@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import FloatingWords from "@/components/FloatingWords";
 import MagicBook from "@/components/MagicBook";
 import FinalBook from "@/components/FinalBook";
@@ -11,12 +11,20 @@ interface Entry {
   description: string;
 }
 
+interface PageNav {
+  hasPrev: boolean;
+  hasNext: boolean;
+  onPrev: () => void;
+  onNext: () => void;
+}
+
 const Index = () => {
   const [mode, setMode] = useState<"edit" | "read" | "final">("edit");
   const [entries, setEntries] = useState<Entry[]>(() => {
     const saved = localStorage.getItem("magic-book-entries");
     return saved ? JSON.parse(saved) : [];
   });
+  const [pageNav, setPageNav] = useState<PageNav | null>(null);
 
   useEffect(() => {
     localStorage.setItem("magic-book-entries", JSON.stringify(entries));
@@ -35,6 +43,10 @@ const Index = () => {
     toast({ title: "Функция скоро появится!", description: "Поделиться книгой можно будет в следующем обновлении." });
   };
 
+  const handlePageNav = useCallback((nav: PageNav) => {
+    setPageNav(nav);
+  }, []);
+
   return (
     <div className="w-full h-screen flex items-center justify-center p-4 relative overflow-hidden bg-black">
       <HeroWave />
@@ -48,10 +60,11 @@ const Index = () => {
             setEntries={setEntries}
             onOpenCatalog={() => setMode("read")}
             onFinish={() => setMode("final")}
+            onPageNav={handlePageNav}
           />
         )}
         {(mode === "read" || mode === "final") && (
-          <FinalBook entries={entries} onBack={() => setMode("edit")} />
+          <FinalBook entries={entries} onBack={() => setMode("edit")} onPageNav={handlePageNav} />
         )}
       </div>
 
@@ -61,6 +74,7 @@ const Index = () => {
         onAddWord={handleAddWord}
         onRestart={handleRestart}
         onShare={handleShare}
+        pageNav={pageNav}
       />
     </div>
   );

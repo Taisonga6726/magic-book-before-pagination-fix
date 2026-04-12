@@ -7,12 +7,20 @@ interface Entry {
   description: string;
 }
 
+interface PageNav {
+  hasPrev: boolean;
+  hasNext: boolean;
+  onPrev: () => void;
+  onNext: () => void;
+}
+
 interface FinalBookProps {
   entries: Entry[];
   onBack: () => void;
+  onPageNav?: (nav: PageNav) => void;
 }
 
-const FinalBook = ({ entries, onBack }: FinalBookProps) => {
+const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
   const [currentSpread, setCurrentSpread] = useState(0);
   const [flipping, setFlipping] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
@@ -105,6 +113,15 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
   const totalSpreads = Math.max(1, Math.ceil(pages.length / 2));
   const hasNext = currentSpread < totalSpreads - 1;
   const hasPrev = currentSpread > 0;
+
+  useEffect(() => {
+    onPageNav?.({
+      hasPrev,
+      hasNext,
+      onPrev: () => setCurrentSpread((s) => Math.max(0, s - 1)),
+      onNext: () => setCurrentSpread((s) => s + 1),
+    });
+  }, [hasPrev, hasNext, onPageNav]);
 
   const leftPageIdx = currentSpread * 2;
   const rightPageIdx = currentSpread * 2 + 1;

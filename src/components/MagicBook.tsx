@@ -8,14 +8,22 @@ interface Entry {
   description: string;
 }
 
+interface PageNav {
+  hasPrev: boolean;
+  hasNext: boolean;
+  onPrev: () => void;
+  onNext: () => void;
+}
+
 interface MagicBookProps {
   entries: Entry[];
   setEntries: Dispatch<SetStateAction<Entry[]>>;
   onOpenCatalog: () => void;
   onFinish: () => void;
+  onPageNav?: (nav: PageNav) => void;
 }
 
-const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookProps) => {
+const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: MagicBookProps) => {
   const [word, setWord] = useState("");
   const [description, setDescription] = useState("");
 
@@ -70,8 +78,16 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
   const totalPages = pageBreaks.length;
   const hasNextPage = currentPage < totalPages - 1;
   const isLastPage = currentPage === totalPages - 1;
+  const hasPrevPage = currentPage > 0;
 
-  // Recalculate pageBreaks from entries (entries = source of truth)
+  useEffect(() => {
+    onPageNav?.({
+      hasPrev: hasPrevPage,
+      hasNext: hasNextPage,
+      onPrev: () => setCurrentPage((p) => Math.max(0, p - 1)),
+      onNext: () => setCurrentPage((p) => p + 1),
+    });
+  }, [hasPrevPage, hasNextPage, onPageNav]);
   useEffect(() => {
     if (entries.length === 0) {
       setPageBreaks([0]);

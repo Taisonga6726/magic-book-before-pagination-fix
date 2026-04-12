@@ -1,15 +1,23 @@
 import React from "react";
 import NeonGlassButton from "./NeonGlassButton";
 
+interface PageNav {
+  hasPrev: boolean;
+  hasNext: boolean;
+  onPrev: () => void;
+  onNext: () => void;
+}
+
 interface ControlBarProps {
   mode: "edit" | "read" | "final";
   setMode: (mode: "edit" | "read" | "final") => void;
   onAddWord: () => void;
   onRestart: () => void;
   onShare: () => void;
+  pageNav?: PageNav | null;
 }
 
-const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onRestart, onShare }) => {
+const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onRestart, onShare, pageNav }) => {
   return (
     <div
       style={{
@@ -31,6 +39,12 @@ const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onRes
       {mode === "edit" && (
         <>
           <NeonGlassButton onClick={onAddWord}>✏️ внести слово</NeonGlassButton>
+          {pageNav?.hasPrev && (
+            <NeonGlassButton onClick={pageNav.onPrev}>← назад</NeonGlassButton>
+          )}
+          {pageNav?.hasNext && (
+            <NeonGlassButton onClick={pageNav.onNext}>далее →</NeonGlassButton>
+          )}
           <NeonGlassButton onClick={() => setMode("read")}>📖 читать книгу</NeonGlassButton>
           <NeonGlassButton onClick={() => setMode("final")}>✦ завершить</NeonGlassButton>
         </>
@@ -39,6 +53,12 @@ const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onRes
       {mode === "read" && (
         <>
           <NeonGlassButton onClick={onAddWord}>✏️ внести слово</NeonGlassButton>
+          {pageNav?.hasPrev && (
+            <NeonGlassButton onClick={pageNav.onPrev}>← назад</NeonGlassButton>
+          )}
+          {pageNav?.hasNext && (
+            <NeonGlassButton onClick={pageNav.onNext}>далее →</NeonGlassButton>
+          )}
           <NeonGlassButton onClick={() => {}}>🙂</NeonGlassButton>
           <NeonGlassButton onClick={() => {}}>😮</NeonGlassButton>
           <NeonGlassButton onClick={() => {}}>🔥</NeonGlassButton>

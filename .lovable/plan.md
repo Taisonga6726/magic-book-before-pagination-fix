@@ -1,28 +1,17 @@
 
 
-# Удалить строку "Реакции" + все предыдущие неприменённые изменения
+# Шрифт Marck Script для полей ввода + каталога
 
 ## Изменения
 
-### Из предыдущих планов (ещё не применены):
+### 1. `src/index.css`
+- `.font-handwriting`: `'Dancing Script'` → `'Marck Script'`
 
-**1. Золотое свечение для "сохранить | редактировать" (`MagicBook.tsx` + `index.css`)**
-- `text-sm` → `text-base`, золотой цвет `#c9a227` + textShadow glow
-- Новый класс `.action-text-gold` в CSS
+### 2. `src/components/MagicBook.tsx`
+- Поле ввода слова (строка 101): добавить `font-handwriting` вместо `font-book` → шрифт Marck Script для поля «Слово»
 
-**2. Летающие слова на передний план + неон (`FloatingWords.tsx` + `index.css` + `Index.tsx`)**
-- z-index: слова `z-30`, книга `z-40`
-- Размер шрифта 20-36px, opacity 0.7+
-- Неоновая пульсация `neon-pulse` keyframes
+### 3. `src/components/CatalogView.tsx`
+- Уже использует `font-handwriting` — подхватит автоматически
 
-### Новое:
-
-**3. Удалить строку "Реакции" (`MagicBook.tsx`, строка 129)**
-- Убрать `<div className="mt-2 text-xs" ...>Реакции</div>`
-
-## Файлы
-- `src/components/MagicBook.tsx` — золотые кнопки, убрать "Реакции"
-- `src/components/FloatingWords.tsx` — увеличить, z-30, неон
-- `src/index.css` — `.action-text-gold`, `neon-pulse`, усилить `.glow-text-*`
-- `src/pages/Index.tsx` — книга z-40
+Итого: 2 файла, 2 правки.
 

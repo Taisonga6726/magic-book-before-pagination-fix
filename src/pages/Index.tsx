@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FloatingWords from "@/components/FloatingWords";
 import MagicBook from "@/components/MagicBook";
 import CatalogView from "@/components/CatalogView";
@@ -12,7 +12,14 @@ interface Entry {
 
 const Index = () => {
   const [view, setView] = useState<"book" | "catalog" | "final">("book");
-  const [entries, setEntries] = useState<Entry[]>([]);
+  const [entries, setEntries] = useState<Entry[]>(() => {
+    const saved = localStorage.getItem("magic-book-entries");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("magic-book-entries", JSON.stringify(entries));
+  }, [entries]);
 
   return (
     <div className="w-full h-screen flex items-center justify-center p-4 relative overflow-hidden bg-black">

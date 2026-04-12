@@ -1,6 +1,7 @@
-import { useState, useCallback, useRef, Dispatch, SetStateAction } from "react";
+import { useState, useCallback, Dispatch, SetStateAction } from "react";
 import bookImg from "@/assets/book.png";
 import SpineEffect from "./SpineEffect";
+import InkWriteEffect from "./InkWriteEffect";
 
 interface Entry {
   word: string;

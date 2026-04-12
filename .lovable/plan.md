@@ -1,52 +1,36 @@
 
 
-# План: ControlBar + фикс дубликатов
+# Fix: Duplicate check not working
 
-## Файлы
+## Root cause
 
-### 1. `src/components/NeonGlassButton.tsx` (новый)
+The `handleSave` function uses `useCallback` with `entries` in its dependency array. However, when `setEntries` is called with a functional updater `(prev) => [...prev, newItem]`, the state updates asynchronously. The `entries` prop from the parent component should update on the next render, but the `useCallback` closure may still reference the old `entries` array in certain edge cases with React batching.
 
-Кнопка со стеклянным неоновым стилем:
-- `background: rgba(255,255,255,0.12)`, `backdrop-filter: blur(12px)`
-- `border: 1px solid rgba(255,255,255,0.2)`, `box-shadow: 0 0 12px rgba(138,92,246,0.3)`
-- hover: `scale(1.05)`, усиление свечения
-- `color: white`, `font-weight: 600`, `padding: 8px 20px`, `border-radius: 12px`
-- Props: `children`, `onClick`, `disabled?`, `className?`
+## Fix
 
-### 2. `src/components/ControlBar.tsx` (новый)
+Replace the duplicate check to use a ref that always holds the latest `entries`, ensuring no stale closure issues:
 
-Фиксированная панель: `fixed bottom-5 left-1/2 -translate-x-1/2 z-[100]`
-Фон панели: `rgba(0,0,0,0.4)` с blur, скругление.
+### `src/components/MagicBook.tsx`
 
-Кнопки по режиму:
-- **edit**: `[ внести слово ]` `[ читать книгу ]` `[ завершить ]`
-- **read**: `[ внести слово ]` `[ 🙂 😮 🔥 ]`
-- **final**: `[ начать заново ]` `[ к книге ]` `[ поделиться ]`
-
-Props: `mode`, `setMode`, `onAddWord`, `onRestart`, `onShare`
-
-`onAddWord` — переключает в edit и фокусирует поле ввода (или просто `setMode("edit")`).
-
-### 3. `src/pages/Index.tsx`
-
-- Заменить `view` на `mode: "edit"|"read"|"final"`
-- `"edit"` → MagicBook, `"read"` → FinalBook, `"final"` → FinalBook
-- Рендерить `<ControlBar />` вне книги
-- `onRestart` → `setEntries([])`, `setMode("edit")`
-- `onShare` → toast
-- MagicBook `onFinish` → `setMode("final")`
-- FinalBook `onBack` → `setMode("edit")`
-
-### 4. `src/components/MagicBook.tsx` — только фикс дубликатов
-
-Добавить нормализацию:
+1. Add a ref to track the latest entries:
 ```tsx
-const normalize = (s: string) => s.trim().toLowerCase().replace(/[^a-zа-яё0-9]/gi, "");
-const isDuplicate = entries.some(e => normalize(e.word) === normalize(word));
+const entriesRef = useRef(entries);
+useEffect(() => { entriesRef.current = entries; }, [entries]);
 ```
 
-### Что НЕ меняется
-- Кнопки внутри MagicBook и FinalBook остаются
-- pageBreaks, currentPage — без изменений
-- Анимации, звуки, localStorage
+2. Change the duplicate check in `handleSave` (line 132) to use `entriesRef.current` instead of `entries`:
+```tsx
+const isDuplicate = entriesRef.current.some(
+  (e) => normalize(e.word) === normalize(word)
+);
+```
+
+3. Keep `entries` in `useCallback` deps (no other changes).
+
+This guarantees the check always uses the latest entries, even if React batched multiple state updates.
+
+## What does NOT change
+- ControlBar, NeonGlassButton, Index.tsx — no changes
+- Pagination, localStorage, animations — untouched
+- The duplicate overlay UI — stays as is
 

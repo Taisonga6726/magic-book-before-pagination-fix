@@ -132,7 +132,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
       {/* Right page — results */}
       <div
         className="absolute font-book"
-        style={{ left: "52%", top: "18%", width: "35%", height: "60%", padding: "16px 20px 12px 24px", overflowY: "auto", overflowWrap: "break-word", wordBreak: "break-word" }}
+        style={{ left: "52%", top: "18%", width: "32%", height: "60%", padding: "16px 28px 12px 24px", overflowY: "auto", overflowWrap: "break-word", wordBreak: "break-word" }}
       >
         {entries.length === 0 && !liveText ? (
           <p className="font-book italic text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
@@ -146,13 +146,13 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
               return (
                 <div key={i} className="text-ink">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-sm font-semibold" style={{ color: "hsl(var(--ink) / 0.65)" }}>{i + 1}.</span>
+                    <span className="text-base font-bold" style={{ color: "hsl(var(--ink) / 0.8)" }}>{i + 1}.</span>
                     <span className="text-xl leading-tight" style={{ fontFamily: "'Marck Script', cursive", textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
                       {entry.word}
                     </span>
                   </div>
                   {entry.description && (
-                    <div className="font-book italic text-base mt-0.5 ml-4" style={{ color: "hsl(var(--ink) / 0.7)" }}>
+                    <div className="font-book italic text-base mt-0.5 ml-4" style={{ color: "hsl(var(--ink) / 0.85)" }}>
                       — {entry.description}
                     </div>
                   )}
@@ -164,14 +164,14 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
             {liveText && (
               <div className="text-ink">
                <div className="flex items-baseline gap-1">
-                  <span className="text-sm font-semibold" style={{ color: "hsl(var(--ink) / 0.65)" }}>{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>
+                  <span className="text-base font-bold" style={{ color: "hsl(var(--ink) / 0.8)" }}>{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>
                   <span className="text-xl leading-tight inline-flex items-end" style={{ fontFamily: "'Marck Script', cursive", textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
                     <InkWriteEffect text={word} className="ink-fresh" />
                     <QuillPen visible={isTyping} />
                   </span>
                 </div>
                 {description && (
-                  <div className="font-book italic text-base mt-0.5 ml-4 ink-fresh" style={{ color: "hsl(var(--ink) / 0.7)" }}>
+                  <div className="font-book italic text-base mt-0.5 ml-4 ink-fresh" style={{ color: "hsl(var(--ink) / 0.85)" }}>
                     — <InkWriteEffect text={description} className="" />
                   </div>
                 )}

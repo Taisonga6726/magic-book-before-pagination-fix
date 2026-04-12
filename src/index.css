@@ -378,3 +378,23 @@
   box-shadow: none;
   border-bottom-color: hsl(var(--glow-purple) / 0.5);
 }
+
+/* Neon glow button animated border */
+@keyframes neon-border-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.neon-btn-glow {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.neon-btn-glow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg, transparent 60%, rgba(100,180,255,0.8) 80%, transparent 100%);
+  animation: neon-border-spin 3s linear infinite;
+  z-index: -1;
+}

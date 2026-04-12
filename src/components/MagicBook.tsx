@@ -68,45 +68,60 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
   const hasNextPage = currentPage < totalPages - 1;
   const isLastPage = currentPage === totalPages - 1;
 
-  // Navigate to last page when new entries added
+  // Recalculate pageBreaks from entries (entries = source of truth)
   useEffect(() => {
-    const lastPage = pageBreaks.length - 1;
-    if (currentPage < lastPage && !flipping) {
-      setCurrentPage(lastPage);
+    if (entries.length === 0) {
+      setPageBreaks([0]);
+      prevPageBreaksLen.current = 1;
+      return;
     }
-  }, [entries.length, pageBreaks.length]);
 
-  // Overflow detection after save
-  useEffect(() => {
-    if (!needsOverflowCheck.current || flipping) return;
-    const el = rightContentRef.current;
-    if (!el) return;
+    const container = rightContentRef.current;
+    if (!container) return;
+    const availableHeight = container.clientHeight;
 
-    const id = requestAnimationFrame(() => {
-      if (el.scrollHeight > el.clientHeight) {
-        needsOverflowCheck.current = false;
-        const lastPageIdx = pageBreaks.length - 1;
-        const pageStart = pageBreaks[lastPageIdx] ?? 0;
-        const entriesOnPage = entries.length - pageStart;
+    const measure = document.createElement("div");
+    measure.style.cssText = `position:absolute;visibility:hidden;width:${container.offsetWidth}px;font-family:inherit;padding:0;`;
+    container.appendChild(measure);
 
-        if (entriesOnPage <= 1) return;
+    const breaks: number[] = [0];
+    let currentHeight = 0;
 
-        const newBreak = entries.length - 1;
-        const newPageBreaks = [...pageBreaks, newBreak];
-        setPageBreaks(newPageBreaks);
+    for (let i = 0; i < entries.length; i++) {
+      measure.innerHTML = `
+        <div style="margin-bottom:8px">
+          <div><span style="font-size:1.5rem;font-weight:700">${i + 1}.</span>
+          <span style="font-size:1.5rem">${entries[i].word}</span></div>
+          ${entries[i].description ? `<div style="font-size:1.125rem;margin-left:1.75rem">— ${entries[i].description}</div>` : ""}
+        </div>`;
+      const h = measure.offsetHeight;
 
-        playFlipSound();
-        setFlipping(true);
-        setTimeout(() => {
-          setCurrentPage(newPageBreaks.length - 1);
-          setFlipping(false);
-        }, 1000);
+      if (currentHeight + h > availableHeight && i > breaks[breaks.length - 1]) {
+        breaks.push(i);
+        currentHeight = h;
       } else {
-        needsOverflowCheck.current = false;
+        currentHeight += h;
       }
-    });
-    return () => cancelAnimationFrame(id);
-  }, [entries.length]);
+    }
+
+    container.removeChild(measure);
+
+    const oldLen = prevPageBreaksLen.current;
+    prevPageBreaksLen.current = breaks.length;
+    setPageBreaks(breaks);
+
+    // If a new page was created, animate flip
+    if (breaks.length > oldLen && oldLen > 0) {
+      playFlipSound();
+      setFlipping(true);
+      setTimeout(() => {
+        setCurrentPage(breaks.length - 1);
+        setFlipping(false);
+      }, 1000);
+    } else {
+      setCurrentPage(breaks.length - 1);
+    }
+  }, [entries, playFlipSound]);
 
   const handleSave = useCallback(() => {
     if (!word.trim()) return;
@@ -132,7 +147,6 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
       setEditIdx(null);
     } else {
       setEntries((prev) => [...prev, { word: word.trim(), description: description.trim() }]);
-      needsOverflowCheck.current = true;
     }
 
     setBurst(false);

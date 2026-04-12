@@ -18,6 +18,9 @@ interface MagicBookProps {
 const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookProps) => {
   const [word, setWord] = useState("");
   const [description, setDescription] = useState("");
+
+  const entriesRef = useRef(entries);
+  useEffect(() => { entriesRef.current = entries; }, [entries]);
   const [burst, setBurst] = useState(false);
   const [editIdx, setEditIdx] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
@@ -129,7 +132,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
     // Duplicate check (only for new entries)
     if (editIdx === null) {
       const normalize = (s: string) => s.trim().toLowerCase().replace(/[^a-zа-яё0-9]/gi, "");
-      const isDuplicate = entries.some(
+      const isDuplicate = entriesRef.current.some(
         (e) => normalize(e.word) === normalize(word)
       );
       if (isDuplicate) {

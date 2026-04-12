@@ -207,9 +207,9 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookPr
         </div>
 
         <div className="mt-3 flex justify-center items-center gap-2">
-          <span className="action-text cursor-pointer font-handwriting text-base" onClick={handleSave}>сохранить</span>
-          <span className="font-handwriting text-base" style={{ color: "hsl(var(--ink) / 0.3)" }}>|</span>
-          <span className="action-text cursor-pointer font-handwriting text-base" onClick={handleEdit}>редактировать</span>
+          <span className="action-text cursor-pointer font-handwriting text-base font-medium" onClick={handleSave}>сохранить</span>
+          <span className="font-handwriting text-base font-medium" style={{ color: "hsl(var(--ink) / 0.3)" }}>|</span>
+          <span className="action-text cursor-pointer font-handwriting text-base font-medium" onClick={handleEdit}>редактировать</span>
         </div>
       </div>
 

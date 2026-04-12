@@ -146,8 +146,8 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
               return (
                 <div key={i} className="text-ink">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-sm" style={{ color: "hsl(var(--ink) / 0.5)" }}>{i + 1}.</span>
-                    <span className="font-book italic font-bold text-xl leading-tight" style={{ textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
+                    <span className="text-sm font-semibold" style={{ color: "hsl(var(--ink) / 0.65)" }}>{i + 1}.</span>
+                    <span className="text-xl leading-tight" style={{ fontFamily: "'Marck Script', cursive", textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
                       {entry.word}
                     </span>
                   </div>

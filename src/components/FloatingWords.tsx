@@ -25,13 +25,13 @@ const POSITIONS = [
   { top: "50%", left: "10%" },
   { top: "55%", right: "11%" },
   { top: "68%", left: "12%" },
-  { top: "72%", right: "10%" },
+  { top: "72%", right: "18%" },
   { bottom: "16%", left: "11%" },
-  { bottom: "12%", right: "28%" },
+  { bottom: "12%", right: "38%" },
   { top: "6%", left: "30%" },
   { top: "5%", right: "26%" },
   { bottom: "8%", left: "26%" },
-  { bottom: "6%", right: "30%" },
+  { bottom: "6%", right: "40%" },
   { bottom: "20%", left: "12%" },
 ];
 

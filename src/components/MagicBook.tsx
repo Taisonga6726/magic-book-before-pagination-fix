@@ -185,9 +185,9 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         каталог →
       </div>
       <span
-        className="absolute font-handwriting text-sm z-20 pointer-events-none select-none"
+        className="absolute font-handwriting text-xl z-20 pointer-events-none select-none"
         style={{
-          bottom: "15%",
+          bottom: "5%",
           right: "15%",
           color: "hsl(40 80% 55% / 0.6)",
         }}

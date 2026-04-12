@@ -3,7 +3,6 @@ import { toast } from "sonner";
 import bookImg from "@/assets/book.png";
 import SpineEffect from "./SpineEffect";
 import InkWriteEffect from "./InkWriteEffect";
-import QuillPen from "./QuillPen";
 
 interface Entry {
   word: string;
@@ -21,10 +20,8 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
   const [description, setDescription] = useState("");
   const [burst, setBurst] = useState(false);
   const [editIdx, setEditIdx] = useState<number | null>(null);
-  const [isTyping, setIsTyping] = useState(false);
   const penAudio = useRef<HTMLAudioElement | null>(null);
   const stopTimer = useRef<number | null>(null);
-  const typingTimer = useRef<number | null>(null);
   const descRef = useRef<HTMLTextAreaElement>(null);
 
   const playPenSound = useCallback(() => {
@@ -39,12 +36,6 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
     if (stopTimer.current) clearTimeout(stopTimer.current);
     stopTimer.current = window.setTimeout(() => {
       penAudio.current?.pause();
-    }, 1000);
-
-    setIsTyping(true);
-    if (typingTimer.current) clearTimeout(typingTimer.current);
-    typingTimer.current = window.setTimeout(() => {
-      setIsTyping(false);
     }, 1000);
   }, []);
 
@@ -166,7 +157,6 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
                   <span className="text-base font-bold" style={{ color: "hsl(var(--ink) / 0.8)" }}>{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>
                   <span className="text-xl leading-tight inline-flex items-end" style={{ fontFamily: "'Marck Script', cursive", textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
                     <InkWriteEffect text={word} className="ink-fresh" />
-                    <QuillPen visible={isTyping} />
                   </span>
                 </div>
                 {description && (

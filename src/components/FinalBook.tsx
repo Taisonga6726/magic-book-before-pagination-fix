@@ -7,9 +7,17 @@ interface Entry {
   description: string;
 }
 
+interface PageNav {
+  hasPrev: boolean;
+  hasNext: boolean;
+  onPrev: () => void;
+  onNext: () => void;
+}
+
 interface FinalBookProps {
   entries: Entry[];
   onBack: () => void;
+  onPageNav?: (nav: PageNav) => void;
 }
 
 const FinalBook = ({ entries, onBack }: FinalBookProps) => {

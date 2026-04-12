@@ -8,11 +8,19 @@ interface Entry {
   description: string;
 }
 
+interface PageNav {
+  hasPrev: boolean;
+  hasNext: boolean;
+  onPrev: () => void;
+  onNext: () => void;
+}
+
 interface MagicBookProps {
   entries: Entry[];
   setEntries: Dispatch<SetStateAction<Entry[]>>;
   onOpenCatalog: () => void;
   onFinish: () => void;
+  onPageNav?: (nav: PageNav) => void;
 }
 
 const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish }: MagicBookProps) => {

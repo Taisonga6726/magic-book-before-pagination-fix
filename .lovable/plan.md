@@ -1,41 +1,43 @@
 
 
-# Звук пера фоном при печати (debounce)
+# Словарный стиль: крупное слово + мелкое описание + старинный курсив + визуал пера
 
-## Подход
-Используем загруженный пользователем файл `pen_writing_in_a_book_magic.MP3` — он уже в `public/pen-scratch.mp3`. Меняем только логику воспроизведения:
+## Что делаем
 
-- При **первом нажатии** клавиши — запускаем звук с начала
-- Пока пользователь печатает — звук продолжает играть фоном
-- Через **1 секунду** после последнего нажатия — звук плавно останавливается
-- Применяем к обоим полям: «Слово» и «Описание»
+На правой странице книги записи будут выглядеть как в настоящем старинном словаре:
+- **Слово** — крупным каллиграфическим курсивом (Great Vibes или Dancing Script bold)
+- **Описание** — мелким шрифтом под словом (Cormorant Garamond italic)
+- **SVG-перо (quill)** — анимированное, следует за последней буквой при live-печати, слегка покачивается
+- **Капли чернил** — CSS-частицы при печати для эффекта настоящего письма
 
-## Изменения в `src/components/MagicBook.tsx`
+## Изменения
 
-1. Добавить `useRef` для debounce-таймера
-2. Заменить `playPenSound`:
-   - Если `paused` → `currentTime = 0`, `play()`
-   - Сброс таймера, новый таймер `pause()` через 1000мс
-3. Добавить вызов `playPenSound()` в `onChange` textarea (описание)
+### 1. Подключить шрифт Great Vibes (`src/index.css`)
+Добавить в `@import` шрифт `Great Vibes` для каллиграфического курсива слов.
 
-```ts
-const stopTimer = useRef<number | null>(null);
-
-const playPenSound = useCallback(() => {
-  if (!penAudio.current) {
-    penAudio.current = new Audio("/pen-scratch.mp3");
-    penAudio.current.volume = 0.3;
-  }
-  if (penAudio.current.paused) {
-    penAudio.current.currentTime = 0;
-    penAudio.current.play().catch(() => {});
-  }
-  if (stopTimer.current) clearTimeout(stopTimer.current);
-  stopTimer.current = window.setTimeout(() => {
-    penAudio.current?.pause();
-  }, 1000);
-}, []);
+### 2. Переверстать правую страницу (`src/components/MagicBook.tsx`)
+Каждая запись в формате словаря:
+```
+  Магия                    ← Great Vibes, ~28px, bold
+  — описание слова мелким   ← Cormorant Garamond italic, ~14px
+     шрифтом
 ```
 
-Один файл, минимальное изменение.
+- Слово: `text-2xl` / `text-3xl`, шрифт `Great Vibes`, цвет `--ink`
+- Описание: `text-sm`, шрифт `Cormorant Garamond` italic, приглушённый цвет
+- Live preview: то же оформление + SVG-перо рядом с последним символом
+
+### 3. SVG-перо (`src/components/QuillPen.tsx`)
+- Простое SVG пера (quill) с CSS-анимацией покачивания
+- Показывается только при активном вводе (рядом с live-preview текстом)
+- Анимация: `@keyframes quill-write` — лёгкий наклон ±5°
+
+### 4. CSS-частицы чернил (`src/index.css`)
+- При печати у кончика пера появляются 2-3 мелкие точки-капли
+- `@keyframes ink-drop` — появление и исчезновение за 0.6с
+
+## Файлы
+- `src/index.css` — шрифт Great Vibes, анимации quill-write и ink-drop
+- `src/components/QuillPen.tsx` — новый компонент SVG-пера
+- `src/components/MagicBook.tsx` — словарная вёрстка правой страницы
 

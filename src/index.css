@@ -145,13 +145,42 @@
 
 /* Action text hover */
 .action-text {
-  color: hsl(var(--ink) / 0.6);
-  text-shadow: 0 0 4px hsl(var(--glow-purple) / 0);
-  transition: all 0.4s ease;
+  color: hsl(40 75% 50%);
+  text-shadow: 0 0 6px hsl(40 80% 55% / 0.4);
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 .action-text:hover {
-  color: hsl(var(--ink));
-  text-shadow: 0 0 12px hsl(var(--glow-purple) / 0.6), 0 0 24px hsl(var(--glow-purple) / 0.3);
+  color: hsl(40 85% 58%);
+  text-shadow: 0 0 10px hsl(40 80% 55% / 0.6), 0 0 20px hsl(40 80% 55% / 0.3);
+  transform: scale(1.05);
+}
+
+/* "КНИГА СОЗДАНА" magic text */
+@keyframes book-created {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+  40% { opacity: 1; transform: translate(-50%, -50%) scale(1.02); }
+  60% { transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+.book-created-text {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 2rem;
+  font-weight: 600;
+  color: hsl(40 90% 55%);
+  text-shadow:
+    0 0 12px hsl(40 90% 55% / 0.8),
+    0 0 30px hsl(40 90% 55% / 0.5),
+    0 0 50px hsl(265 80% 60% / 0.3);
+  white-space: nowrap;
+  animation: book-created 0.7s ease-out forwards;
+  pointer-events: none;
+  z-index: 60;
 }
 
 /* Floating word animation */

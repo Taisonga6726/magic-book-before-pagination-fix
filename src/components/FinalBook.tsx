@@ -73,12 +73,20 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
     }, 400);
   }, [fadingOut, flipping, playFlipSound, onBack]);
 
+  const renderInkWord = (text: string) => (
+    <span>
+      {text.split("").map((ch, i) => (
+        <span key={i} style={{ opacity: 0.85 + Math.random() * 0.15 }}>{ch}</span>
+      ))}
+    </span>
+  );
+
   const renderEntry = (entry: Entry, globalIdx: number) => (
     <div key={globalIdx} className="text-ink">
       <div className="flex items-baseline gap-1">
         <span
           className="text-2xl font-bold"
-          style={{ color: "hsl(var(--ink) / 0.8)" }}
+          style={{ color: "#1a1440" }}
         >
           {globalIdx + 1}.
         </span>
@@ -87,16 +95,17 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
           style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontStyle: "italic",
-            textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)",
+            color: "#1a1440",
+            textShadow: "0 0 10px hsl(var(--glow-purple) / 0.4), 0 0 3px hsl(var(--ink) / 0.2)",
           }}
         >
-          {entry.word}
+          {renderInkWord(entry.word)}
         </span>
       </div>
       {entry.description && (
         <div
           className="font-handwriting text-lg mt-0.5 ml-7"
-          style={{ color: "hsl(var(--ink) / 0.85)" }}
+          style={{ color: "#2a1f5a", textShadow: "0 0 4px hsl(var(--ink) / 0.15)" }}
         >
           — {entry.description}
         </div>
@@ -175,7 +184,7 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
       <div className="absolute bottom-[12%] left-[18%] right-[14%] flex justify-between items-center z-20">
         {/* Left: back to book */}
         <span
-          className="font-handwriting text-xs action-text cursor-pointer tracking-wider"
+          className="font-handwriting text-lg action-text cursor-pointer tracking-wider"
           onClick={handleBack}
         >
           ← к книге
@@ -185,7 +194,7 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
         <div className="flex items-center gap-4">
           {hasPrev && (
             <span
-              className="font-handwriting text-sm action-text cursor-pointer tracking-wider"
+              className="font-handwriting text-xl action-text cursor-pointer tracking-wider"
               onClick={() => handleFlip("prev")}
             >
               ← назад
@@ -193,7 +202,7 @@ const FinalBook = ({ entries, onBack }: FinalBookProps) => {
           )}
           {hasNext && (
             <span
-              className="font-handwriting text-sm action-text cursor-pointer tracking-wider"
+              className="font-handwriting text-xl action-text cursor-pointer tracking-wider"
               onClick={() => handleFlip("next")}
             >
               далее →

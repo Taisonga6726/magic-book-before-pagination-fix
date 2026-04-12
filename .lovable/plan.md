@@ -1,63 +1,24 @@
 
 
-# Радужная анимация кнопок с полупрозрачным фоном
+# Сменить шрифт описаний на Marck Script
 
-## Изменения — 1 файл: `src/index.css`
+## Проблема
+Сейчас слова вводятся шрифтом `Marck Script` (`font-handwriting`), а описания и результаты используют `Cormorant Garamond` (`font-book`). Нужно унифицировать — везде Marck Script.
 
-Заменить текущие стили `.neon-btn-gold` (строки 127-147) на версию с rainbow-анимацией:
+## Изменения — 1 файл: `src/components/MagicBook.tsx`
 
-```css
-.neon-btn-gold {
-  position: relative;
-  display: inline-block;
-  padding: 5px 18px;
-  font-family: 'Marck Script', cursive;
-  font-size: 1.15rem;
-  color: #fff;
-  background: transparent;
-  border: none;
-  border-radius: 20px;
-  z-index: 0;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-shadow: 0 0 10px hsl(265 90% 70% / 0.8), 0 0 25px hsl(265 80% 60% / 0.5);
-}
+### 1. Поле ввода описания (строка 122)
+Добавить `font-handwriting` к textarea (уже есть, ОК).
 
-/* Радужная рамка — псевдоэлемент под кнопкой */
-.neon-btn-gold::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: 22px;
-  background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
-  background-size: 400% 400%;
-  animation: rainbow 8s linear infinite;
-  z-index: -1;
-}
+### 2. Результаты на правой странице
+- Строка 156: описание записи — заменить `font-book italic` на `font-handwriting`
+- Строка 174: live-preview описания — заменить `font-book italic` на `font-handwriting`
+- Строка 139: placeholder «Здесь появятся…» — заменить `font-book` на `font-handwriting`
+- Строка 184: «каталог →» — заменить `font-book` на `font-handwriting`
 
-/* Полупрозрачный внутренний фон */
-.neon-btn-gold::after {
-  content: '';
-  position: absolute;
-  inset: 2px;
-  border-radius: 18px;
-  background: rgba(20, 10, 40, 0.4);
-  z-index: -1;
-}
+### 3. Контейнеры страниц
+- Строка 104: левая страница `font-book` → `font-handwriting`
+- Строка 135: правая страница `font-book` → `font-handwriting`
 
-.neon-btn-gold:hover::after {
-  background: rgba(20, 10, 40, 0.55);
-}
-
-@keyframes rainbow {
-  0% { background-position: 0 0; }
-  50% { background-position: 400% 0; }
-  100% { background-position: 0 0; }
-}
-```
-
-Hover-стили `.neon-btn-gold:hover` (строки 141-147) — удалить старые, оставить только `::after` hover выше.
-
-Никаких изменений в JSX — кнопки уже используют класс `.neon-btn-gold`.
+Итого: ~6 замен `font-book` → `font-handwriting` в одном файле.
 

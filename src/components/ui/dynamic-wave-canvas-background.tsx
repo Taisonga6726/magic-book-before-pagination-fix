@@ -64,14 +64,14 @@ const HeroWave: React.FC = () => {
 
           const wave = (fastSin(a) + fastCos(d)) * 0.5;
           const intensity = 0.25 + 0.35 * wave;
-          const baseVal = 0.08 + 0.12 * fastCos(u_x + u_y + time * 0.3);
+          const baseVal = 0.10 + 0.12 * fastCos(u_x + u_y + time * 0.3);
           const blueAccent = 0.15 * fastSin(a * 1.5 + time * 0.2);
           const purpleAccent = 0.18 * fastCos(d * 2 + time * 0.1);
-          const warmth = 0.06 * fastSin(u_x * 0.5 + time * 0.15);
+          const warmth = 0.10 * fastSin(u_x * 0.5 + time * 0.15);
 
-          const r = Math.max(0, Math.min(1, baseVal + purpleAccent * 1.0 + warmth * 1.5)) * intensity;
-          const g = Math.max(0, Math.min(1, baseVal + blueAccent * 0.4 + warmth * 0.3)) * intensity;
-          const b = Math.max(0, Math.min(1, baseVal + blueAccent * 1.2 + purpleAccent * 0.4)) * intensity;
+          const r = Math.max(0, Math.min(1, baseVal + purpleAccent * 1.3 + warmth * 1.5)) * intensity;
+          const g = Math.max(0, Math.min(1, baseVal + blueAccent * 0.3 + warmth * 0.3)) * intensity;
+          const b = Math.max(0, Math.min(1, baseVal + blueAccent * 1.0 + purpleAccent * 0.4)) * intensity;
 
           const idx = (y * width + x) * 4;
           data[idx] = r * 255;

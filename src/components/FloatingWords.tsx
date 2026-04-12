@@ -18,24 +18,24 @@ const WORDS = [
 
 // Positions around the book edges — left, right, top, bottom margins
 const POSITIONS = [
-  { top: "8%", left: "1%" },
-  { top: "14%", right: "8%" },
-  { top: "25%", left: "2%" },
-  { top: "32%", right: "7%" },
-  { top: "50%", left: "0%" },
-  { top: "55%", right: "7%" },
-  { top: "68%", left: "1%" },
-  { top: "73%", right: "6%" },
-  { bottom: "18%", left: "1%" },
-  { bottom: "14%", right: "8%" },
-  { top: "8%", left: "32%" },
-  { top: "7%", right: "28%" },
-  { bottom: "10%", left: "28%" },
-  { bottom: "8%", right: "32%" },
-  { bottom: "22%", left: "2%" },
+  { top: "10%", left: "10%" },
+  { top: "16%", right: "12%" },
+  { top: "28%", left: "11%" },
+  { top: "35%", right: "11%" },
+  { top: "50%", left: "10%" },
+  { top: "55%", right: "11%" },
+  { top: "68%", left: "12%" },
+  { top: "72%", right: "10%" },
+  { bottom: "16%", left: "11%" },
+  { bottom: "12%", right: "12%" },
+  { top: "6%", left: "30%" },
+  { top: "5%", right: "26%" },
+  { bottom: "8%", left: "26%" },
+  { bottom: "6%", right: "30%" },
+  { bottom: "20%", left: "12%" },
 ];
 
-const SIZES = [11, 14, 10, 15, 12, 16, 10, 12, 11, 15, 10, 15, 12, 14, 10];
+const SIZES = [17, 19, 16, 20, 18, 21, 16, 18, 17, 19, 16, 19, 18, 19, 17];
 
 const FloatingWords = () => {
   return (

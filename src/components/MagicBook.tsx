@@ -20,6 +20,16 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
   const [description, setDescription] = useState("");
   const [burst, setBurst] = useState(false);
   const [editIdx, setEditIdx] = useState<number | null>(null);
+  const penAudio = useRef<HTMLAudioElement | null>(null);
+
+  const playPenSound = useCallback(() => {
+    if (!penAudio.current) {
+      penAudio.current = new Audio("/pen-scratch.mp3");
+      penAudio.current.volume = 0.3;
+    }
+    penAudio.current.currentTime = Math.random() * 0.3;
+    penAudio.current.play().catch(() => {});
+  }, []);
 
   const handleSave = useCallback(() => {
     if (!word.trim()) return;

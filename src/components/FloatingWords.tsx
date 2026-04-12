@@ -18,21 +18,21 @@ const WORDS = [
 
 // Positions around the book edges — left, right, top, bottom margins
 const POSITIONS = [
-  { top: "5%", left: "2%" },
-  { top: "12%", right: "3%" },
-  { top: "25%", left: "4%" },
-  { top: "30%", right: "2%" },
-  { top: "50%", left: "1%" },
-  { top: "55%", right: "3%" },
-  { top: "70%", left: "3%" },
-  { top: "75%", right: "1%" },
-  { bottom: "15%", left: "2%" },
-  { bottom: "10%", right: "4%" },
-  { top: "3%", left: "30%" },
-  { top: "2%", right: "25%" },
-  { bottom: "5%", left: "25%" },
-  { bottom: "3%", right: "30%" },
-  { bottom: "25%", left: "5%" },
+  { top: "8%", left: "6%" },
+  { top: "14%", right: "8%" },
+  { top: "25%", left: "7%" },
+  { top: "32%", right: "7%" },
+  { top: "50%", left: "5%" },
+  { top: "55%", right: "7%" },
+  { top: "68%", left: "6%" },
+  { top: "73%", right: "6%" },
+  { bottom: "18%", left: "6%" },
+  { bottom: "14%", right: "8%" },
+  { top: "8%", left: "32%" },
+  { top: "7%", right: "28%" },
+  { bottom: "10%", left: "28%" },
+  { bottom: "8%", right: "32%" },
+  { bottom: "22%", left: "8%" },
 ];
 
 const SIZES = [24, 30, 22, 34, 28, 36, 20, 26, 24, 32, 22, 34, 28, 30, 20];

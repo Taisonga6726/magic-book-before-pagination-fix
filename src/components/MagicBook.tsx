@@ -81,10 +81,15 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
       className="relative w-full max-w-[1100px] mx-auto magic-cursor"
       style={{
         aspectRatio: "1.5 / 1",
-        maskImage: "radial-gradient(ellipse 90% 88% at center, black 55%, transparent 100%)",
-        WebkitMaskImage: "radial-gradient(ellipse 90% 88% at center, black 55%, transparent 100%)",
+        maskImage: "radial-gradient(ellipse 80% 82% at center, black 40%, transparent 90%)",
+        WebkitMaskImage: "radial-gradient(ellipse 80% 82% at center, black 40%, transparent 90%)",
       }}
     >
+      {/* Inset shadow overlay to further blend edges */}
+      <div
+        className="absolute inset-0 pointer-events-none z-10"
+        style={{ boxShadow: "inset 0 0 80px 40px rgba(0,0,0,0.7)", borderRadius: "8px" }}
+      />
       <img
         src={bookImg}
         alt=""

@@ -122,6 +122,8 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
       onNext: () => setCurrentSpread((s) => s + 1),
     });
   }, [hasPrev, hasNext, onPageNav]);
+
+  const leftPageIdx = currentSpread * 2;
   const rightPageIdx = currentSpread * 2 + 1;
   const leftEntries = pages[leftPageIdx] || [];
   const rightEntries = pages[rightPageIdx] || [];

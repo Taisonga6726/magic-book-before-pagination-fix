@@ -1,4 +1,5 @@
 import { useState, useCallback, Dispatch, SetStateAction } from "react";
+import { toast } from "sonner";
 import bookImg from "@/assets/book.png";
 import SpineEffect from "./SpineEffect";
 import InkWriteEffect from "./InkWriteEffect";
@@ -18,7 +19,6 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
   const [word, setWord] = useState("");
   const [description, setDescription] = useState("");
   const [burst, setBurst] = useState(false);
-  const [writingIdx, setWritingIdx] = useState<number | null>(null);
   const [editIdx, setEditIdx] = useState<number | null>(null);
 
   const handleSave = useCallback(() => {
@@ -30,12 +30,9 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         copy[editIdx] = { word: word.trim(), description: description.trim() };
         return copy;
       });
-      setWritingIdx(editIdx);
       setEditIdx(null);
     } else {
-      const newIdx = entries.length;
       setEntries((prev) => [...prev, { word: word.trim(), description: description.trim() }]);
-      setWritingIdx(newIdx);
     }
 
     setBurst(false);
@@ -44,7 +41,8 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
 
     setWord("");
     setDescription("");
-  }, [word, description, editIdx, entries.length, setEntries]);
+    toast("Запись внесена");
+  }, [word, description, editIdx, setEntries]);
 
   const handleEdit = useCallback(() => {
     if (entries.length === 0) return;
@@ -54,6 +52,11 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
     setDescription(entry.description);
     setEditIdx(lastIdx);
   }, [entries]);
+
+  // Build live preview text
+  const liveText = word
+    ? (description ? `${word} — ${description}` : word)
+    : "";
 
   return (
     <div className="relative w-full max-w-[1100px] mx-auto magic-cursor" style={{ aspectRatio: "1.5 / 1" }}>
@@ -102,35 +105,37 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         className="absolute font-book"
         style={{ right: "13%", top: "18%", width: "28%", height: "60%", padding: "16px 20px 12px 24px", overflowY: "auto", overflowWrap: "break-word", wordBreak: "break-word" }}
       >
-        {entries.length === 0 ? (
+        {entries.length === 0 && !liveText ? (
           <p className="font-handwriting text-base italic mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
             Здесь появятся ваши записи…
           </p>
         ) : (
           <ol className="list-none space-y-3">
             {entries.map((entry, i) => {
-              const fullText = entry.description
-                ? `${entry.word} — ${entry.description}`
-                : entry.word;
+              // If editing this entry, skip it — live preview replaces it
+              if (editIdx === i && liveText) return null;
 
               return (
                 <li key={i} className="text-ink text-base leading-relaxed">
                   <span className="font-semibold" style={{ color: "hsl(var(--ink) / 0.5)" }}>{i + 1}. </span>
-                  {i === writingIdx ? (
-                    <InkWriteEffect
-                      text={fullText}
-                      className="ink-fresh font-handwriting"
-                      onComplete={() => setWritingIdx(null)}
-                    />
-                  ) : (
-                    <>
-                      <span className="font-semibold">{entry.word}</span>
-                      {entry.description && <span className="font-handwriting"> — {entry.description}</span>}
-                    </>
-                  )}
+                  <span className="font-semibold">{entry.word}</span>
+                  {entry.description && <span className="font-handwriting"> — {entry.description}</span>}
                 </li>
               );
             })}
+
+            {/* Live preview row */}
+            {liveText && (
+              <li className="text-ink text-base leading-relaxed">
+                <span className="font-semibold" style={{ color: "hsl(var(--ink) / 0.5)" }}>
+                  {editIdx !== null ? editIdx + 1 : entries.length + 1}.{" "}
+                </span>
+                <InkWriteEffect
+                  text={liveText}
+                  className="ink-fresh font-handwriting"
+                />
+              </li>
+            )}
           </ol>
         )}
       </div>

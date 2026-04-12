@@ -135,37 +135,46 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
         style={{ left: "52%", top: "18%", width: "35%", height: "60%", padding: "16px 20px 12px 24px", overflowY: "auto", overflowWrap: "break-word", wordBreak: "break-word" }}
       >
         {entries.length === 0 && !liveText ? (
-          <p className="font-handwriting text-base italic mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
+          <p className="font-calligraphy text-2xl italic mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
             Здесь появятся ваши записи…
           </p>
         ) : (
-          <ol className="list-none space-y-3">
+          <div className="space-y-4">
             {entries.map((entry, i) => {
-              // If editing this entry, skip it — live preview replaces it
               if (editIdx === i && liveText) return null;
 
               return (
-                <li key={i} className="text-ink text-base leading-relaxed">
-                  <span className="font-semibold" style={{ color: "hsl(var(--ink) / 0.5)" }}>{i + 1}. </span>
-                  <span className="font-semibold">{entry.word}</span>
-                  {entry.description && <span className="font-handwriting"> — {entry.description}</span>}
-                </li>
+                <div key={i} className="text-ink">
+                  <div className="font-calligraphy text-3xl leading-tight" style={{ textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
+                    {entry.word}
+                  </div>
+                  {entry.description && (
+                    <div className="font-book italic text-sm mt-1 ml-1" style={{ color: "hsl(var(--ink) / 0.7)" }}>
+                      — {entry.description}
+                    </div>
+                  )}
+                </div>
               );
             })}
 
             {/* Live preview row */}
             {liveText && (
-              <li className="text-ink text-base leading-relaxed">
-                <span className="font-semibold" style={{ color: "hsl(var(--ink) / 0.5)" }}>
-                  {editIdx !== null ? editIdx + 1 : entries.length + 1}.{" "}
-                </span>
-                <InkWriteEffect
-                  text={liveText}
-                  className="ink-fresh font-handwriting"
-                />
-              </li>
+              <div className="text-ink">
+                <div className="font-calligraphy text-3xl leading-tight inline-flex items-end" style={{ textShadow: "0 0 8px hsl(var(--glow-purple) / 0.3)" }}>
+                  <InkWriteEffect
+                    text={word}
+                    className="ink-fresh"
+                  />
+                  <QuillPen visible={isTyping} />
+                </div>
+                {description && (
+                  <div className="font-book italic text-sm mt-1 ml-1 ink-fresh" style={{ color: "hsl(var(--ink) / 0.7)" }}>
+                    — <InkWriteEffect text={description} className="" />
+                  </div>
+                )}
+              </div>
             )}
-          </ol>
+          </div>
         )}
       </div>
 

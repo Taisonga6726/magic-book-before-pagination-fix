@@ -12,17 +12,19 @@ const NeonGlassButton: React.FC<NeonGlassButtonProps> = ({ children, onClick, di
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`transition-all duration-200 cursor-pointer select-none ${disabled ? "opacity-40 cursor-not-allowed" : "hover:scale-105"} ${className}`}
+      className={`neon-btn-glow transition-all duration-200 cursor-pointer select-none ${disabled ? "opacity-40 cursor-not-allowed" : "hover:scale-105"} ${className}`}
       style={{
-        background: "rgba(255,255,255,0.12)",
+        background: "rgba(80, 40, 160, 0.35)",
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
-        border: "1px solid rgba(255,255,255,0.2)",
-        boxShadow: disabled ? "none" : "0 0 12px rgba(138,92,246,0.3)",
+        border: "2px solid rgba(100, 160, 255, 0.5)",
+        boxShadow: disabled
+          ? "none"
+          : "0 0 15px rgba(100,160,255,0.4), 0 0 30px rgba(138,92,246,0.2), inset 0 0 20px rgba(100,160,255,0.1)",
         color: "white",
         fontWeight: 600,
         padding: "8px 20px",
-        borderRadius: "12px",
+        borderRadius: "999px",
         fontSize: "15px",
         letterSpacing: "0.02em",
       }}

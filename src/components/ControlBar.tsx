@@ -26,7 +26,7 @@ const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onRes
         left: "50%",
         transform: "translateX(-50%)",
         zIndex: 100,
-        background: "rgba(0,0,0,0.4)",
+        background: "rgba(30, 15, 60, 0.5)",
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
         borderRadius: "16px",

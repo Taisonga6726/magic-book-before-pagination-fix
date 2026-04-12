@@ -18,8 +18,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog }: MagicBookProps) => {
   const [word, setWord] = useState("");
   const [description, setDescription] = useState("");
   const [burst, setBurst] = useState(false);
-  const [newEntryIdx, setNewEntryIdx] = useState<number | null>(null);
-  const [editIdx, setEditIdx] = useState<number | null>(null);
+  const [writingIdx, setWritingIdx] = useState<number | null>(null);
 
   const handleSave = useCallback(() => {
     if (!word.trim()) return;

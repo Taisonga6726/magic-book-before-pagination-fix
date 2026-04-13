@@ -1,26 +1,17 @@
 
 
-# Plan: Remove one-time cleanup effect from Index.tsx
+# Plan: Add "Clear Dictionary" button to ControlBar
 
-## Change: `src/pages/Index.tsx`
+## Changes
 
-Delete the cleanup `useEffect` block (lines ~32-38):
+### 1. `src/pages/Index.tsx`
+- Add `handleClearAll` function: calls `localStorage.removeItem("magic-book-entries")` and `setEntries([])`
+- Pass it to `ControlBar` as `onClearAll` prop
 
-```tsx
-// DELETE THIS ENTIRE BLOCK:
-useEffect(() => {
-  const cleared = localStorage.getItem("magic-book-cleared-v1");
-  if (!cleared) {
-    localStorage.removeItem("magic-book-entries");
-    setEntries([]);
-    localStorage.setItem("magic-book-cleared-v1", "true");
-  }
-}, []);
-```
+### 2. `src/components/ControlBar.tsx`
+- Accept new `onClearAll` prop
+- In `edit` mode, add a button labeled "🗑 очистить словарь" that calls `onClearAll`
+- Style as NeonGlassButton consistent with existing buttons
 
-The existing `useState` initializer already loads from localStorage, and the other `useEffect` already persists changes. No other changes needed — `entries` is already the single source of truth shared by both MagicBook and FinalBook.
-
-## What does NOT change
-- FinalBook, MagicBook, pagination, animations, sound
-- Entry structure, localStorage persistence logic
+No other files changed. No auto-clear logic. Dictionary accumulates normally after manual clear.
 

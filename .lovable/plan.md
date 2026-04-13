@@ -1,15 +1,13 @@
 
 
-# Plan: Clear test words from localStorage
-
-## Important note
-Adding `localStorage.removeItem` in a permanent `useEffect` would clear **all** words on every page load, preventing accumulation. Instead, I'll use a **one-time flag** so it only clears once:
+# Plan: Remove one-time cleanup effect from Index.tsx
 
 ## Change: `src/pages/Index.tsx`
 
-Add a one-time cleanup effect:
+Delete the cleanup `useEffect` block (lines ~32-38):
 
 ```tsx
+// DELETE THIS ENTIRE BLOCK:
 useEffect(() => {
   const cleared = localStorage.getItem("magic-book-cleared-v1");
   if (!cleared) {
@@ -20,9 +18,9 @@ useEffect(() => {
 }, []);
 ```
 
-This clears the test data exactly once, then new words accumulate normally starting from 1.
+The existing `useState` initializer already loads from localStorage, and the other `useEffect` already persists changes. No other changes needed — `entries` is already the single source of truth shared by both MagicBook and FinalBook.
 
 ## What does NOT change
-- FinalBook, MagicBook logic, pagination, animations, sound
-- Entry structure, localStorage key name
+- FinalBook, MagicBook, pagination, animations, sound
+- Entry structure, localStorage persistence logic
 

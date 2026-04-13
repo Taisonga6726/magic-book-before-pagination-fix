@@ -26,14 +26,6 @@ const Index = () => {
   });
   const [pageNav, setPageNav] = useState<PageNav | null>(null);
 
-  useEffect(() => {
-    const cleared = localStorage.getItem("magic-book-cleared-v1");
-    if (!cleared) {
-      localStorage.removeItem("magic-book-entries");
-      setEntries([]);
-      localStorage.setItem("magic-book-cleared-v1", "true");
-    }
-  }, []);
 
   useEffect(() => {
     localStorage.setItem("magic-book-entries", JSON.stringify(entries));

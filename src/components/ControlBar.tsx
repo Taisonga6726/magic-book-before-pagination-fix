@@ -14,10 +14,11 @@ interface ControlBarProps {
   onAddWord: () => void;
   onRestart: () => void;
   onShare: () => void;
+  onClearAll: () => void;
   pageNav?: PageNav | null;
 }
 
-const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onRestart, onShare, pageNav }) => {
+const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onRestart, onShare, onClearAll, pageNav }) => {
   return (
     <div
       style={{
@@ -47,6 +48,7 @@ const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onRes
           )}
           <NeonGlassButton onClick={() => setMode("read")}>📖 читать книгу</NeonGlassButton>
           <NeonGlassButton onClick={() => setMode("final")}>✦ завершить</NeonGlassButton>
+          <NeonGlassButton onClick={onClearAll}>🗑 очистить словарь</NeonGlassButton>
         </>
       )}
 

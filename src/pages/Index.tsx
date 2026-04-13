@@ -40,6 +40,11 @@ const Index = () => {
     setMode("edit");
   };
 
+  const handleClearAll = () => {
+    localStorage.removeItem("magic-book-entries");
+    setEntries([]);
+  };
+
   const handleShare = () => {
     toast({ title: "Функция скоро появится!", description: "Поделиться книгой можно будет в следующем обновлении." });
   };
@@ -75,6 +80,7 @@ const Index = () => {
         onAddWord={handleAddWord}
         onRestart={handleRestart}
         onShare={handleShare}
+        onClearAll={handleClearAll}
         pageNav={pageNav}
       />
     </div>

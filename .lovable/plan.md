@@ -1,17 +1,16 @@
 
 
-# Plan: Add "Clear Dictionary" button to ControlBar
+# Plan: Remove "Clear Dictionary" button
 
 ## Changes
 
-### 1. `src/pages/Index.tsx`
-- Add `handleClearAll` function: calls `localStorage.removeItem("magic-book-entries")` and `setEntries([])`
-- Pass it to `ControlBar` as `onClearAll` prop
+### 1. `src/components/ControlBar.tsx`
+- Remove `onClearAll` from props interface
+- Remove the "🗑 очистить словарь" button from edit mode section
 
-### 2. `src/components/ControlBar.tsx`
-- Accept new `onClearAll` prop
-- In `edit` mode, add a button labeled "🗑 очистить словарь" that calls `onClearAll`
-- Style as NeonGlassButton consistent with existing buttons
+### 2. `src/pages/Index.tsx`
+- Remove `handleClearAll` function
+- Remove `onClearAll={handleClearAll}` from ControlBar props
 
-No other files changed. No auto-clear logic. Dictionary accumulates normally after manual clear.
+No other files affected.
 

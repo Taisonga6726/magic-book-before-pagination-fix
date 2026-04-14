@@ -1,16 +1,26 @@
 
 
-# Plan: Remove "Clear Dictionary" button
+# Plan: One-time cleanup of old test data
 
-## Changes
+## Change: `src/pages/Index.tsx`
 
-### 1. `src/components/ControlBar.tsx`
-- Remove `onClearAll` from props interface
-- Remove the "🗑 очистить словарь" button from edit mode section
+Add a one-time cleanup `useEffect` using a new flag key `"magic-book-initial-clean"`:
 
-### 2. `src/pages/Index.tsx`
-- Remove `handleClearAll` function
-- Remove `onClearAll={handleClearAll}` from ControlBar props
+```tsx
+useEffect(() => {
+  const cleared = localStorage.getItem("magic-book-initial-clean");
+  if (!cleared) {
+    localStorage.removeItem("magic-book-entries");
+    localStorage.setItem("magic-book-initial-clean", "true");
+    setEntries([]);
+  }
+}, []);
+```
 
-No other files affected.
+This runs once on first load, clears old test words, then never runs again. After that, the dictionary accumulates normally.
+
+## What does NOT change
+- MagicBook, FinalBook, pagination, animations, sound
+- Word addition logic, duplicate checking
+- Entry structure, localStorage persistence
 

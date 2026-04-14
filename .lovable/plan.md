@@ -1,44 +1,37 @@
 
 
-# Plan: Refine magic effect — subtle particles + small focus ring
+# Plan: Replace weak effect with neon circular particles animation
 
 ## Changes
 
-### 1. `src/pages/Index.tsx` — Replace introEffect block (lines 143-156)
-Remove all heavy layers (flash, big blurs, ping ring). Replace with:
+### 1. `src/pages/Index.tsx` — Replace introEffect block (lines 143-150)
+Replace with spinning neon particle ring + soft central glow:
 ```tsx
 {introEffect && (
   <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-    <div className="absolute w-40 h-40 rounded-full border border-yellow-300/60 animate-pulse" />
-    <div className="absolute w-2 h-2 bg-yellow-300 rounded-full animate-[particleOut_0.8s_ease-out_forwards]" />
-    <div className="absolute w-2 h-2 bg-yellow-200 rounded-full animate-[particleOut2_0.8s_ease-out_0.1s_forwards]" />
-    <div className="absolute w-2 h-2 bg-white rounded-full animate-[particleOut3_0.8s_ease-out_0.2s_forwards]" />
+    {/* soft central glow */}
+    <div className="absolute w-24 h-24 rounded-full bg-yellow-300/30 blur-2xl" />
+    {/* spinning particle ring */}
+    <div className="absolute w-48 h-48 animate-[spinSlow_3s_linear_infinite]">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-yellow-300 rounded-full shadow-[0_0_6px_rgba(255,200,50,0.8)]" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-yellow-200 rounded-full shadow-[0_0_6px_rgba(255,200,50,0.6)]" />
+      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-[0_0_6px_rgba(255,255,255,0.8)]" />
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-yellow-100 rounded-full shadow-[0_0_6px_rgba(255,200,50,0.6)]" />
+      <div className="absolute top-[15%] right-[15%] w-1 h-1 bg-yellow-300/80 rounded-full" />
+      <div className="absolute bottom-[15%] left-[15%] w-1 h-1 bg-white/70 rounded-full" />
+    </div>
   </div>
 )}
 ```
 
-### 2. `src/pages/Index.tsx` — Reduce drop-shadow (line 159)
-Change `40px` to `20px`:
-```tsx
-style={{ filter: introEffect ? "drop-shadow(0 0 20px rgba(255,200,100,0.6))" : "none" }}
-```
-
-### 3. `src/index.css` — Replace `@keyframes flash` (lines 402-404) with particle keyframes
+### 2. `src/index.css` — Replace particle keyframes (lines 402-413) with spinSlow
 ```css
-@keyframes particleOut {
-  0% { transform: translate(0,0) scale(1); opacity: 1; }
-  100% { transform: translate(-100px, -60px) scale(0.4); opacity: 0; }
-}
-@keyframes particleOut2 {
-  0% { transform: translate(0,0) scale(1); opacity: 1; }
-  100% { transform: translate(110px, -50px) scale(0.4); opacity: 0; }
-}
-@keyframes particleOut3 {
-  0% { transform: translate(0,0) scale(1); opacity: 1; }
-  100% { transform: translate(0px, 100px) scale(0.4); opacity: 0; }
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 ```
 
 ### No other changes
-Activating effect, handleOpenBook, video logic, cover image classes — all unchanged.
+Drop-shadow on book, activating effect, handleOpenBook, video logic — all unchanged.
 

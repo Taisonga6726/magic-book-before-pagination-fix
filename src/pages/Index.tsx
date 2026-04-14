@@ -112,20 +112,18 @@ const Index = () => {
           onClick={() => { if (videoFinished || videoSeen) handleOpenBook(); }}
           style={{ perspective: "1200px", zIndex: 50, cursor: (videoFinished || videoSeen) ? "pointer" : "default" }}
         >
-          {!videoSeen ? (
-            <video
-              src="/videos/book-intro.mp4"
-              autoPlay
-              muted
-              playsInline
-              onEnded={() => { setVideoFinished(true); setVideoSeen(true); }}
-              className="relative w-full h-full object-contain select-none"
-            />
-          ) : (
+          <video
+            src="/videos/book-intro.mp4"
+            autoPlay
+            playsInline
+            onEnded={() => { setVideoFinished(true); setVideoSeen(true); }}
+            className="absolute inset-0 w-full h-full object-contain select-none"
+          />
+          {videoFinished && (
             <img
               src="/images/cover-book.png"
               alt="Обложка книги"
-              className="relative w-full h-full object-contain select-none"
+              className="absolute inset-0 w-full h-full object-contain select-none"
               draggable={false}
             />
           )}

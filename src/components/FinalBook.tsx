@@ -213,7 +213,7 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
       <div className="relative w-full h-full flex items-center justify-center">
       <div
         className={`relative w-full h-full magic-cursor scene-fade-in ${fadingOut ? "scene-fade-out" : ""}`}
-        style={{ transform: "translateY(-8%)" }}
+        style={{ transform: "translateY(-3%)" }}
       >
       <div
         className="absolute inset-0 pointer-events-none z-10"

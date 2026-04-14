@@ -229,7 +229,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
   return (
     <div className={`fixed inset-0 w-screen h-screen overflow-hidden z-40 ${fadingOut ? "scene-fade-out" : ""}`}>
       <div className="relative w-full h-full flex items-center justify-center">
-      <div className="relative w-full h-full magic-cursor" style={{ transform: "translateY(-8%)" }}>
+      <div className="relative w-full h-full magic-cursor" style={{ transform: "translateY(-3%)" }}>
       <div
         className="absolute inset-0 pointer-events-none z-10"
         style={{ boxShadow: "inset 0 0 150px 80px rgba(0,0,0,0.9)", borderRadius: "8px" }}

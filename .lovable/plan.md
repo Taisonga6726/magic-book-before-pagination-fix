@@ -1,63 +1,44 @@
 
 
-# Plan: Cleanup preview logic — remove videoSeen, fix CTA
-
-## Current issues found
-- `videoSeen` state exists (line 31) and is used in click guard (line 112), cursor (line 113), and CTA condition (line 130)
-- Old CTA "ЧИТАТЬ КНИГУ" still renders on top of the book (line 134) — should be "КЛИКНИ" at top-10
-- Preview is still a single block with layered video+image — not the two-state split from the approved plan
+# Plan: Finalize preview UX — activation effect + no delays
 
 ## Changes to `src/pages/Index.tsx`
 
-### 1. Remove `videoSeen` state (line 31)
-Delete: `const [videoSeen, setVideoSeen] = useState(false);`
+### 1. Add `activating` state (line 31)
+Add `const [activating, setActivating] = useState(false);`
 
-### 2. Replace preview block (lines 109-139) with two separate states
-
-**State 1 — Video (clean, no text, no click):**
+### 2. Add final-screen preload (after line 89)
 ```tsx
-{mode === "preview" && !videoFinished && (
-  <div className="fixed inset-0 w-screen h-screen scene-fade-in" style={{ zIndex: 50 }}>
-    <video
-      key="book-intro-video"
-      src="/videos/book-intro.mp4"
-      autoPlay
-      playsInline
-      preload="auto"
-      onEnded={() => setVideoFinished(true)}
-      className="w-full h-full object-contain select-none"
-    />
-  </div>
-)}
+<img src="/images/final-screen.png" className="hidden" alt="" />
 ```
 
-**State 2 — Static cover + CTA (clickable):**
+### 3. Update `handleOpenBook` (lines 76-83)
+Replace with staged activation effect:
 ```tsx
-{mode === "preview" && videoFinished && (
-  <div
-    className={`fixed inset-0 w-screen h-screen scene-fade-in ${flipping ? "page-flip-anim" : ""}`}
-    onClick={() => handleOpenBook()}
-    style={{ perspective: "1200px", zIndex: 50, cursor: "pointer" }}
-  >
-    <div className="absolute top-10 w-full text-center z-10">
-      <span className="text-4xl md:text-6xl font-extrabold text-white animate-pulse select-none"
-            style={{ textShadow: "0 0 20px rgba(255,255,255,0.6), 0 0 40px rgba(255,255,255,0.3)" }}>
-        КЛИКНИ
-      </span>
-    </div>
-    <img src="/images/cover-book.png" alt="Обложка книги"
-         className="w-full h-full object-contain select-none" draggable={false} />
-  </div>
-)}
+const handleOpenBook = useCallback(() => {
+  setActivating(true);
+  setTimeout(() => {
+    playFlipSound();
+    setFlipping(true);
+    setTimeout(() => {
+      setMode("reading");
+      setFlipping(false);
+      setActivating(false);
+    }, 300);
+  }, 150);
+}, [playFlipSound]);
 ```
 
-### 3. Add test reset in onOpenCatalog (line 103)
-Change `onOpenCatalog={() => setMode("preview")}` to:
+### 4. Replace ping circle with activation effect (lines 135-137)
+Replace the always-visible ping circle with click-triggered glow:
 ```tsx
-onOpenCatalog={() => { setVideoFinished(false); setMode("preview"); }}
+{activating && (
+  <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+    <div className="w-40 h-40 rounded-full bg-white/30 animate-ping" />
+  </div>
+)}
 ```
 
 ## What does NOT change
-- MagicBook, FinalBook, FinalScreen, ControlBar
-- Flip animation, sound, project structure
+- MagicBook, FinalBook, ControlBar, FinalScreen, flip CSS, video logic
 

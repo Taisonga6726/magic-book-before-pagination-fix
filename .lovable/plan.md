@@ -1,32 +1,23 @@
 
 
-# Plan: Make FinalBook fullscreen — remove max-width and aspectRatio
+# Plan: Make MagicBook fullscreen
 
 ## Changes
 
-### `src/components/FinalBook.tsx`
+### `src/components/MagicBook.tsx`
 
-**Line 215**: Replace `max-w-[1100px] mx-auto` with `w-full h-full` and remove `aspectRatio` style:
+**Lines 232-235**: Remove `max-w-[1100px] mx-auto` and `aspectRatio`:
 
 ```tsx
-// Before (line 214-218):
+// Before:
 <div
-  className={`relative w-full max-w-[1100px] mx-auto magic-cursor scene-fade-in ${fadingOut ? "scene-fade-out" : ""}`}
+  className="relative w-full max-w-[1100px] mx-auto magic-cursor"
   style={{ aspectRatio: "1.5 / 1" }}
 >
 
 // After:
-<div
-  className={`relative w-full h-full magic-cursor scene-fade-in ${fadingOut ? "scene-fade-out" : ""}`}
->
+<div className="relative w-full h-full magic-cursor">
 ```
 
-The book image (line 224-229) already uses `object-contain` so it will scale to fill the screen while maintaining its aspect ratio. Text overlays use percentage-based positioning (`left: "12%"`, `top: "14%"`, etc.) so they will adapt automatically.
-
-### What does NOT change
-- Text positioning (percentage-based, stays proportional)
-- Pagination logic, flip animations, sounds
-- SpineEffect, page indicator
-- Index.tsx (already clean, no extra padding/margin)
-- Inner shadow overlay (line 220-223) — stays as visual polish
+Everything else stays unchanged — the outer fullscreen wrapper (line 230-231) is already correct, the book image uses `object-contain`, and text overlays use percentage positioning.
 

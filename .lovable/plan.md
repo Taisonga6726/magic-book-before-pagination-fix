@@ -1,46 +1,28 @@
 
 
-# Plan: Fix fullscreen layout — use transform instead of flex alignment
+# Plan: Update cover image and adjust vertical offset
 
 ## Changes
 
-### 1. `src/components/FinalBook.tsx` (line 213)
+### 1. Replace cover image
+Copy uploaded image to `public/images/cover-book.png`, replacing the existing file.
+
+### 2. `src/components/FinalBook.tsx` (line 216)
 ```tsx
 // Before:
-<div className="relative w-full h-full flex items-end justify-center pb-20">
-
-// After:
-<div className="relative w-full h-full flex items-center justify-center">
-```
-
-### 2. `src/components/FinalBook.tsx` (line 215)
-```tsx
-// Before:
-className={`relative w-full h-full magic-cursor scene-fade-in ${fadingOut ? "scene-fade-out" : ""}`}
-
-// After:
-className={`relative w-full h-full magic-cursor scene-fade-in ${fadingOut ? "scene-fade-out" : ""}`}
 style={{ transform: "translateY(-8%)" }}
+// After:
+style={{ transform: "translateY(-3%)" }}
 ```
 
-### 3. `src/components/MagicBook.tsx` (line 231)
+### 3. `src/components/MagicBook.tsx` (line 232)
 ```tsx
 // Before:
-<div className="relative w-full h-full flex items-end justify-center pb-20">
-
+style={{ transform: "translateY(-8%)" }}
 // After:
-<div className="relative w-full h-full flex items-center justify-center">
-```
-
-### 4. `src/components/MagicBook.tsx` (line 232)
-```tsx
-// Before:
-<div className="relative w-full h-full magic-cursor">
-
-// After:
-<div className="relative w-full h-full magic-cursor" style={{ transform: "translateY(-8%)" }}>
+style={{ transform: "translateY(-3%)" }}
 ```
 
 ### What does NOT change
-- Logic, text, images, ControlBar, animations
+- Logic, structure, ControlBar, animations, other images
 

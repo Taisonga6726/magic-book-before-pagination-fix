@@ -81,11 +81,9 @@ const Index = () => {
   }, [playFlipSound]);
 
   return (
-    <div className="w-full h-screen flex items-center justify-center p-4 relative overflow-hidden bg-black">
+    <div className="fixed inset-0 w-screen h-screen overflow-hidden bg-black">
       <HeroWave />
-
-      <div className="relative z-40 w-full flex items-center justify-center">
-        <FloatingWords />
+      <FloatingWords />
 
         {mode === "form" && (
           <MagicBook
@@ -122,9 +120,9 @@ const Index = () => {
           <FinalBook entries={entries} onBack={() => setMode("form")} onPageNav={handlePageNav} />
         )}
 
-        {mode === "final" && (
-          <FinalScreen onBack={() => setMode("form")} />
-        )}
+      {mode === "final" && (
+        <FinalScreen onBack={() => setMode("form")} />
+      )}
       </div>
 
       <ControlBar

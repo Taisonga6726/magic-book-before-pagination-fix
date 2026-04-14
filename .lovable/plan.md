@@ -1,44 +1,48 @@
 
 
-# Plan: Screen restructure with 4 modes + flip sound/animation everywhere
+# Plan: Fullscreen + blur background for FinalBook and FinalScreen
 
-## Overview
-Restructure the app into 4 screen modes, add uploaded images, and ensure flip sound + animation on all transitions.
+Apply the same double-layer fullscreen pattern already used in preview mode.
 
-## Steps
+## 1. `src/components/FinalBook.tsx`
 
-### 1. Copy uploaded images to `public/images/`
-- `cover-book.png`, `open-book.png`, `final-screen.png`
+Wrap the entire return in a fullscreen container with blur background layer:
 
-### 2. Create `src/components/FinalScreen.tsx`
-- Simple component showing `/images/final-screen.png` with fade-in animation
-- Props: `onBack: () => void`
+```tsx
+return (
+  <div className="fixed inset-0 w-screen h-screen overflow-hidden z-40">
+    {/* Blurred background */}
+    <img src="/images/open-book.png" className="absolute w-full h-full object-cover blur-2xl scale-110 opacity-40" />
+    
+    {/* Existing book content — change outer div from relative+max-w to centered */}
+    <div className="relative w-full h-full flex items-center justify-center">
+      <div className={`relative w-full max-w-[1100px] mx-auto ...existing classes...`} style={{ aspectRatio: "1.5 / 1" }}>
+        ...all existing inner content unchanged...
+      </div>
+    </div>
+  </div>
+);
+```
 
-### 3. Update `src/pages/Index.tsx`
-- Change mode type to `"form" | "preview" | "reading" | "final"`
-- Add `flipAudio` ref and `playFlipSound` function at Index level
-- Add `flipping` state for cover→reading transition animation
-- Add `handleOpenBook`: calls `playFlipSound()`, `setFlipping(true)`, then `setTimeout(() => { setMode("reading"); setFlipping(false); }, 300)`
-- Rendering:
-  - `"form"` → MagicBook (same as current "edit")
-  - `"preview"` → clickable cover image (`/images/cover-book.png`), click calls `handleOpenBook`
-  - `"reading"` → FinalBook (same as current "read")
-  - `"final"` → FinalScreen
+- The outer wrapper becomes `fixed inset-0 w-screen h-screen` with z-index 40
+- Blurred background layer uses `open-book.png`
+- Inner book container keeps its current `max-w-[1100px]` and `aspectRatio` but is centered with flex
 
-### 4. Update `src/components/FinalBook.tsx`
-- Replace `bookFinalImg` import with `/images/open-book.png`
-- Flip sound/animation already works on page navigation (confirmed in `handleFlip` and `handleFlipFromBar`) — no changes needed
+## 2. `src/components/FinalScreen.tsx`
 
-### 5. Update `src/components/ControlBar.tsx`
-- Change mode type to `"form" | "preview" | "reading" | "final"`
-- `"form"` mode: show "внести слово", pagination, "читать книгу" (→ sets preview), "завершить"
-- `"preview"` mode: show "внести слово" (→ form) only
-- `"reading"` mode: show "внести слово" (→ form), pagination (with flip sound via existing pageNav), reaction buttons, "завершить" (→ final)
-- `"final"` mode: same as current
-- "продолжить чтение" concept = "далее →" button already calls `pageNav.onNext` which triggers `playFlipSound()` + `setFlipping(true)` inside FinalBook
+Replace with double-layer fullscreen layout:
+
+```tsx
+return (
+  <div className="fixed inset-0 w-screen h-screen overflow-hidden z-40">
+    <img src="/images/final-screen.png" className="absolute w-full h-full object-cover blur-2xl scale-110 opacity-40" />
+    <img src="/images/final-screen.png" className="relative w-full h-full object-contain select-none" draggable={false} />
+  </div>
+);
+```
 
 ## What does NOT change
-- MagicBook component, word input, localStorage, duplicate checking
-- FinalBook pagination logic and flip animation internals
-- Entry structure
+- FinalBook internal logic (pagination, flip animation, text rendering, spine effect)
+- ControlBar (already `position: fixed`, `z-index: 100` — will stay on top)
+- localStorage, MagicBook, preview mode
 

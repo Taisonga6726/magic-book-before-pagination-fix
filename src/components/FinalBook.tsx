@@ -212,10 +212,7 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
     <div className="fixed inset-0 w-screen h-screen overflow-hidden z-40">
       <div className="relative w-full h-full flex items-center justify-center">
       <div
-        className={`relative w-full max-w-[1100px] mx-auto magic-cursor scene-fade-in ${fadingOut ? "scene-fade-out" : ""}`}
-        style={{
-          aspectRatio: "1.5 / 1",
-        }}
+        className={`relative w-full h-full magic-cursor scene-fade-in ${fadingOut ? "scene-fade-out" : ""}`}
       >
       <div
         className="absolute inset-0 pointer-events-none z-10"

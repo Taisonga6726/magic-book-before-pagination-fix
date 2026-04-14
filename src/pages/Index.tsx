@@ -28,6 +28,7 @@ const Index = () => {
   const [pageNav, setPageNav] = useState<PageNav | null>(null);
   const [flipping, setFlipping] = useState(false);
   const [videoFinished, setVideoFinished] = useState(false);
+  const [activating, setActivating] = useState(false);
   
   const flipAudio = useRef<HTMLAudioElement | null>(null);
 
@@ -74,12 +75,16 @@ const Index = () => {
   }, []);
 
   const handleOpenBook = useCallback(() => {
-    playFlipSound();
-    setFlipping(true);
+    setActivating(true);
     setTimeout(() => {
-      setMode("reading");
-      setFlipping(false);
-    }, 300);
+      playFlipSound();
+      setFlipping(true);
+      setTimeout(() => {
+        setMode("reading");
+        setFlipping(false);
+        setActivating(false);
+      }, 300);
+    }, 150);
   }, [playFlipSound]);
 
   return (
@@ -87,6 +92,7 @@ const Index = () => {
       {/* Preload video and cover image to eliminate black screen / delays */}
       <video src="/videos/book-intro.mp4" preload="auto" className="hidden" />
       <img src="/images/cover-book.png" className="hidden" alt="" />
+      <img src="/images/final-screen.png" className="hidden" alt="" />
 
       <img
         src="/images/open-book.png"
@@ -132,9 +138,11 @@ const Index = () => {
         >
           <img src="/images/cover-book.png" alt="Обложка книги"
                className="w-full h-full object-contain select-none" draggable={false} />
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-32 h-32 rounded-full border-2 border-white/40 animate-ping" />
-          </div>
+          {activating && (
+            <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+              <div className="w-40 h-40 rounded-full bg-white/30 animate-ping" />
+            </div>
+          )}
         </div>
       )}
       {mode === "reading" && (

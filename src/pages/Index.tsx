@@ -99,14 +99,20 @@ const Index = () => {
 
         {mode === "preview" && (
           <div
-            className={`relative w-full max-w-[700px] mx-auto cursor-pointer scene-fade-in ${flipping ? "page-flip-anim" : ""}`}
+            className={`fixed inset-0 w-screen h-screen cursor-pointer scene-fade-in ${flipping ? "page-flip-anim" : ""}`}
             onClick={handleOpenBook}
-            style={{ perspective: "1200px" }}
+            style={{ perspective: "1200px", zIndex: 50 }}
           >
             <img
               src="/images/cover-book.png"
+              alt=""
+              className="absolute w-full h-full object-cover blur-2xl scale-110 opacity-40 select-none"
+              draggable={false}
+            />
+            <img
+              src="/images/cover-book.png"
               alt="Обложка книги"
-              className="w-full h-auto object-contain select-none"
+              className="relative w-full h-full object-contain select-none"
               draggable={false}
             />
           </div>

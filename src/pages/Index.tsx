@@ -84,6 +84,10 @@ const Index = () => {
 
   return (
     <div className="fixed inset-0 w-screen h-screen overflow-hidden bg-black">
+      {/* Preload video and cover image to eliminate black screen / delays */}
+      <video src="/videos/book-intro.mp4" preload="auto" className="hidden" />
+      <img src="/images/cover-book.png" className="hidden" alt="" />
+
       <img
         src="/images/open-book.png"
         alt=""
@@ -126,17 +130,13 @@ const Index = () => {
           onClick={() => handleOpenBook()}
           style={{ perspective: "1200px", zIndex: 50, cursor: "pointer" }}
         >
-          <div className="absolute top-10 w-full text-center z-10">
-            <span className="text-4xl md:text-6xl font-extrabold text-white animate-pulse select-none"
-                  style={{ textShadow: "0 0 20px rgba(255,255,255,0.6), 0 0 40px rgba(255,255,255,0.3)" }}>
-              КЛИКНИ
-            </span>
-          </div>
           <img src="/images/cover-book.png" alt="Обложка книги"
                className="w-full h-full object-contain select-none" draggable={false} />
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-32 h-32 rounded-full border-2 border-white/40 animate-ping" />
+          </div>
         </div>
       )}
-
       {mode === "reading" && (
         <FinalBook entries={entries} onBack={() => setMode("form")} onPageNav={handlePageNav} />
       )}

@@ -209,12 +209,15 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
   );
 
   return (
-    <div
-      className={`relative w-full max-w-[1100px] mx-auto magic-cursor scene-fade-in ${fadingOut ? "scene-fade-out" : ""}`}
-      style={{
-        aspectRatio: "1.5 / 1",
-      }}
-    >
+    <div className="fixed inset-0 w-screen h-screen overflow-hidden z-40">
+      <img src="/images/open-book.png" className="absolute w-full h-full object-cover blur-2xl scale-110 opacity-40 select-none" draggable={false} />
+      <div className="relative w-full h-full flex items-center justify-center">
+      <div
+        className={`relative w-full max-w-[1100px] mx-auto magic-cursor scene-fade-in ${fadingOut ? "scene-fade-out" : ""}`}
+        style={{
+          aspectRatio: "1.5 / 1",
+        }}
+      >
       <div
         className="absolute inset-0 pointer-events-none z-10"
         style={{ boxShadow: "inset 0 0 80px 40px rgba(0,0,0,0.6)", borderRadius: "8px" }}
@@ -281,6 +284,8 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
         style={{ color: "hsl(var(--ink) / 0.3)" }}
       >
         {currentSpread + 1} / {totalSpreads}
+      </div>
+    </div>
       </div>
     </div>
   );

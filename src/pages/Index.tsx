@@ -28,7 +28,7 @@ const Index = () => {
   const [pageNav, setPageNav] = useState<PageNav | null>(null);
   const [flipping, setFlipping] = useState(false);
   const [videoFinished, setVideoFinished] = useState(false);
-  const [videoSeen, setVideoSeen] = useState(false);
+  
   const flipAudio = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -100,41 +100,40 @@ const Index = () => {
         <MagicBook
           entries={entries}
           setEntries={setEntries}
-          onOpenCatalog={() => setMode("preview")}
+          onOpenCatalog={() => { setVideoFinished(false); setMode("preview"); }}
           onFinish={() => setMode("final")}
           onPageNav={handlePageNav}
         />
       )}
 
-      {mode === "preview" && (
-        <div
-          className={`fixed inset-0 w-screen h-screen scene-fade-in ${flipping ? "page-flip-anim" : ""}`}
-          onClick={() => { if (videoFinished || videoSeen) handleOpenBook(); }}
-          style={{ perspective: "1200px", zIndex: 50, cursor: (videoFinished || videoSeen) ? "pointer" : "default" }}
-        >
+      {mode === "preview" && !videoFinished && (
+        <div className="fixed inset-0 w-screen h-screen scene-fade-in" style={{ zIndex: 50 }}>
           <video
+            key="book-intro-video"
             src="/videos/book-intro.mp4"
             autoPlay
             playsInline
-            onEnded={() => { setVideoFinished(true); setVideoSeen(true); }}
-            className="absolute inset-0 w-full h-full object-contain select-none"
+            preload="auto"
+            onEnded={() => setVideoFinished(true)}
+            className="w-full h-full object-contain select-none"
           />
-          {videoFinished && (
-            <img
-              src="/images/cover-book.png"
-              alt="Обложка книги"
-              className="absolute inset-0 w-full h-full object-contain select-none"
-              draggable={false}
-            />
-          )}
-          {(videoFinished || videoSeen) && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-3xl md:text-5xl font-bold text-white cursor-pointer select-none"
-                    style={{ textShadow: "0 0 20px rgba(255,255,255,0.6), 0 0 40px rgba(255,255,255,0.3)" }}>
-                ЧИТАТЬ КНИГУ
-              </span>
-            </div>
-          )}
+        </div>
+      )}
+
+      {mode === "preview" && videoFinished && (
+        <div
+          className={`fixed inset-0 w-screen h-screen scene-fade-in ${flipping ? "page-flip-anim" : ""}`}
+          onClick={() => handleOpenBook()}
+          style={{ perspective: "1200px", zIndex: 50, cursor: "pointer" }}
+        >
+          <div className="absolute top-10 w-full text-center z-10">
+            <span className="text-4xl md:text-6xl font-extrabold text-white animate-pulse select-none"
+                  style={{ textShadow: "0 0 20px rgba(255,255,255,0.6), 0 0 40px rgba(255,255,255,0.3)" }}>
+              КЛИКНИ
+            </span>
+          </div>
+          <img src="/images/cover-book.png" alt="Обложка книги"
+               className="w-full h-full object-contain select-none" draggable={false} />
         </div>
       )}
 

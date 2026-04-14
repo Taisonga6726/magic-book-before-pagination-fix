@@ -398,3 +398,8 @@
   animation: neon-border-spin 3s linear infinite;
   z-index: -1;
 }
+
+@keyframes flash {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}

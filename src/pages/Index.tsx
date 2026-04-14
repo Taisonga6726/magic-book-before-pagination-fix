@@ -142,6 +142,7 @@ const Index = () => {
         >
           {introEffect && (
             <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+              <div className="absolute w-[300px] h-[300px] rounded-full bg-white/80 blur-3xl animate-[flash_0.6s_ease-out]" />
               <div className="absolute w-32 h-32 rounded-full bg-white blur-2xl opacity-90 animate-pulse" />
               <div className="absolute w-56 h-56 rounded-full bg-yellow-300/40 blur-3xl animate-pulse" />
               <div className="absolute w-80 h-80 rounded-full border-2 border-yellow-300/80 animate-ping" />

@@ -1,33 +1,14 @@
 
 
-# Plan: Fix video layer — stack video and image, no conditional swap
+# Plan: No changes needed — magicAudio was never added
 
-## Change in `src/pages/Index.tsx` (lines 115-131)
+The `magicAudio` ref, its `useEffect` hooks, and the `/sounds/magic-intro.mp3` file were part of a previous proposal that was **never approved or implemented**. The current codebase already relies solely on the video's own audio track — no extra audio logic exists.
 
-Replace the conditional `!videoSeen ? <video> : <img>` with both elements always rendered, image layered on top and shown only after video ends:
+**Current state already matches the request:**
+- No `magicAudio` ref or effects in `Index.tsx`
+- No `/sounds/magic-intro.mp3` file
+- Video plays with its own sound (no `muted` attribute)
+- Two separate screens: video → static with CTA "ОТКРОЙ КНИГУ"
 
-```tsx
-<video
-  src="/videos/book-intro.mp4"
-  autoPlay
-  playsInline
-  onEnded={() => { setVideoFinished(true); setVideoSeen(true); }}
-  className="absolute inset-0 w-full h-full object-contain select-none"
-/>
-{videoFinished && (
-  <img
-    src="/images/cover-book.png"
-    alt="Обложка книги"
-    className="absolute inset-0 w-full h-full object-contain select-none"
-    draggable={false}
-  />
-)}
-```
-
-Both use `absolute inset-0` so they stack. Video plays underneath; image appears on top instantly when done — no flicker, no black frame.
-
-## What does NOT change
-- CTA "КЛИКНИ !!!" text and styling (keeping current text — plan from previous message not yet applied)
-- Click logic, reset for testing, sound settings
-- MagicBook, FinalBook, ControlBar, everything else
+No code changes are required.
 

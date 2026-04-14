@@ -27,6 +27,8 @@ const Index = () => {
   });
   const [pageNav, setPageNav] = useState<PageNav | null>(null);
   const [flipping, setFlipping] = useState(false);
+  const [videoFinished, setVideoFinished] = useState(false);
+  const [videoSeen, setVideoSeen] = useState(false);
   const flipAudio = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {

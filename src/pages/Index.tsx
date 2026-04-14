@@ -82,9 +82,18 @@ const Index = () => {
 
   return (
     <div className="fixed inset-0 w-screen h-screen overflow-hidden bg-black">
+      <img
+        src="/images/open-book.png"
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-40 select-none pointer-events-none"
+        draggable={false}
+      />
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm pointer-events-none z-10" />
+
       <HeroWave />
       <FloatingWords />
 
+      <div className="relative z-20 w-full h-full">
       {mode === "form" && (
         <MagicBook
           entries={entries}
@@ -103,12 +112,6 @@ const Index = () => {
         >
           <img
             src="/images/cover-book.png"
-            alt=""
-            className="absolute w-full h-full object-cover blur-2xl scale-110 opacity-40 select-none"
-            draggable={false}
-          />
-          <img
-            src="/images/cover-book.png"
             alt="Обложка книги"
             className="relative w-full h-full object-contain select-none"
             draggable={false}
@@ -123,6 +126,7 @@ const Index = () => {
       {mode === "final" && (
         <FinalScreen onBack={() => setMode("form")} />
       )}
+      </div>
 
       <ControlBar
         mode={mode}

@@ -1,18 +1,43 @@
 
 
-# Plan: Strengthen activation effect — visible magic pulse from book center
+# Plan: Add entrance magic effect after video before user click
 
 ## Changes to `src/pages/Index.tsx`
 
-### 1. Replace activation effect block
-Find the current `activating` block and replace with a multi-layered magic pulse:
-- Central white flash (`w-24 h-24 bg-white/80 blur-2xl animate-pulse`)
-- Yellow ring (`w-56 h-56 border-2 border-yellow-300/80 animate-ping`)
-- Outer soft glow (`w-72 h-72 bg-yellow-200/20 blur-3xl animate-ping`)
+### 1. Add `introEffect` state (after line 31)
+```tsx
+const [introEffect, setIntroEffect] = useState(false);
+```
 
-### 2. Add scale effect to cover image
-Add conditional `scale-105` transform on the cover image when `activating` is true, with `transition-transform duration-300`.
+### 2. Update video `onEnded` (line 127)
+```tsx
+onEnded={() => {
+  setVideoFinished(true);
+  setTimeout(() => setIntroEffect(true), 50);
+}}
+```
+
+### 3. Add intro glow effect in the static preview block (before the cover image, ~line 139)
+```tsx
+{introEffect && (
+  <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+    <div className="absolute w-40 h-40 rounded-full bg-white/70 blur-2xl animate-pulse" />
+    <div className="absolute w-72 h-72 rounded-full border border-yellow-300/60 animate-ping" />
+  </div>
+)}
+```
+
+### 4. Update cover image with fade-in (line 139-140)
+```tsx
+<img src="/images/cover-book.png" alt="Обложка книги" draggable={false}
+     className={`w-full h-full object-contain select-none transition-all duration-500 
+       ${videoFinished ? "opacity-100 scale-100" : "opacity-0 scale-95"}
+       ${activating ? "scale-105" : ""}`} />
+```
+
+### 5. Reset `introEffect` in `onOpenCatalog` (line 113)
+Add `setIntroEffect(false)` alongside `setVideoFinished(false)`.
 
 ## What does NOT change
-- Video logic, preload, handleOpenBook, flip animation, all other screens
+- handleOpenBook, activating effect, flip animation, preload, MagicBook/FinalBook
 

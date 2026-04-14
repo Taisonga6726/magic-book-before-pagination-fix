@@ -85,45 +85,44 @@ const Index = () => {
       <HeroWave />
       <FloatingWords />
 
-        {mode === "form" && (
-          <MagicBook
-            entries={entries}
-            setEntries={setEntries}
-            onOpenCatalog={() => setMode("preview")}
-            onFinish={() => setMode("final")}
-            onPageNav={handlePageNav}
+      {mode === "form" && (
+        <MagicBook
+          entries={entries}
+          setEntries={setEntries}
+          onOpenCatalog={() => setMode("preview")}
+          onFinish={() => setMode("final")}
+          onPageNav={handlePageNav}
+        />
+      )}
+
+      {mode === "preview" && (
+        <div
+          className={`fixed inset-0 w-screen h-screen cursor-pointer scene-fade-in ${flipping ? "page-flip-anim" : ""}`}
+          onClick={handleOpenBook}
+          style={{ perspective: "1200px", zIndex: 50 }}
+        >
+          <img
+            src="/images/cover-book.png"
+            alt=""
+            className="absolute w-full h-full object-cover blur-2xl scale-110 opacity-40 select-none"
+            draggable={false}
           />
-        )}
+          <img
+            src="/images/cover-book.png"
+            alt="Обложка книги"
+            className="relative w-full h-full object-contain select-none"
+            draggable={false}
+          />
+        </div>
+      )}
 
-        {mode === "preview" && (
-          <div
-            className={`fixed inset-0 w-screen h-screen cursor-pointer scene-fade-in ${flipping ? "page-flip-anim" : ""}`}
-            onClick={handleOpenBook}
-            style={{ perspective: "1200px", zIndex: 50 }}
-          >
-            <img
-              src="/images/cover-book.png"
-              alt=""
-              className="absolute w-full h-full object-cover blur-2xl scale-110 opacity-40 select-none"
-              draggable={false}
-            />
-            <img
-              src="/images/cover-book.png"
-              alt="Обложка книги"
-              className="relative w-full h-full object-contain select-none"
-              draggable={false}
-            />
-          </div>
-        )}
-
-        {mode === "reading" && (
-          <FinalBook entries={entries} onBack={() => setMode("form")} onPageNav={handlePageNav} />
-        )}
+      {mode === "reading" && (
+        <FinalBook entries={entries} onBack={() => setMode("form")} onPageNav={handlePageNav} />
+      )}
 
       {mode === "final" && (
         <FinalScreen onBack={() => setMode("form")} />
       )}
-      </div>
 
       <ControlBar
         mode={mode}

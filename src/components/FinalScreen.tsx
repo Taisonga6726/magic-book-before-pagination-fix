@@ -6,14 +6,17 @@ interface FinalScreenProps {
 
 const FinalScreen: React.FC<FinalScreenProps> = ({ onBack }) => {
   return (
-    <div
-      className="relative w-full max-w-[1100px] mx-auto flex items-center justify-center scene-fade-in"
-      style={{ aspectRatio: "1.5 / 1" }}
-    >
+    <div className="fixed inset-0 w-screen h-screen overflow-hidden z-40 scene-fade-in">
+      <img
+        src="/images/final-screen.png"
+        alt=""
+        className="absolute w-full h-full object-cover blur-2xl scale-110 opacity-40 select-none"
+        draggable={false}
+      />
       <img
         src="/images/final-screen.png"
         alt="Финальный экран"
-        className="w-full h-auto object-contain select-none"
+        className="relative w-full h-full object-contain select-none"
         draggable={false}
       />
     </div>

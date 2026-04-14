@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import FloatingWords from "@/components/FloatingWords";
 import MagicBook from "@/components/MagicBook";
 import FinalBook from "@/components/FinalBook";
+import FinalScreen from "@/components/FinalScreen";
 import ControlBar from "@/components/ControlBar";
 import HeroWave from "@/components/ui/dynamic-wave-canvas-background";
 import { toast } from "@/hooks/use-toast";
@@ -19,13 +20,26 @@ interface PageNav {
 }
 
 const Index = () => {
-  const [mode, setMode] = useState<"edit" | "read" | "final">("edit");
+  const [mode, setMode] = useState<"form" | "preview" | "reading" | "final">("form");
   const [entries, setEntries] = useState<Entry[]>(() => {
     const saved = localStorage.getItem("magic-book-entries");
     return saved ? JSON.parse(saved) : [];
   });
   const [pageNav, setPageNav] = useState<PageNav | null>(null);
+  const [flipping, setFlipping] = useState(false);
+  const flipAudio = useRef<HTMLAudioElement | null>(null);
 
+  useEffect(() => {
+    flipAudio.current = new Audio("/page-flip.mp3");
+    flipAudio.current.volume = 0.5;
+  }, []);
+
+  const playFlipSound = useCallback(() => {
+    if (flipAudio.current) {
+      flipAudio.current.currentTime = 0;
+      flipAudio.current.play().catch(() => {});
+    }
+  }, []);
 
   useEffect(() => {
     const cleared = localStorage.getItem("magic-book-initial-clean");
@@ -41,14 +55,13 @@ const Index = () => {
   }, [entries]);
 
   const handleAddWord = () => {
-    setMode("edit");
+    setMode("form");
   };
 
   const handleRestart = () => {
     setEntries([]);
-    setMode("edit");
+    setMode("form");
   };
-
 
   const handleShare = () => {
     toast({ title: "Функция скоро появится!", description: "Поделиться книгой можно будет в следующем обновлении." });
@@ -58,6 +71,15 @@ const Index = () => {
     setPageNav(nav);
   }, []);
 
+  const handleOpenBook = useCallback(() => {
+    playFlipSound();
+    setFlipping(true);
+    setTimeout(() => {
+      setMode("reading");
+      setFlipping(false);
+    }, 300);
+  }, [playFlipSound]);
+
   return (
     <div className="w-full h-screen flex items-center justify-center p-4 relative overflow-hidden bg-black">
       <HeroWave />
@@ -65,17 +87,37 @@ const Index = () => {
       <div className="relative z-40 w-full flex items-center justify-center">
         <FloatingWords />
 
-        {mode === "edit" && (
+        {mode === "form" && (
           <MagicBook
             entries={entries}
             setEntries={setEntries}
-            onOpenCatalog={() => setMode("read")}
+            onOpenCatalog={() => setMode("preview")}
             onFinish={() => setMode("final")}
             onPageNav={handlePageNav}
           />
         )}
-        {(mode === "read" || mode === "final") && (
-          <FinalBook entries={entries} onBack={() => setMode("edit")} onPageNav={handlePageNav} />
+
+        {mode === "preview" && (
+          <div
+            className={`relative w-full max-w-[700px] mx-auto cursor-pointer scene-fade-in ${flipping ? "page-flip-anim" : ""}`}
+            onClick={handleOpenBook}
+            style={{ perspective: "1200px" }}
+          >
+            <img
+              src="/images/cover-book.png"
+              alt="Обложка книги"
+              className="w-full h-auto object-contain select-none"
+              draggable={false}
+            />
+          </div>
+        )}
+
+        {mode === "reading" && (
+          <FinalBook entries={entries} onBack={() => setMode("form")} onPageNav={handlePageNav} />
+        )}
+
+        {mode === "final" && (
+          <FinalScreen onBack={() => setMode("form")} />
         )}
       </div>
 
@@ -85,7 +127,6 @@ const Index = () => {
         onAddWord={handleAddWord}
         onRestart={handleRestart}
         onShare={handleShare}
-        
         pageNav={pageNav}
       />
     </div>

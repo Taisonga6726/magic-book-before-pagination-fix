@@ -9,12 +9,11 @@ interface PageNav {
 }
 
 interface ControlBarProps {
-  mode: "edit" | "read" | "final";
-  setMode: (mode: "edit" | "read" | "final") => void;
+  mode: "form" | "preview" | "reading" | "final";
+  setMode: (mode: "form" | "preview" | "reading" | "final") => void;
   onAddWord: () => void;
   onRestart: () => void;
   onShare: () => void;
-  
   pageNav?: PageNav | null;
 }
 
@@ -37,7 +36,7 @@ const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onRes
         alignItems: "center",
       }}
     >
-      {mode === "edit" && (
+      {mode === "form" && (
         <>
           <NeonGlassButton onClick={onAddWord}>✏️ внести слово</NeonGlassButton>
           {pageNav?.hasPrev && (
@@ -46,15 +45,20 @@ const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onRes
           {pageNav?.hasNext && (
             <NeonGlassButton onClick={pageNav.onNext}>далее →</NeonGlassButton>
           )}
-          <NeonGlassButton onClick={() => setMode("read")}>📖 читать книгу</NeonGlassButton>
+          <NeonGlassButton onClick={() => setMode("preview")}>📖 читать книгу</NeonGlassButton>
           <NeonGlassButton onClick={() => setMode("final")}>✦ завершить</NeonGlassButton>
-          
         </>
       )}
 
-      {mode === "read" && (
+      {mode === "preview" && (
         <>
-          <NeonGlassButton onClick={onAddWord}>✏️ внести слово</NeonGlassButton>
+          <NeonGlassButton onClick={() => setMode("form")}>✏️ внести слово</NeonGlassButton>
+        </>
+      )}
+
+      {mode === "reading" && (
+        <>
+          <NeonGlassButton onClick={() => setMode("form")}>✏️ внести слово</NeonGlassButton>
           {pageNav?.hasPrev && (
             <NeonGlassButton onClick={pageNav.onPrev}>← назад</NeonGlassButton>
           )}
@@ -64,13 +68,14 @@ const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onRes
           <NeonGlassButton onClick={() => {}}>🙂</NeonGlassButton>
           <NeonGlassButton onClick={() => {}}>😮</NeonGlassButton>
           <NeonGlassButton onClick={() => {}}>🔥</NeonGlassButton>
+          <NeonGlassButton onClick={() => setMode("final")}>✦ завершить</NeonGlassButton>
         </>
       )}
 
       {mode === "final" && (
         <>
           <NeonGlassButton onClick={onRestart}>🔄 начать заново</NeonGlassButton>
-          <NeonGlassButton onClick={() => setMode("edit")}>📖 к книге</NeonGlassButton>
+          <NeonGlassButton onClick={() => setMode("form")}>📖 к книге</NeonGlassButton>
           <NeonGlassButton onClick={onShare}>📤 поделиться</NeonGlassButton>
         </>
       )}

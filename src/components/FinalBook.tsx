@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import bookFinalImg from "@/assets/book-final.png";
+const bookFinalImg = "/images/open-book.png";
 import SpineEffect from "./SpineEffect";
 
 interface Entry {

@@ -28,6 +28,15 @@ const Index = () => {
 
 
   useEffect(() => {
+    const cleared = localStorage.getItem("magic-book-initial-clean");
+    if (!cleared) {
+      localStorage.removeItem("magic-book-entries");
+      localStorage.setItem("magic-book-initial-clean", "true");
+      setEntries([]);
+    }
+  }, []);
+
+  useEffect(() => {
     localStorage.setItem("magic-book-entries", JSON.stringify(entries));
   }, [entries]);
 

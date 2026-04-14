@@ -150,7 +150,7 @@ const Index = () => {
           )}
           <img src="/images/cover-book.png" alt="Обложка книги" draggable={false}
                className={`w-full h-full object-contain select-none transition-all duration-500 ${videoFinished ? "opacity-100 scale-100" : "opacity-0 scale-90"} ${activating ? "scale-105" : ""}`}
-               style={{ filter: introEffect ? "drop-shadow(0 0 20px rgba(255,200,100,0.6))" : "none" }} /> />
+               style={{ filter: introEffect ? "drop-shadow(0 0 20px rgba(255,200,100,0.6))" : "none" }} />
           {activating && (
             <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
               <div className="absolute w-24 h-24 rounded-full bg-white/80 blur-2xl animate-pulse" />

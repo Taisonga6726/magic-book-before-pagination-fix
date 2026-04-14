@@ -1,43 +1,16 @@
 
 
-# Plan: Add entrance magic effect after video before user click
+# Plan: Upgrade magic effect — strong glowing core + particles burst
 
 ## Changes to `src/pages/Index.tsx`
 
-### 1. Add `introEffect` state (after line 31)
-```tsx
-const [introEffect, setIntroEffect] = useState(false);
-```
+### 1. Replace introEffect block (lines 143-148)
+Replace with enhanced multi-layered magic: bright white core, neon yellow glow, ping ring, outer blur sияние, and 3 particle sparks.
 
-### 2. Update video `onEnded` (line 127)
-```tsx
-onEnded={() => {
-  setVideoFinished(true);
-  setTimeout(() => setIntroEffect(true), 50);
-}}
-```
+### 2. Update cover image (lines 149-150)
+- Change scale from `scale-95` to `scale-90` for stronger entrance
+- Add inline `style` with conditional `drop-shadow` glow when `introEffect` is true
 
-### 3. Add intro glow effect in the static preview block (before the cover image, ~line 139)
-```tsx
-{introEffect && (
-  <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-    <div className="absolute w-40 h-40 rounded-full bg-white/70 blur-2xl animate-pulse" />
-    <div className="absolute w-72 h-72 rounded-full border border-yellow-300/60 animate-ping" />
-  </div>
-)}
-```
-
-### 4. Update cover image with fade-in (line 139-140)
-```tsx
-<img src="/images/cover-book.png" alt="Обложка книги" draggable={false}
-     className={`w-full h-full object-contain select-none transition-all duration-500 
-       ${videoFinished ? "opacity-100 scale-100" : "opacity-0 scale-95"}
-       ${activating ? "scale-105" : ""}`} />
-```
-
-### 5. Reset `introEffect` in `onOpenCatalog` (line 113)
-Add `setIntroEffect(false)` alongside `setVideoFinished(false)`.
-
-## What does NOT change
-- handleOpenBook, activating effect, flip animation, preload, MagicBook/FinalBook
+### 3. No other changes
+handleOpenBook, activating effect, flip animation, video logic, preload, all other components remain unchanged.
 

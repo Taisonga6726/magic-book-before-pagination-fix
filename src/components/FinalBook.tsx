@@ -210,7 +210,6 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
 
   return (
     <div className="fixed inset-0 w-screen h-screen overflow-hidden z-40">
-      <img src="/images/open-book.png" className="absolute w-full h-full object-cover blur-2xl scale-110 opacity-40 select-none" draggable={false} />
       <div className="relative w-full h-full flex items-center justify-center">
       <div
         className={`relative w-full max-w-[1100px] mx-auto magic-cursor scene-fade-in ${fadingOut ? "scene-fade-out" : ""}`}

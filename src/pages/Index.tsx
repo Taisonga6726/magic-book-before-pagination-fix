@@ -142,21 +142,15 @@ const Index = () => {
         >
           {introEffect && (
             <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-              <div className="absolute w-[300px] h-[300px] rounded-full bg-white/80 blur-3xl animate-[flash_0.6s_ease-out]" />
-              <div className="absolute w-32 h-32 rounded-full bg-white blur-2xl opacity-90 animate-pulse" />
-              <div className="absolute w-56 h-56 rounded-full bg-yellow-300/40 blur-3xl animate-pulse" />
-              <div className="absolute w-80 h-80 rounded-full border-2 border-yellow-300/80 animate-ping" />
-              <div className="absolute w-[420px] h-[420px] rounded-full bg-yellow-200/20 blur-[100px]" />
-              <div className="absolute w-full h-full animate-pulse">
-                <div className="absolute w-2 h-2 bg-yellow-300 rounded-full top-1/3 left-1/2 animate-ping" />
-                <div className="absolute w-2 h-2 bg-yellow-200 rounded-full top-2/3 left-1/3 animate-ping" />
-                <div className="absolute w-2 h-2 bg-white rounded-full top-1/2 left-2/3 animate-ping" />
-              </div>
+              <div className="absolute w-40 h-40 rounded-full border border-yellow-300/60 animate-pulse" />
+              <div className="absolute w-2 h-2 bg-yellow-300 rounded-full animate-[particleOut_0.8s_ease-out_forwards]" />
+              <div className="absolute w-2 h-2 bg-yellow-200 rounded-full animate-[particleOut2_0.8s_ease-out_0.1s_forwards]" />
+              <div className="absolute w-2 h-2 bg-white rounded-full animate-[particleOut3_0.8s_ease-out_0.2s_forwards]" />
             </div>
           )}
           <img src="/images/cover-book.png" alt="Обложка книги" draggable={false}
                className={`w-full h-full object-contain select-none transition-all duration-500 ${videoFinished ? "opacity-100 scale-100" : "opacity-0 scale-90"} ${activating ? "scale-105" : ""}`}
-               style={{ filter: introEffect ? "drop-shadow(0 0 40px rgba(255,200,100,0.6))" : "none" }} />
+               style={{ filter: introEffect ? "drop-shadow(0 0 20px rgba(255,200,100,0.6))" : "none" }} />
           {activating && (
             <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
               <div className="absolute w-24 h-24 rounded-full bg-white/80 blur-2xl animate-pulse" />

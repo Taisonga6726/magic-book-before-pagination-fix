@@ -1,16 +1,14 @@
 
 
-# Plan: Upgrade magic effect — strong glowing core + particles burst
+# Plan: Fix flash effect — make it centered, not fullscreen
 
-## Changes to `src/pages/Index.tsx`
+## Change in `src/pages/Index.tsx`
 
-### 1. Replace introEffect block (lines 143-148)
-Replace with enhanced multi-layered magic: bright white core, neon yellow glow, ping ring, outer blur sияние, and 3 particle sparks.
+Replace the fullscreen flash div (`fixed inset-0 bg-white/80`) with a centered rounded flash:
 
-### 2. Update cover image (lines 149-150)
-- Change scale from `scale-95` to `scale-90` for stronger entrance
-- Add inline `style` with conditional `drop-shadow` glow when `introEffect` is true
+```tsx
+<div className="absolute w-[300px] h-[300px] rounded-full bg-white/80 blur-3xl animate-[flash_0.6s_ease-out]" />
+```
 
-### 3. No other changes
-handleOpenBook, activating effect, flip animation, video logic, preload, all other components remain unchanged.
+No other changes — all other intro layers, activating effect, video logic, cover image stay as-is.
 

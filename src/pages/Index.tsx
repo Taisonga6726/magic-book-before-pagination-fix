@@ -29,6 +29,7 @@ const Index = () => {
   const [flipping, setFlipping] = useState(false);
   const [videoFinished, setVideoFinished] = useState(false);
   const [activating, setActivating] = useState(false);
+  const [introEffect, setIntroEffect] = useState(false);
   
   const flipAudio = useRef<HTMLAudioElement | null>(null);
 

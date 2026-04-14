@@ -137,10 +137,12 @@ const Index = () => {
           style={{ perspective: "1200px", zIndex: 50, cursor: "pointer" }}
         >
           <img src="/images/cover-book.png" alt="Обложка книги"
-               className="w-full h-full object-contain select-none" draggable={false} />
+               className={`w-full h-full object-contain select-none transition-transform duration-300 ${activating ? "scale-105" : "scale-100"}`} draggable={false} />
           {activating && (
             <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-              <div className="w-40 h-40 rounded-full bg-white/30 animate-ping" />
+              <div className="absolute w-24 h-24 rounded-full bg-white/80 blur-2xl animate-pulse" />
+              <div className="absolute w-56 h-56 rounded-full border-2 border-yellow-300/80 animate-ping" />
+              <div className="absolute w-72 h-72 rounded-full bg-yellow-200/20 blur-3xl animate-ping" />
             </div>
           )}
         </div>

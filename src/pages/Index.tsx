@@ -111,7 +111,7 @@ const Index = () => {
         <MagicBook
           entries={entries}
           setEntries={setEntries}
-          onOpenCatalog={() => { setVideoFinished(false); setMode("preview"); }}
+          onOpenCatalog={() => { setVideoFinished(false); setIntroEffect(false); setMode("preview"); }}
           onFinish={() => setMode("final")}
           onPageNav={handlePageNav}
         />
@@ -125,7 +125,10 @@ const Index = () => {
             autoPlay
             playsInline
             preload="auto"
-            onEnded={() => setVideoFinished(true)}
+            onEnded={() => {
+              setVideoFinished(true);
+              setTimeout(() => setIntroEffect(true), 50);
+            }}
             className="w-full h-full object-contain select-none"
           />
         </div>
@@ -137,8 +140,14 @@ const Index = () => {
           onClick={() => handleOpenBook()}
           style={{ perspective: "1200px", zIndex: 50, cursor: "pointer" }}
         >
-          <img src="/images/cover-book.png" alt="Обложка книги"
-               className={`w-full h-full object-contain select-none transition-transform duration-300 ${activating ? "scale-105" : "scale-100"}`} draggable={false} />
+          {introEffect && (
+            <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+              <div className="absolute w-40 h-40 rounded-full bg-white/70 blur-2xl animate-pulse" />
+              <div className="absolute w-72 h-72 rounded-full border border-yellow-300/60 animate-ping" />
+            </div>
+          )}
+          <img src="/images/cover-book.png" alt="Обложка книги" draggable={false}
+               className={`w-full h-full object-contain select-none transition-all duration-500 ${videoFinished ? "opacity-100 scale-100" : "opacity-0 scale-95"} ${activating ? "scale-105" : ""}`} />
           {activating && (
             <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
               <div className="absolute w-24 h-24 rounded-full bg-white/80 blur-2xl animate-pulse" />

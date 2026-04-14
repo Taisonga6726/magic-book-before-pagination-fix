@@ -399,7 +399,15 @@
   z-index: -1;
 }
 
-@keyframes flash {
-  0% { opacity: 1; }
-  100% { opacity: 0; }
+@keyframes particleOut {
+  0% { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(-100px, -60px) scale(0.4); opacity: 0; }
+}
+@keyframes particleOut2 {
+  0% { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(110px, -50px) scale(0.4); opacity: 0; }
+}
+@keyframes particleOut3 {
+  0% { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(0px, 100px) scale(0.4); opacity: 0; }
 }

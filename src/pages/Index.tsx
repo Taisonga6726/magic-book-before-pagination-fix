@@ -39,9 +39,6 @@ const Index = () => {
     flipAudio.current.volume = 0.5;
   }, []);
 
-  useEffect(() => {
-    console.log("GLOBAL entries:", entries.length, entries);
-  }, [entries]);
 
   const playFlipSound = useCallback(() => {
     if (flipAudio.current) {

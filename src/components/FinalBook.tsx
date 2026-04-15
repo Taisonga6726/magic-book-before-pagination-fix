@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useCallback, useRef, useEffect } from "react";
 const bookFinalImg = "/images/open-book.png";
 import SpineEffect from "./SpineEffect";
 
@@ -22,21 +22,18 @@ interface FinalBookProps {
   onPageNav?: (nav: PageNav) => void;
 }
 
-const ITEMS_PER_PAGE = 3;
-const ITEMS_PER_SPREAD = ITEMS_PER_PAGE * 2;
-
 const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) => {
-  console.log("FinalBook entries:", entries.length, entries);
-  const [currentSpread, setCurrentSpread] = useState(0);
-  const [flipping, setFlipping] = useState(false);
-  const [fadingOut, setFadingOut] = useState(false);
-  const [burst, setBurst] = useState(false);
   const flipAudio = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     flipAudio.current = new Audio("/page-flip.mp3");
     flipAudio.current.volume = 0.5;
   }, []);
+
+  // Clear page nav since no pagination in this simplified version
+  useEffect(() => {
+    onPageNav?.({ hasPrev: false, hasNext: false, onPrev: () => {}, onNext: () => {} });
+  }, [onPageNav]);
 
   const playFlipSound = useCallback(() => {
     if (flipAudio.current) {
@@ -45,43 +42,10 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     }
   }, []);
 
-  const totalSpreads = Math.max(1, Math.ceil(entries.length / ITEMS_PER_SPREAD));
-  const hasNext = currentSpread < totalSpreads - 1;
-  const hasPrev = currentSpread > 0;
-
-  const start = currentSpread * ITEMS_PER_SPREAD;
-  const leftEntries = entries.slice(start, start + ITEMS_PER_PAGE);
-  const rightEntries = entries.slice(start + ITEMS_PER_PAGE, start + ITEMS_PER_SPREAD);
-
-  const handleFlip = useCallback((direction: "next" | "prev") => {
-    if (flipping) return;
-    if (direction === "next" && !hasNext) return;
-    if (direction === "prev" && !hasPrev) return;
-
-    playFlipSound();
-    setFlipping(true);
-    setBurst(false);
-    requestAnimationFrame(() => setBurst(true));
-
-    setTimeout(() => {
-      setCurrentSpread((s) => direction === "next" ? s + 1 : s - 1);
-      setFlipping(false);
-      setBurst(false);
-    }, 1000);
-  }, [flipping, hasNext, hasPrev, playFlipSound]);
-
   const handleBack = useCallback(() => {
-    if (fadingOut || flipping) return;
-    setTimeout(() => {
-      setFlipping(true);
-      playFlipSound();
-      setBurst(false);
-      requestAnimationFrame(() => setBurst(true));
-      setTimeout(() => setFadingOut(true), 600);
-      setTimeout(() => onBack(), 1500);
-    }, 400);
-  }, [fadingOut, flipping, playFlipSound, onBack]);
-
+    playFlipSound();
+    setTimeout(() => onBack(), 400);
+  }, [playFlipSound, onBack]);
 
   const renderInkWord = (text: string) => (
     <span>
@@ -99,8 +63,13 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     );
   }, [setEntries]);
 
+  // Split entries into two columns: left and right pages
+  const splitIndex = Math.ceil(entries.length / 2);
+  const leftEntries = entries.slice(0, splitIndex);
+  const rightEntries = entries.slice(splitIndex);
+
   const renderEntry = (entry: Entry, globalIdx: number) => (
-    <div key={globalIdx} className="flex flex-col">
+    <div key={globalIdx} className="flex flex-col mb-4">
       <div className="border-b border-black/30 pb-1 text-lg font-semibold"
            style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>
         {globalIdx + 1}. {renderInkWord(entry.word)}
@@ -122,7 +91,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     <div className="fixed inset-0 w-screen h-screen overflow-hidden z-40">
       <div className="relative w-full h-full flex items-center justify-center">
       <div
-        className={`relative w-full h-full magic-cursor scene-fade-in ${fadingOut ? "scene-fade-out" : ""}`}
+        className="relative w-full h-full magic-cursor scene-fade-in"
         style={{ transform: "translateY(-3%)" }}
       >
       <div
@@ -136,33 +105,21 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         draggable={false}
       />
 
-      <SpineEffect burst={burst} />
+      <SpineEffect burst={false} />
 
       {/* Page content overlay */}
       <div className="absolute inset-0 flex z-20 pointer-events-auto">
         {/* Left page */}
         <div className="w-1/2 flex justify-center">
-          <div className="w-[68%] mt-[14%] mb-[12%] flex flex-col gap-6 overflow-hidden">
-            <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "right center" }}>
-              {leftEntries.map((entry, i) => renderEntry(entry, start + i))}
-              {leftEntries.length === 0 && (
-                <p className="font-handwriting text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>Пустая страница</p>
-              )}
-            </div>
+          <div className="w-[68%] mt-[14%] mb-[12%] flex flex-col gap-2 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
+            {leftEntries.map((entry, i) => renderEntry(entry, i))}
           </div>
         </div>
         {/* Right page */}
         <div className="w-1/2 flex justify-center">
-          <div className="w-[68%] mt-[14%] mb-[12%] flex flex-col gap-6 overflow-hidden">
-            <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "left center" }}>
-              {rightEntries.map((entry, i) => renderEntry(entry, start + ITEMS_PER_PAGE + i))}
-              {rightEntries.length === 0 && leftEntries.length > 0 && <p> </p>}
-            </div>
+          <div className="w-[68%] mt-[14%] mb-[12%] flex flex-col gap-2 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
+            {rightEntries.map((entry, i) => renderEntry(entry, splitIndex + i))}
           </div>
-        </div>
-        {/* Page counter */}
-        <div className="absolute bottom-4 right-8 font-handwriting text-xs" style={{ color: "hsl(var(--ink) / 0.3)" }}>
-          {currentSpread + 1} / {totalSpreads}
         </div>
       </div>
     </div>

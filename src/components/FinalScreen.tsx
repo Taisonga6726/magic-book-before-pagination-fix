@@ -24,17 +24,14 @@ const FinalScreen: React.FC<FinalScreenProps> = ({ entries, onBack }) => {
         className="absolute w-full h-full object-contain select-none"
         draggable={false}
       />
-      <div className="absolute inset-0 flex flex-col justify-end items-center pb-24 text-white pointer-events-none">
-        <div className="mb-6 px-6 py-3 rounded-xl bg-black/30 backdrop-blur-md text-2xl font-handwriting">
+      <div className="absolute bottom-28 left-1/2 -translate-x-1/2 flex items-center gap-8 text-white pointer-events-none">
+        <div className="px-5 py-2 rounded-xl bg-black/40 backdrop-blur-md text-xl font-handwriting">
           Всего слов: {entries.length}
         </div>
-        <div className="px-8 py-4 rounded-2xl bg-black/30 backdrop-blur-md">
-          <div className="text-sm mb-2 opacity-80 text-center">Реакции</div>
-          <div className="flex gap-10 text-4xl justify-center">
-            <div>🔥 {totalFire}</div>
-            <div>❤️ {totalLove}</div>
-            <div>🚀 {totalRocket}</div>
-          </div>
+        <div className="flex items-center gap-6 px-6 py-3 rounded-xl bg-black/30 backdrop-blur-md text-3xl">
+          <div>🔥 {totalFire}</div>
+          <div>❤️ {totalLove}</div>
+          <div>🚀 {totalRocket}</div>
         </div>
       </div>
     </div>

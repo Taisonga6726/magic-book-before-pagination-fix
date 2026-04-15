@@ -97,11 +97,11 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         {globalIdx + 1}. {renderInkWord(entry.word)}
       </div>
       {entry.description && (
-        <div className="text-xs opacity-80 font-handwriting leading-tight" style={{ color: "#2a1f5a" }}>
+        <div className="text-sm font-handwriting leading-tight" style={{ color: "#1a1030" }}>
           — {entry.description}
         </div>
       )}
-      <div className="flex gap-3 text-xs justify-end" style={{ color: "#2a1f5a" }}>
+      <div className="flex gap-3 text-xs justify-end" style={{ color: "#1a1440" }}>
         <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
@@ -138,13 +138,13 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "20%", top: "27%", width: "26%", height: "44%",
+            left: "20%", top: "29%", width: "26%", height: "44%",
             padding: "12px 10px 24px 20px",
           }}
         >
           {leftPageEntries.map((entry, i) => renderEntry(entry, spreadStart + i))}
           <div className="absolute bottom-2 left-0 right-0 text-center select-none"
-               style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "13px", opacity: 0.55, letterSpacing: "2px" }}>
+               style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "15px", opacity: 0.85, letterSpacing: "2px" }}>
             — Стр. {leftPageNum} —
           </div>
         </div>
@@ -153,14 +153,14 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "55%", top: "27%", width: "26%", height: "44%",
+            left: "55%", top: "29%", width: "26%", height: "44%",
             padding: "12px 20px 24px 10px",
           }}
         >
           {rightPageEntries.map((entry, i) => renderEntry(entry, spreadStart + ITEMS_PER_PAGE + i))}
           {rightPageEntries.length > 0 && (
             <div className="absolute bottom-2 left-0 right-0 text-center select-none"
-                 style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "13px", opacity: 0.55, letterSpacing: "2px" }}>
+                 style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "15px", opacity: 0.85, letterSpacing: "2px" }}>
               — Стр. {rightPageNum} —
             </div>
           )}

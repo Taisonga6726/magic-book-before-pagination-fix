@@ -1,34 +1,36 @@
 
 
-# Plan: Выровнять FinalBook как MagicBook — жирные заголовки, крупнее шрифт, полная ширина
+# Plan: Увеличить книгу FinalBook до размера MagicBook + слова жирным
 
 ## Проблема
-FinalBook использует мелкий шрифт (`text-sm`), заголовки не жирные, контейнеры страниц узкие и смещены — не совпадают с MagicBook.
+1. FinalBook использует контейнер с `aspectRatio` и `height: 100vh` — книга меньше чем в MagicBook
+2. Слова (entry.word) не выделены жирным — bold только на номере
 
 ## Изменения в `src/components/FinalBook.tsx`
 
-### 1. Контейнеры страниц — привести к размерам MagicBook
+### 1. Контейнер книги (lines 156-165) — как в MagicBook
+Заменить текущую обёртку на структуру MagicBook:
+```tsx
+<div className="fixed inset-0 w-screen h-screen overflow-hidden z-40">
+  <div className="relative w-full h-full flex items-center justify-center">
+    <div className="relative w-full h-full magic-cursor scene-fade-in" style={{ transform: "translateY(-3%)" }}>
+```
+И картинку сделать `object-contain` как в MagicBook:
+```tsx
+<img src={bookFinalImg} className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none" />
+```
 
-**Левая страница (line 141):**
-- `left: "28%"` → `"22%"`, `top: "32%"` → `"18%"`, `width: "21%"` → `"22%"`, `height: "40%"` → `"60%"`
-- `padding: "8px 4px 28px 2px"` → `"12px 2px 40px 4px"`
+### 2. Слово жирным (line 140)
+Добавить `font-bold` на весь заголовок (и номер, и слово):
+```tsx
+<div className="pb-0.5 text-xl leading-tight font-bold" ...>
+```
 
-**Правая страница (line 156):**
-- `left: "51%"` → `"54%"`, `top: "32%"` → `"18%"`, `width: "24%"` → `"26%"`, `height: "40%"` → `"60%"`
-- `padding: "8px 6px 28px 4px"` → `"12px 2px 40px 4px"`
+### 3. Тень от MagicBook (line 168-169)
+Усилить виньетку как в MagicBook:
+```
+boxShadow: "inset 0 0 150px 80px rgba(0,0,0,0.9)"
+```
 
-### 2. Стиль renderEntry (lines 95-102)
-- Заголовок: `text-sm` → `text-xl`, `font-semibold` → `font-bold`
-- Описание: `text-sm` → `text-base`
-- Всё остальное (justify, lineHeight 1.15) — оставить
-
-### 3. Динамическая пагинация вместо фиксированных ITEMS_PER_PAGE
-- Убрать константы `ITEMS_PER_PAGE = 4` и `ITEMS_PER_SPREAD = 8`
-- Добавить DOM-измерение высоты записей (как в MagicBook) для определения сколько записей влезает на страницу
-- Заполнять до нижнего орнамента, переворачивать если не влезает
-
-### Техническая реализация пагинации
-- Добавить `useEffect` с ref на контейнер для измерения
-- Использовать тот же подход что в MagicBook: скрытый div, innerHTML с точными стилями, проверка `scrollHeight > offsetHeight`
-- Результат: массив `pages[]` где каждый элемент — массив записей для этой страницы
+Больше ничего не меняю — позиции страниц, пагинация, описание остаются как есть.
 

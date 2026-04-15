@@ -1,37 +1,38 @@
 
 
-# Plan: Fix page content positioning & page number visibility
+# Plan: Fix entry positioning — fit inside ornamental borders
 
-## Issues from screenshot
-1. Content overflows the ornamental borders — needs tighter bounding box
-2. Page number "— Стр. N —" too small and blends into background
-3. Content needs to shift further down and inward to stay within the decorated page area
+## Problem
+Screenshot shows entries overflow above and left of the page ornaments. The red boxes in the screenshot show where the actual writable page area is — content must stay inside those ornamental frames.
+
+## Analysis of ornament positions (from screenshot)
+The ornamental inner frame on each page starts roughly:
+- **Left page**: `left: 15%`, `top: 24%`, `width: 28%`, `height: 48%`
+- **Right page**: `left: 54%`, `top: 24%`, `width: 28%`, `height: 48%`
+
+Current values have `top: 18%` (too high) and `width: 33%` (too wide), `left: 13%` (too far left).
 
 ## Changes in `src/components/FinalBook.tsx`
 
-### 1. Adjust left page container (line 141)
-- `left: 20%` → `left: 13%`
-- `top: 29%` → `top: 18%`
-- `width: 26%` → `width: 33%`
-- `height: 44%` → `height: 55%`
-- Increase padding to keep text away from ornament edges: `padding: 45px 30px 40px 50px`
+### 1. Left page container (line 141)
+```
+left: 13% → 15%
+top: 18% → 25%
+width: 33% → 28%
+height: 55% → 47%
+padding: 45px 30px 40px 50px → 20px 20px 30px 25px
+```
 
-### 2. Adjust right page container (line 156)
-- `left: 55%` → `left: 53%`
-- `top: 29%` → `top: 18%`
-- `width: 26%` → `width: 33%`
-- `height: 44%` → `height: 55%`
-- Padding: `padding: 45px 50px 40px 30px`
+### 2. Right page container (line 156)
+```
+left: 53% → 55%
+top: 18% → 25%
+width: 33% → 28%
+height: 55% → 47%
+padding: 45px 50px 40px 30px → 20px 25px 30px 20px
+```
 
-### 3. Make page numbers much more visible (lines 146-149, 162-165)
-- Font size: `15px` → `18px`
-- Opacity: `0.85` → `1`
-- Add subtle background pill: `background: rgba(26,20,64,0.08)`, `borderRadius: 12px`, `padding: 2px 16px`, inline styling
-- `bottom: 2` → `bottom: 6px`
+Smaller padding since the container itself is now tighter. Page numbers stay at `bottom: 6px` inside these containers.
 
-### 4. Reduce entry spacing to fit 4 entries reliably
-- Entry container: `mb-1` → `mb-0.5`
-- Description: `text-sm` → `text-xs`
-
-No logic changes. Pure positioning & style tweaks.
+No logic changes — positioning only.
 

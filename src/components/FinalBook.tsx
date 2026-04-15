@@ -92,16 +92,16 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
   const renderEntry = (entry: Entry, globalIdx: number) => (
     <div key={globalIdx} className="flex flex-col mb-0.5">
-      <div className="border-b border-black/30 pb-0.5 text-base font-semibold leading-tight"
+      <div className="pb-0.5 text-sm font-semibold leading-tight"
            style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>
         {globalIdx + 1}. {renderInkWord(entry.word)}
       </div>
       {entry.description && (
-        <div className="text-xs font-handwriting leading-tight" style={{ color: "#1a1030" }}>
+        <div className="text-xs font-handwriting leading-tight mt-0" style={{ color: "#1a1030" }}>
           — {entry.description}
         </div>
       )}
-      <div className="flex gap-3 text-xs justify-end" style={{ color: "#1a1440" }}>
+      <div className="flex gap-2 text-[10px] justify-end" style={{ color: "#1a1440" }}>
         <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
@@ -138,14 +138,14 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "15%", top: "25%", width: "28%", height: "47%",
-            padding: "20px 20px 30px 25px",
+            left: "16%", top: "29%", width: "27%", height: "43%",
+            padding: "10px 15px 28px 20px",
           }}
         >
           {leftPageEntries.map((entry, i) => renderEntry(entry, spreadStart + i))}
-          <div className="absolute bottom-[6px] left-0 right-0 flex justify-center select-none"
-               style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "18px", opacity: 1, letterSpacing: "2px" }}>
-            <span style={{ background: "rgba(26,20,64,0.08)", borderRadius: "12px", padding: "2px 16px" }}>— Стр. {leftPageNum} —</span>
+          <div className="absolute bottom-[4px] left-[8px] select-none"
+               style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "15px", opacity: 0.9, letterSpacing: "1px" }}>
+            — {leftPageNum} —
           </div>
         </div>
 
@@ -153,15 +153,15 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "55%", top: "25%", width: "28%", height: "47%",
-            padding: "20px 25px 30px 20px",
+            left: "56%", top: "29%", width: "27%", height: "43%",
+            padding: "10px 20px 28px 15px",
           }}
         >
           {rightPageEntries.map((entry, i) => renderEntry(entry, spreadStart + ITEMS_PER_PAGE + i))}
           {rightPageEntries.length > 0 && (
-            <div className="absolute bottom-[6px] left-0 right-0 flex justify-center select-none"
-                 style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "18px", opacity: 1, letterSpacing: "2px" }}>
-              <span style={{ background: "rgba(26,20,64,0.08)", borderRadius: "12px", padding: "2px 16px" }}>— Стр. {rightPageNum} —</span>
+            <div className="absolute bottom-[4px] right-[8px] select-none"
+                 style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "15px", opacity: 0.9, letterSpacing: "1px" }}>
+              — {rightPageNum} —
             </div>
           )}
         </div>

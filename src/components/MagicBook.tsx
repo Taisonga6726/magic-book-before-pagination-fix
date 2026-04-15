@@ -132,7 +132,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
         <div style="margin-bottom:8px">
           <div><span style="font-size:1.5rem;font-weight:700">${i + 1}.</span>
           <span style="font-size:1.5rem">${entries[i].word}</span></div>
-          ${entries[i].description ? `<div style="font-size:1.125rem;margin-left:1.75rem">— ${entries[i].description}</div>` : ""}
+          ${entries[i].description ? `<div style="font-size:1.125rem;margin-left:1.75rem">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
         </div>`;
       const h = measure.offsetHeight;
 
@@ -182,14 +182,14 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
     if (editIdx !== null) {
       setEntries((prev) => {
         const copy = [...prev];
-        copy[editIdx] = { ...copy[editIdx], word: word.trim(), description: description.trim() };
+        copy[editIdx] = { ...copy[editIdx], word: word.trim(), description: description.trim().replace(/^[—–\-]\s*/, "") };
         return copy;
       });
       setEditIdx(null);
     } else {
       setEntries((prev) => [
         ...prev,
-        { word: word.trim(), description: description.trim(), reactions: { fire: 0, love: 0, rocket: 0 } },
+        { word: word.trim(), description: description.trim().replace(/^[—–\-]\s*/, ""), reactions: { fire: 0, love: 0, rocket: 0 } },
       ]);
     }
 
@@ -358,7 +358,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
                       </div>
                       {entry.description && (
                         <div className="font-handwriting text-base mt-0.5" style={{ color: "#2a1f5a", textAlign: "justify", lineHeight: "1.15" }}>
-                          — {entry.description}
+                          — {entry.description.replace(/^[—–\-]\s*/, "")}
                         </div>
                       )}
                     </div>

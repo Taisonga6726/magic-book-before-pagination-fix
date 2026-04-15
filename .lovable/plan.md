@@ -1,51 +1,90 @@
 
-Цель: убрать визуальный “сброс” списка, не трогая storage и сохранение.
 
-Что уже проверено
-- `MagicBook` добавляет новое слово корректно: `setEntries(prev => [...prev, newEntry])`.
-- `Index` хранит один `entries` и синхронизирует его с `localStorage`.
-- Значит баг не в сохранении массива, а в текущем split внутри `FinalBook`.
+# Plan: Book pagination with fixed 4-per-page capacity
 
-Почему сейчас кажется, что список начинается сначала
-- В `FinalBook` используется `splitIndex = Math.ceil(entries.length / 2)`.
-- После каждого нового слова split пересчитывается, и старые записи перераспределяются между левой и правой страницей.
-- Из-за этого визуально список “строится заново”, хотя сам `entries` не сбрасывается.
+## What changes
 
-План
-1. `src/components/FinalBook.tsx` — убрать деление пополам по длине массива.
-- Удалить `Math.ceil(entries.length / 2)`.
-- Сначала построить один упорядоченный массив:
-  `indexedEntries = entries.map((entry, index) => ({ entry, index }))`.
+### `src/components/FinalBook.tsx` — Full rewrite of content logic
 
-2. `src/components/FinalBook.tsx` — сделать стабильное последовательное заполнение разворота.
-- Ввести единый `splitPoint` для текущего разворота, который не зависит от `entries.length / 2`.
-- Левая страница получает первые записи до лимита своей рабочей зоны.
-- Правая страница получает весь оставшийся хвост.
-- Новые слова будут добавляться только в конец видимого списка, без перераспределения уже показанных записей.
-- Старую пагинацию не возвращать.
+**1. Add `currentSpread` state + auto-navigation**
 
-3. `src/components/FinalBook.tsx` — рендерить обе страницы только из pre-indexed данных.
-- `leftEntries.map(({ entry, index }) => renderEntry(entry, index))`
-- `rightEntries.map(({ entry, index }) => renderEntry(entry, index))`
-- Нумерация всегда идёт от глобального `index + 1`, а не от локального индекса страницы.
+```tsx
+const ITEMS_PER_PAGE = 4;
+const ITEMS_PER_SPREAD = 8;
 
-4. `src/components/MagicBook.tsx` и `src/pages/Index.tsx` — оставить без логических изменений.
-- Сохранение не трогать: оно уже корректно аппендит запись в конец массива.
-- `entries` остаётся единственным источником данных.
-- Логику initial clean и storage не менять, потому что текущий баг не там.
-
-Проверка после реализации
-- Добавить 1, 2, 3, 4, 5 слов подряд.
-- Убедиться, что номера идут `1, 2, 3, 4, 5` без перезапуска.
-- При добавлении нового слова старые записи остаются на месте, а новый элемент появляется в конце.
-- Левая страница заполняется первой, правая продолжает список.
-- Реакции продолжают работать по тому же глобальному индексу.
-
-Технически итог
-```text
-entries
-  -> indexedEntries [{ entry, index }]
-  -> stable left slice
-  -> right slice = remainder
-  -> renderEntry(entry, globalIndex)
+const [currentSpread, setCurrentSpread] = useState(0);
 ```
+
+When `entries` changes, auto-navigate to the spread containing the last entry:
+```tsx
+useEffect(() => {
+  if (entries.length > 0) {
+    const lastSpread = Math.floor((entries.length - 1) / ITEMS_PER_SPREAD);
+    setCurrentSpread(lastSpread);
+  }
+}, [entries.length]);
+```
+
+**2. Slice entries for current spread**
+
+```tsx
+const spreadStart = currentSpread * ITEMS_PER_SPREAD;
+const spreadEntries = entries.slice(spreadStart, spreadStart + ITEMS_PER_SPREAD);
+const leftPageEntries = spreadEntries.slice(0, ITEMS_PER_PAGE);
+const rightPageEntries = spreadEntries.slice(ITEMS_PER_PAGE);
+```
+
+Global index for numbering: `spreadStart + i` (never resets).
+
+**3. Page numbers**
+
+- Left page: `currentSpread * 2 + 1`
+- Right page: `currentSpread * 2 + 2`
+- Rendered at bottom of each page container, small text.
+
+**4. Compact entry layout**
+
+Tighten `renderEntry`:
+- Remove `mb-4` → use `mb-1`
+- Remove `gap-2` from container → use `gap-0`
+- Description: `mt-0` instead of `mt-1`, smaller text
+- Reactions: inline right-aligned, `mt-0`, smaller font
+- Goal: 4 entries fit in ~54% height without overflow
+
+**5. Replace `overflow-y-auto` → `overflow-hidden`**
+
+No scrolling. If 4 entries don't fit, it's a layout bug to fix.
+
+**6. Wire `onPageNav` to `currentSpread`**
+
+```tsx
+useEffect(() => {
+  const totalSpreads = Math.ceil(entries.length / ITEMS_PER_SPREAD);
+  onPageNav?.({
+    hasPrev: currentSpread > 0,
+    hasNext: currentSpread < totalSpreads - 1,
+    onPrev: () => { playFlipSound(); setCurrentSpread(s => s - 1); },
+    onNext: () => { playFlipSound(); setCurrentSpread(s => s + 1); },
+  });
+}, [currentSpread, entries.length, onPageNav, playFlipSound]);
+```
+
+ControlBar already renders prev/next arrows based on `pageNav`.
+
+### No changes to other files
+
+- `Index.tsx` — entries, save logic, mode switching stay as-is
+- `MagicBook.tsx` — untouched
+- `ControlBar.tsx` — already supports `pageNav` arrows
+
+## Expected behavior
+
+| Words added | Left page | Right page | Spread |
+|---|---|---|---|
+| 1–4 | words 1–4 | empty | 1 |
+| 5–8 | words 1–4 | words 5–8 | 1 |
+| 9 | words 9 | empty | 2 (auto-flip) |
+| 9–12 | words 9–12 | empty | 2 |
+
+Page numbers shown: "Страница 1" / "Страница 2" on spread 1, "Страница 3" / "Страница 4" on spread 2, etc.
+

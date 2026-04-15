@@ -152,7 +152,6 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
       {/* Left page */}
       <div
-        ref={leftPageRef}
         className="absolute font-handwriting no-scroll z-20"
         style={{
           left: "12%", top: "14%", width: "36%", height: "70%",

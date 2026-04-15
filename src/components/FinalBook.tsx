@@ -153,15 +153,15 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "55%", top: "29%", width: "26%", height: "44%",
-            padding: "12px 20px 24px 10px",
+            left: "53%", top: "18%", width: "33%", height: "55%",
+            padding: "45px 50px 40px 30px",
           }}
         >
           {rightPageEntries.map((entry, i) => renderEntry(entry, spreadStart + ITEMS_PER_PAGE + i))}
           {rightPageEntries.length > 0 && (
-            <div className="absolute bottom-2 left-0 right-0 text-center select-none"
-                 style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "15px", opacity: 0.85, letterSpacing: "2px" }}>
-              — Стр. {rightPageNum} —
+            <div className="absolute bottom-[6px] left-0 right-0 flex justify-center select-none"
+                 style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "18px", opacity: 1, letterSpacing: "2px" }}>
+              <span style={{ background: "rgba(26,20,64,0.08)", borderRadius: "12px", padding: "2px 16px" }}>— Стр. {rightPageNum} —</span>
             </div>
           )}
         </div>

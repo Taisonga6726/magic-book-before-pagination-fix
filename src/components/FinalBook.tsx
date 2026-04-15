@@ -154,7 +154,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
       <div
         className="absolute font-handwriting no-scroll z-20"
         style={{
-          left: "12%", top: "14%", width: "36%", height: "70%",
+          left: "12%", top: "16%", width: "36%", height: "66%",
           padding: "16px 20px 20px 20px",
           overflow: "hidden",
           perspective: "1200px",
@@ -176,7 +176,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
       <div
         className="absolute font-handwriting no-scroll z-20"
         style={{
-          left: "52%", top: "14%", width: "36%", height: "70%",
+          left: "52%", top: "16%", width: "36%", height: "66%",
           padding: "16px 20px 20px 20px",
           overflow: "hidden", overflowWrap: "break-word", wordBreak: "break-word",
           perspective: "1200px",

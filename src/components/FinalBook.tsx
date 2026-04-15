@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from "react";
+import { useCallback, useRef, useEffect, useState } from "react";
 const bookFinalImg = "/images/open-book.png";
 import SpineEffect from "./SpineEffect";
 
@@ -22,18 +22,25 @@ interface FinalBookProps {
   onPageNav?: (nav: PageNav) => void;
 }
 
+const ITEMS_PER_PAGE = 4;
+const ITEMS_PER_SPREAD = 8;
+
 const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) => {
   const flipAudio = useRef<HTMLAudioElement | null>(null);
+  const [currentSpread, setCurrentSpread] = useState(0);
 
   useEffect(() => {
     flipAudio.current = new Audio("/page-flip.mp3");
     flipAudio.current.volume = 0.5;
   }, []);
 
-  // Clear page nav since no pagination in this simplified version
+  // Auto-navigate to spread containing the last entry
   useEffect(() => {
-    onPageNav?.({ hasPrev: false, hasNext: false, onPrev: () => {}, onNext: () => {} });
-  }, [onPageNav]);
+    if (entries.length > 0) {
+      const lastSpread = Math.floor((entries.length - 1) / ITEMS_PER_SPREAD);
+      setCurrentSpread(lastSpread);
+    }
+  }, [entries.length]);
 
   const playFlipSound = useCallback(() => {
     if (flipAudio.current) {
@@ -41,6 +48,17 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
       flipAudio.current.play().catch(() => {});
     }
   }, []);
+
+  // Wire page nav to ControlBar
+  useEffect(() => {
+    const totalSpreads = Math.max(1, Math.ceil(entries.length / ITEMS_PER_SPREAD));
+    onPageNav?.({
+      hasPrev: currentSpread > 0,
+      hasNext: currentSpread < totalSpreads - 1,
+      onPrev: () => { playFlipSound(); setCurrentSpread(s => s - 1); },
+      onNext: () => { playFlipSound(); setCurrentSpread(s => s + 1); },
+    });
+  }, [currentSpread, entries.length, onPageNav, playFlipSound]);
 
   const handleBack = useCallback(() => {
     playFlipSound();
@@ -63,24 +81,27 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     );
   }, [setEntries]);
 
-  // Stable sequential fill: left page first (up to 5 items), then right page
-  const PAGE_LIMIT = 5;
-  const indexedEntries = entries.map((entry, index) => ({ entry, index }));
-  const leftEntries = indexedEntries.slice(0, PAGE_LIMIT);
-  const rightEntries = indexedEntries.slice(PAGE_LIMIT);
+  // Pagination: slice for current spread
+  const spreadStart = currentSpread * ITEMS_PER_SPREAD;
+  const spreadEntries = entries.slice(spreadStart, spreadStart + ITEMS_PER_SPREAD);
+  const leftPageEntries = spreadEntries.slice(0, ITEMS_PER_PAGE);
+  const rightPageEntries = spreadEntries.slice(ITEMS_PER_PAGE);
+
+  const leftPageNum = currentSpread * 2 + 1;
+  const rightPageNum = currentSpread * 2 + 2;
 
   const renderEntry = (entry: Entry, globalIdx: number) => (
-    <div key={globalIdx} className="flex flex-col mb-4">
-      <div className="border-b border-black/30 pb-1 text-lg font-semibold"
+    <div key={globalIdx} className="flex flex-col mb-1">
+      <div className="border-b border-black/30 pb-0.5 text-base font-semibold leading-tight"
            style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>
         {globalIdx + 1}. {renderInkWord(entry.word)}
       </div>
       {entry.description && (
-        <div className="mt-1 text-sm opacity-80 font-handwriting" style={{ color: "#2a1f5a" }}>
+        <div className="text-xs opacity-80 font-handwriting leading-tight" style={{ color: "#2a1f5a" }}>
           — {entry.description}
         </div>
       )}
-      <div className="flex gap-4 mt-2 text-sm" style={{ color: "#2a1f5a" }}>
+      <div className="flex gap-3 text-xs justify-end" style={{ color: "#2a1f5a" }}>
         <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
@@ -108,29 +129,36 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
       <SpineEffect burst={false} />
 
-      {/* Page content overlay */}
       {/* Left page */}
       <div
-        className="absolute z-20 overflow-y-auto pointer-events-auto flex flex-col gap-2"
+        className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
         style={{
           left: "20%", top: "22%", width: "27%", height: "54%",
-          padding: "16px 12px 16px 30px",
-          scrollbarWidth: "none",
+          padding: "12px 10px 20px 28px",
         }}
       >
-        {leftEntries.map(({ entry, index }) => renderEntry(entry, index))}
+        {leftPageEntries.map((entry, i) => renderEntry(entry, spreadStart + i))}
+        <div className="mt-auto text-center text-xs opacity-40 select-none"
+             style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif" }}>
+          — {leftPageNum} —
+        </div>
       </div>
 
       {/* Right page */}
       <div
-        className="absolute z-20 overflow-y-auto pointer-events-auto flex flex-col gap-2"
+        className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
         style={{
           left: "53%", top: "22%", width: "27%", height: "54%",
-          padding: "16px 30px 16px 12px",
-          scrollbarWidth: "none",
+          padding: "12px 28px 20px 10px",
         }}
       >
-        {rightEntries.map(({ entry, index }) => renderEntry(entry, index))}
+        {rightPageEntries.map((entry, i) => renderEntry(entry, spreadStart + ITEMS_PER_PAGE + i))}
+        {rightPageEntries.length > 0 && (
+          <div className="mt-auto text-center text-xs opacity-40 select-none"
+               style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif" }}>
+            — {rightPageNum} —
+          </div>
+        )}
       </div>
     </div>
       </div>

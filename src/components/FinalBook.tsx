@@ -135,9 +135,9 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
   const renderEntry = (entry: Entry, globalIdx: number) => (
     <div key={globalIdx} className="flex flex-col mb-0">
-      <div className="pb-0.5 text-xl leading-tight"
+      <div className="pb-0.5 text-xl leading-tight font-bold"
            style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textAlign: "justify", lineHeight: "1.15" }}>
-        <span className="font-bold">{globalIdx + 1}.</span> {renderInkWord(entry.word)}
+        {globalIdx + 1}. {renderInkWord(entry.word)}
       </div>
       {entry.description && (
         <div className="text-base font-handwriting leading-tight mt-0" style={{ color: "#1a1030", textAlign: "justify", lineHeight: "1.15" }}>
@@ -153,19 +153,12 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
   );
 
   return (
-    <div className="fixed inset-0 w-screen h-screen overflow-hidden z-40 flex items-center justify-center">
-      <div
-        className="relative magic-cursor scene-fade-in"
-        style={{
-          aspectRatio: "1920 / 1288",
-          maxWidth: "100vw",
-          maxHeight: "100vh",
-          height: "100vh",
-        }}
-      >
+    <div className="fixed inset-0 w-screen h-screen overflow-hidden z-40">
+      <div className="relative w-full h-full flex items-center justify-center">
+        <div className="relative w-full h-full magic-cursor scene-fade-in" style={{ transform: "translateY(-3%)" }}>
         <div
           className="absolute inset-0 pointer-events-none z-10"
-          style={{ boxShadow: "inset 0 0 80px 40px rgba(0,0,0,0.6)", borderRadius: "8px" }}
+          style={{ boxShadow: "inset 0 0 150px 80px rgba(0,0,0,0.9)", borderRadius: "8px" }}
         />
         <img
           src={bookFinalImg}

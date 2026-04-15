@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 const bookFinalImg = "/images/open-book.png";
 import SpineEffect from "./SpineEffect";
 
@@ -17,12 +17,11 @@ interface PageNav {
 
 interface FinalBookProps {
   entries: Entry[];
-  setEntries: Dispatch<SetStateAction<Entry[]>>;
   onBack: () => void;
   onPageNav?: (nav: PageNav) => void;
 }
 
-const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) => {
+const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
   const [currentSpread, setCurrentSpread] = useState(0);
   const [flipping, setFlipping] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
@@ -178,15 +177,6 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     }, 400);
   }, [fadingOut, flipping, playFlipSound, onBack]);
 
-  const updateReaction = useCallback((globalIdx: number, type: "fire" | "love" | "rocket") => {
-    setEntries((prev) =>
-      prev.map((w, i) =>
-        i === globalIdx
-          ? { ...w, reactions: { ...w.reactions, [type]: (w.reactions?.[type] || 0) + 1 } }
-          : w
-      )
-    );
-  }, [setEntries]);
 
   const renderInkWord = (text: string) => (
     <span>
@@ -214,29 +204,6 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           — {entry.description}
         </div>
       )}
-      <div className="flex gap-2 mt-1 ml-6">
-        <button
-          onClick={() => updateReaction(globalIdx, "fire")}
-          className="text-xs px-1.5 py-0.5 rounded hover:bg-yellow-100/30 transition-colors"
-          style={{ color: "#1a1440" }}
-        >
-          🔥 {entry.reactions?.fire || 0}
-        </button>
-        <button
-          onClick={() => updateReaction(globalIdx, "love")}
-          className="text-xs px-1.5 py-0.5 rounded hover:bg-pink-100/30 transition-colors"
-          style={{ color: "#1a1440" }}
-        >
-          ❤️ {entry.reactions?.love || 0}
-        </button>
-        <button
-          onClick={() => updateReaction(globalIdx, "rocket")}
-          className="text-xs px-1.5 py-0.5 rounded hover:bg-blue-100/30 transition-colors"
-          style={{ color: "#1a1440" }}
-        >
-          🚀 {entry.reactions?.rocket || 0}
-        </button>
-      </div>
     </div>
   );
 

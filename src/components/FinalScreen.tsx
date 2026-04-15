@@ -24,13 +24,12 @@ const FinalScreen: React.FC<FinalScreenProps> = ({ entries, onBack }) => {
         className="absolute w-full h-full object-contain select-none"
         draggable={false}
       />
-      {/* Stats overlay */}
-      <div className="absolute inset-0 flex items-end justify-center pb-[18%] pointer-events-none">
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
         <div className="text-center font-handwriting" style={{ color: "#e8dcc8" }}>
-          <p className="text-xl mb-2" style={{ textShadow: "0 0 8px rgba(0,0,0,0.5)" }}>
-            Всего слов: <span className="font-bold">{entries.length}</span>
+          <p className="text-3xl mb-4 font-bold" style={{ textShadow: "0 0 12px rgba(0,0,0,0.6)" }}>
+            Всего слов: {entries.length}
           </p>
-          <div className="flex gap-6 justify-center text-lg" style={{ textShadow: "0 0 8px rgba(0,0,0,0.5)" }}>
+          <div className="flex gap-8 justify-center text-4xl" style={{ textShadow: "0 0 12px rgba(0,0,0,0.6)" }}>
             <span>🔥 {totalFire}</span>
             <span>❤️ {totalLove}</span>
             <span>🚀 {totalRocket}</span>

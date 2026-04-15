@@ -1,36 +1,34 @@
 
 
-# Plan: Исправить пагинацию — заполнять страницу до нижнего орнамента
+# Plan: Выровнять FinalBook как MagicBook — жирные заголовки, крупнее шрифт, полная ширина
 
 ## Проблема
-Размеры шрифтов в измерении не совпадают с реальным рендером, поэтому код считает, что записи занимают больше места, чем реально. Страница остаётся наполовину пустой.
+FinalBook использует мелкий шрифт (`text-sm`), заголовки не жирные, контейнеры страниц узкие и смещены — не совпадают с MagicBook.
 
-## Изменения в `src/components/MagicBook.tsx`
+## Изменения в `src/components/FinalBook.tsx`
 
-### Измерение высоты записей (lines 131-136)
-Привести размеры в измерении в точное соответствие с рендером:
+### 1. Контейнеры страниц — привести к размерам MagicBook
 
-| Параметр | Сейчас (измерение) | Рендер (реальный) | Исправить на |
-|---|---|---|---|
-| Заголовок font-size | 1.5rem (24px) | text-xl (20px) | 1.25rem |
-| Описание font-size | 1.125rem (18px) | text-base (16px) | 1rem |
-| Описание margin-left | 1.75rem | нет | убрать |
-| lineHeight | default | 1.15 | 1.15 |
-| margin-bottom | 8px | space-y-1 (4px) | 4px |
-| textAlign | default | justify | justify |
-| width | container.offsetWidth | с учётом padding | без изменений |
+**Левая страница (line 141):**
+- `left: "28%"` → `"22%"`, `top: "32%"` → `"18%"`, `width: "21%"` → `"22%"`, `height: "40%"` → `"60%"`
+- `padding: "8px 4px 28px 2px"` → `"12px 2px 40px 4px"`
 
-Точный код измерения:
-```html
-<div style="margin-bottom:4px">
-  <div style="font-size:1.25rem;font-weight:700;line-height:1.15;text-align:justify;font-style:italic">
-    N. word
-  </div>
-  <div style="font-size:1rem;line-height:1.15;text-align:justify;margin-top:2px">
-    — description
-  </div>
-</div>
-```
+**Правая страница (line 156):**
+- `left: "51%"` → `"54%"`, `top: "32%"` → `"18%"`, `width: "24%"` → `"26%"`, `height: "40%"` → `"60%"`
+- `padding: "8px 6px 28px 4px"` → `"12px 2px 40px 4px"`
 
-Это единственное изменение — логика пагинации (переворот когда не влезает) уже работает правильно.
+### 2. Стиль renderEntry (lines 95-102)
+- Заголовок: `text-sm` → `text-xl`, `font-semibold` → `font-bold`
+- Описание: `text-sm` → `text-base`
+- Всё остальное (justify, lineHeight 1.15) — оставить
+
+### 3. Динамическая пагинация вместо фиксированных ITEMS_PER_PAGE
+- Убрать константы `ITEMS_PER_PAGE = 4` и `ITEMS_PER_SPREAD = 8`
+- Добавить DOM-измерение высоты записей (как в MagicBook) для определения сколько записей влезает на страницу
+- Заполнять до нижнего орнамента, переворачивать если не влезает
+
+### Техническая реализация пагинации
+- Добавить `useEffect` с ref на контейнер для измерения
+- Использовать тот же подход что в MagicBook: скрытый div, innerHTML с точными стилями, проверка `scrollHeight > offsetHeight`
+- Результат: массив `pages[]` где каждый элемент — массив записей для этой страницы
 

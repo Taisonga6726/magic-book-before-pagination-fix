@@ -118,7 +118,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           scrollbarWidth: "none",
         }}
       >
-        {leftEntries.map((entry, i) => renderEntry(entry, i))}
+        {leftEntries.map(({ entry, index }) => renderEntry(entry, index))}
       </div>
 
       {/* Right page */}
@@ -130,7 +130,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           scrollbarWidth: "none",
         }}
       >
-        {rightEntries.map((entry, i) => renderEntry(entry, splitIndex + i))}
+        {rightEntries.map(({ entry, index }) => renderEntry(entry, index))}
       </div>
     </div>
       </div>

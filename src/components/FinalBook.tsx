@@ -162,7 +162,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
       >
         <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "right center" }}>
           <div className="space-y-0.5">
-            {leftEntries.map((entry, i) => renderEntry(entry, leftGlobalStart + i))}
+            {leftEntries.map((entry, i) => renderEntry(entry, start + i))}
           </div>
           {leftEntries.length === 0 && (
             <p className="font-handwriting text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>

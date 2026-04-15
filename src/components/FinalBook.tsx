@@ -201,6 +201,8 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
             </div>
           )}
         </div>
+        </div>
+      </div>
       </div>
     </div>
   );

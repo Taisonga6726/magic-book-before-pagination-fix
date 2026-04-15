@@ -1,30 +1,36 @@
 
 
-# Plan: Описание на полную ширину + удаление дублей тире
+# Plan: Исправить пагинацию — заполнять страницу до нижнего орнамента
 
 ## Проблема
-1. На скриншоте описание начинается с двойного тире ("— —") — код добавляет "— " при рендере, а пользователь уже ввёл "—" в начале описания.
-2. Описание не заполняет всю ширину между орнаментами.
+Размеры шрифтов в измерении не совпадают с реальным рендером, поэтому код считает, что записи занимают больше места, чем реально. Страница остаётся наполовину пустой.
 
-## Изменения
+## Изменения в `src/components/MagicBook.tsx`
 
-### `src/components/MagicBook.tsx`
+### Измерение высоты записей (lines 131-136)
+Привести размеры в измерении в точное соответствие с рендером:
 
-**Рендер описания (lines 360-362, 375-377):**
-- Перед выводом описания — strip лидирующих тире: `entry.description.replace(/^[—–-]\s*/, "")`
-- Оставить единственное "— " в коде рендера
+| Параметр | Сейчас (измерение) | Рендер (реальный) | Исправить на |
+|---|---|---|---|
+| Заголовок font-size | 1.5rem (24px) | text-xl (20px) | 1.25rem |
+| Описание font-size | 1.125rem (18px) | text-base (16px) | 1rem |
+| Описание margin-left | 1.75rem | нет | убрать |
+| lineHeight | default | 1.15 | 1.15 |
+| margin-bottom | 8px | space-y-1 (4px) | 4px |
+| textAlign | default | justify | justify |
+| width | container.offsetWidth | с учётом padding | без изменений |
 
-**Измерение (line 135):**
-- Тот же strip при измерении высоты
+Точный код измерения:
+```html
+<div style="margin-bottom:4px">
+  <div style="font-size:1.25rem;font-weight:700;line-height:1.15;text-align:justify;font-style:italic">
+    N. word
+  </div>
+  <div style="font-size:1rem;line-height:1.15;text-align:justify;margin-top:2px">
+    — description
+  </div>
+</div>
+```
 
-### `src/components/FinalBook.tsx`
-
-**renderEntry (lines 100-102):**
-- Аналогичный strip: `entry.description.replace(/^[—–-]\s*/, "")`
-
-### `src/components/MagicBook.tsx` — handleSave (lines 185, 192)
-- При сохранении тоже strip лидирующие тире из description, чтобы данные были чистыми:
-  `description.trim().replace(/^[—–-]\s*/, "")`
-
-Это решит проблему и для новых, и для существующих записей.
+Это единственное изменение — логика пагинации (переворот когда не влезает) уже работает правильно.
 

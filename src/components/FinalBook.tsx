@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 const bookFinalImg = "/images/open-book.png";
 import SpineEffect from "./SpineEffect";
 
@@ -17,12 +17,11 @@ interface PageNav {
 
 interface FinalBookProps {
   entries: Entry[];
-  setEntries: Dispatch<SetStateAction<Entry[]>>;
   onBack: () => void;
   onPageNav?: (nav: PageNav) => void;
 }
 
-const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) => {
+const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
   const [currentSpread, setCurrentSpread] = useState(0);
   const [flipping, setFlipping] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
@@ -178,15 +177,6 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     }, 400);
   }, [fadingOut, flipping, playFlipSound, onBack]);
 
-  const updateReaction = useCallback((globalIdx: number, type: "fire" | "love" | "rocket") => {
-    setEntries((prev) =>
-      prev.map((w, i) =>
-        i === globalIdx
-          ? { ...w, reactions: { ...w.reactions, [type]: (w.reactions?.[type] || 0) + 1 } }
-          : w
-      )
-    );
-  }, [setEntries]);
 
   const renderInkWord = (text: string) => (
     <span>

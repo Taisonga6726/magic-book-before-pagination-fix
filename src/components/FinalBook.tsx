@@ -98,7 +98,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
       </div>
       {entry.description && (
         <div className="text-sm font-handwriting leading-tight mt-0" style={{ color: "#1a1030", textAlign: "justify", lineHeight: "1.15" }}>
-          — {entry.description}
+          — {entry.description.replace(/^[—–\-]\s*/, "")}
         </div>
       )}
       <div className="flex gap-2 text-[10px] justify-end" style={{ color: "#1a1440" }}>

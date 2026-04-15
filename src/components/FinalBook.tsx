@@ -108,19 +108,28 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
       <SpineEffect burst={false} />
 
       {/* Page content overlay */}
-      <div className="absolute inset-0 flex z-20 pointer-events-auto">
-        {/* Left page */}
-        <div className="w-1/2 flex justify-center">
-          <div className="w-[68%] mt-[14%] mb-[12%] flex flex-col gap-2 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
-            {leftEntries.map((entry, i) => renderEntry(entry, i))}
-          </div>
-        </div>
-        {/* Right page */}
-        <div className="w-1/2 flex justify-center">
-          <div className="w-[68%] mt-[14%] mb-[12%] flex flex-col gap-2 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
-            {rightEntries.map((entry, i) => renderEntry(entry, splitIndex + i))}
-          </div>
-        </div>
+      {/* Left page */}
+      <div
+        className="absolute z-20 overflow-y-auto pointer-events-auto flex flex-col gap-2"
+        style={{
+          left: "18%", top: "20%", width: "30%", height: "58%",
+          padding: "10px 14px 10px 24px",
+          scrollbarWidth: "none",
+        }}
+      >
+        {leftEntries.map((entry, i) => renderEntry(entry, i))}
+      </div>
+
+      {/* Right page */}
+      <div
+        className="absolute z-20 overflow-y-auto pointer-events-auto flex flex-col gap-2"
+        style={{
+          left: "52%", top: "18%", width: "36%", height: "60%",
+          padding: "12px 20px 10px 20px",
+          scrollbarWidth: "none",
+        }}
+      >
+        {rightEntries.map((entry, i) => renderEntry(entry, splitIndex + i))}
       </div>
     </div>
       </div>

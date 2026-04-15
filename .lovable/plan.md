@@ -1,41 +1,34 @@
 
 
-# Plan: Final UI polish — stats layout + remove top overlap
+# Plan: Fix numbering — switch to fixed items-per-spread pagination
 
-## Analysis
-- ✅ `src/pages/Index.tsx` has NO old bottom reaction buttons — clean
-- ❌ `src/components/FinalScreen.tsx` currently centers stats (lines 27-38), which overlaps the "VIBE CODER" title at the top
+## Problem
+Current dynamic height-based pagination produces variable page sizes, causing unpredictable numbering. The user wants fixed, predictable pagination with continuous numbering.
 
 ## Changes
 
-### 1. `src/components/FinalScreen.tsx` — Move stats to bottom with two separate blocks (lines 27-38)
+### `src/components/FinalBook.tsx`
 
-Replace the centered overlay with bottom-aligned layout:
+1. **Replace dynamic pagination with fixed spread-based logic:**
+   - Remove `pages` state, `computePages` useEffect, and measurement div logic (lines 30, 40-105)
+   - Add constants: `ITEMS_PER_PAGE = 3`, `ITEMS_PER_SPREAD = 6`
+   - Calculate `start = currentSpread * ITEMS_PER_SPREAD`
+   - Left page: `entries.slice(start, start + ITEMS_PER_PAGE)`
+   - Right page: `entries.slice(start + ITEMS_PER_PAGE, start + ITEMS_PER_SPREAD)`
 
-```tsx
-<div className="absolute inset-0 flex flex-col justify-end items-center pb-24 text-white pointer-events-none">
-  {/* Word count block */}
-  <div className="mb-6 px-6 py-3 rounded-xl bg-black/30 backdrop-blur-md text-2xl">
-    Всего слов: {entries.length}
-  </div>
+2. **Fix totalSpreads calculation:**
+   - `totalSpreads = Math.max(1, Math.ceil(entries.length / ITEMS_PER_SPREAD))`
 
-  {/* Reactions block */}
-  <div className="px-8 py-4 rounded-2xl bg-black/30 backdrop-blur-md">
-    <div className="text-sm mb-2 opacity-80 text-center">
-      Реакции
-    </div>
-    <div className="flex gap-10 text-4xl justify-center">
-      <div>🔥 {totalFire}</div>
-      <div>❤️ {totalLove}</div>
-      <div>🚀 {totalRocket}</div>
-    </div>
-  </div>
-</div>
-```
+3. **Remove old index variables** (`leftGlobalStart`, `rightGlobalStart`, `leftPageIdx`, `rightPageIdx`)
 
-**Result:**
-- Stats move to bottom with `pb-24` spacing
-- Two separate glassmorphism blocks (black/30 + backdrop-blur)
-- No overlap with title
-- Clean visual hierarchy: title → image → stats
+4. **Fix numbering in renderEntry calls:**
+   - Left: `renderEntry(entry, start + i)`
+   - Right: `renderEntry(entry, start + ITEMS_PER_PAGE + i)`
+
+5. **Reactions use same index** — already correct since `renderEntry` passes `globalIdx` to `updateReaction`
+
+6. **Remove `leftPageRef`** — no longer needed for measurement
+
+### No changes to
+- Layout, styles, animations, flip logic, reactions UI, SpineEffect, FinalScreen, Index.tsx
 

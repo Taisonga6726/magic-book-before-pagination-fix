@@ -131,22 +131,22 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
       {/* Left page */}
       <div
-        className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
+        className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0 relative"
         style={{
           left: "20%", top: "22%", width: "27%", height: "54%",
           padding: "12px 10px 20px 28px",
         }}
       >
         {leftPageEntries.map((entry, i) => renderEntry(entry, spreadStart + i))}
-        <div className="mt-auto text-center text-xs opacity-40 select-none"
-             style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif" }}>
-          — {leftPageNum} —
+        <div className="absolute bottom-1 left-0 right-0 text-center select-none"
+             style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "13px", opacity: 0.55, letterSpacing: "2px" }}>
+          — Стр. {leftPageNum} —
         </div>
       </div>
 
       {/* Right page */}
       <div
-        className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
+        className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0 relative"
         style={{
           left: "53%", top: "22%", width: "27%", height: "54%",
           padding: "12px 28px 20px 10px",
@@ -154,9 +154,9 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
       >
         {rightPageEntries.map((entry, i) => renderEntry(entry, spreadStart + ITEMS_PER_PAGE + i))}
         {rightPageEntries.length > 0 && (
-          <div className="mt-auto text-center text-xs opacity-40 select-none"
-               style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif" }}>
-            — {rightPageNum} —
+          <div className="absolute bottom-1 left-0 right-0 text-center select-none"
+               style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "13px", opacity: 0.55, letterSpacing: "2px" }}>
+            — Стр. {rightPageNum} —
           </div>
         )}
       </div>

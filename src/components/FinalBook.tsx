@@ -143,8 +143,8 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           }}
         >
           {leftPageEntries.map((entry, i) => renderEntry(entry, spreadStart + i))}
-          <div className="absolute bottom-[4px] left-[8px] select-none"
-               style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "15px", opacity: 0.9, letterSpacing: "1px" }}>
+          <div className="absolute bottom-[4px] left-0 right-0 flex justify-center select-none"
+               style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontWeight: "bold", fontStyle: "italic", fontSize: "16px", opacity: 0.9, letterSpacing: "1px" }}>
             — {leftPageNum} —
           </div>
         </div>
@@ -159,8 +159,8 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         >
           {rightPageEntries.map((entry, i) => renderEntry(entry, spreadStart + ITEMS_PER_PAGE + i))}
           {rightPageEntries.length > 0 && (
-            <div className="absolute bottom-[4px] right-[8px] select-none"
-                 style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "15px", opacity: 0.9, letterSpacing: "1px" }}>
+            <div className="absolute bottom-[4px] left-0 right-0 flex justify-center select-none"
+                 style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontWeight: "bold", fontStyle: "italic", fontSize: "16px", opacity: 0.9, letterSpacing: "1px" }}>
               — {rightPageNum} —
             </div>
           )}

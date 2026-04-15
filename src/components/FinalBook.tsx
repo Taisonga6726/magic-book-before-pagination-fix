@@ -91,7 +91,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
   const rightPageNum = currentSpread * 2 + 2;
 
   const renderEntry = (entry: Entry, globalIdx: number) => (
-    <div key={globalIdx} className="flex flex-col mb-1">
+    <div key={globalIdx} className="flex flex-col mb-0.5">
       <div className="border-b border-black/30 pb-0.5 text-base font-semibold leading-tight"
            style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>
         {globalIdx + 1}. {renderInkWord(entry.word)}

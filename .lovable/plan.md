@@ -1,36 +1,30 @@
 
 
-# Plan: Увеличить книгу FinalBook до размера MagicBook + слова жирным
+# Plan: Синхронизировать позиции страниц FinalBook с MagicBook
+
+## Текущее состояние
+
+**MagicBook (правая страница — отображение записей):**
+- `left: "54%"`, `top: "18%"`, `width: "26%"`, `height: "60%"`
+- `padding: "12px 2px 40px 4px"`
+
+**FinalBook:**
+- Левая: `left: "22%"`, `top: "18%"`, `width: "22%"`, `height: "60%"`, `padding: "12px 2px 40px 4px"`
+- Правая: `left: "54%"` — совпадает с MagicBook
 
 ## Проблема
-1. FinalBook использует контейнер с `aspectRatio` и `height: 100vh` — книга меньше чем в MagicBook
-2. Слова (entry.word) не выделены жирным — bold только на номере
+Левая страница FinalBook уже (22% vs 26%) и смещена правее (22% vs ~20%). Текст не заполняет пространство между орнаментами.
 
 ## Изменения в `src/components/FinalBook.tsx`
 
-### 1. Контейнер книги (lines 156-165) — как в MagicBook
-Заменить текущую обёртку на структуру MagicBook:
-```tsx
-<div className="fixed inset-0 w-screen h-screen overflow-hidden z-40">
-  <div className="relative w-full h-full flex items-center justify-center">
-    <div className="relative w-full h-full magic-cursor scene-fade-in" style={{ transform: "translateY(-3%)" }}>
-```
-И картинку сделать `object-contain` как в MagicBook:
-```tsx
-<img src={bookFinalImg} className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none" />
-```
+### Левая страница (line 177)
+Расширить и сдвинуть влево, отзеркалив правую:
+- `left: "22%"` → `"20%"`
+- `width: "22%"` → `"26%"`
+- `padding: "12px 2px 40px 4px"` → `"12px 4px 40px 2px"` (зеркальный padding — больший отступ у корешка)
 
-### 2. Слово жирным (line 140)
-Добавить `font-bold` на весь заголовок (и номер, и слово):
-```tsx
-<div className="pb-0.5 text-xl leading-tight font-bold" ...>
-```
+### Правая страница (line 192)
+Без изменений — уже совпадает с MagicBook.
 
-### 3. Тень от MagicBook (line 168-169)
-Усилить виньетку как в MagicBook:
-```
-boxShadow: "inset 0 0 150px 80px rgba(0,0,0,0.9)"
-```
-
-Больше ничего не меняю — позиции страниц, пагинация, описание остаются как есть.
+Итого: обе страницы будут симметрично расположены относительно корешка с одинаковой шириной 26%.
 

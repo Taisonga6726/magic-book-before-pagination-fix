@@ -101,7 +101,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           — {entry.description}
         </div>
       )}
-      <div className="flex gap-2 text-[10px] justify-start" style={{ color: "#1a1440" }}>
+      <div className="flex gap-2 text-[10px] justify-end" style={{ color: "#1a1440" }}>
         <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
@@ -138,7 +138,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "27%", top: "32%", width: "18%", height: "40%",
+            left: "27%", top: "32%", width: "17%", height: "40%",
             padding: "8px 8px 28px 12px",
           }}
         >
@@ -153,8 +153,8 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "52%", top: "32%", width: "24%", height: "40%",
-            padding: "8px 14px 28px 2px",
+            left: "53%", top: "32%", width: "21%", height: "40%",
+            padding: "8px 10px 28px 4px",
           }}
         >
           {rightPageEntries.map((entry, i) => renderEntry(entry, spreadStart + ITEMS_PER_PAGE + i))}

@@ -63,10 +63,11 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     );
   }, [setEntries]);
 
-  // Split entries into two columns: left and right pages
-  const splitIndex = Math.ceil(entries.length / 2);
-  const leftEntries = entries.slice(0, splitIndex);
-  const rightEntries = entries.slice(splitIndex);
+  // Stable sequential fill: left page first (up to 5 items), then right page
+  const PAGE_LIMIT = 5;
+  const indexedEntries = entries.map((entry, index) => ({ entry, index }));
+  const leftEntries = indexedEntries.slice(0, PAGE_LIMIT);
+  const rightEntries = indexedEntries.slice(PAGE_LIMIT);
 
   const renderEntry = (entry: Entry, globalIdx: number) => (
     <div key={globalIdx} className="flex flex-col mb-4">

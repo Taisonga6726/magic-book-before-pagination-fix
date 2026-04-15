@@ -80,9 +80,9 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         </div>
       )}
       <div className="flex gap-4 mt-2 text-sm" style={{ color: "#2a1f5a" }}>
-        <span>🔥 {entry.reactions?.fire || 0}</span>
-        <span>❤️ {entry.reactions?.love || 0}</span>
-        <span>🚀 {entry.reactions?.rocket || 0}</span>
+        <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
+        <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
+        <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
       </div>
     </div>
   );
@@ -112,8 +112,8 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
       <div
         className="absolute z-20 overflow-y-auto pointer-events-auto flex flex-col gap-2"
         style={{
-          left: "18%", top: "20%", width: "30%", height: "58%",
-          padding: "10px 14px 10px 24px",
+          left: "20%", top: "22%", width: "27%", height: "54%",
+          padding: "16px 12px 16px 30px",
           scrollbarWidth: "none",
         }}
       >
@@ -124,8 +124,8 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
       <div
         className="absolute z-20 overflow-y-auto pointer-events-auto flex flex-col gap-2"
         style={{
-          left: "52%", top: "18%", width: "36%", height: "60%",
-          padding: "12px 20px 10px 20px",
+          left: "53%", top: "22%", width: "27%", height: "54%",
+          padding: "16px 30px 16px 12px",
           scrollbarWidth: "none",
         }}
       >

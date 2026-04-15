@@ -91,7 +91,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
   const rightPageNum = currentSpread * 2 + 2;
 
   const renderEntry = (entry: Entry, globalIdx: number) => (
-    <div key={globalIdx} className="flex flex-col mb-0.5">
+    <div key={globalIdx} className="flex flex-col mb-0">
       <div className="pb-0.5 text-sm font-semibold leading-tight"
            style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>
         {globalIdx + 1}. {renderInkWord(entry.word)}
@@ -138,7 +138,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "29%", top: "32%", width: "20%", height: "40%",
+            left: "28%", top: "32%", width: "21%", height: "40%",
             padding: "8px 4px 28px 2px",
           }}
         >
@@ -153,7 +153,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "51%", top: "32%", width: "23%", height: "40%",
+            left: "51%", top: "32%", width: "24%", height: "40%",
             padding: "8px 6px 28px 4px",
           }}
         >

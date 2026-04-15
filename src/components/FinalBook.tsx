@@ -156,53 +156,52 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     <div className="fixed inset-0 w-screen h-screen overflow-hidden z-40">
       <div className="relative w-full h-full flex items-center justify-center">
         <div className="relative w-full h-full magic-cursor scene-fade-in" style={{ transform: "translateY(-3%)" }}>
-        <div
-          className="absolute inset-0 pointer-events-none z-10"
-          style={{ boxShadow: "inset 0 0 150px 80px rgba(0,0,0,0.9)", borderRadius: "8px" }}
-        />
-        <img
-          src={bookFinalImg}
-          alt=""
-          className="absolute inset-0 w-full h-full pointer-events-none select-none"
-          draggable={false}
-        />
+          <div
+            className="absolute inset-0 pointer-events-none z-10"
+            style={{ boxShadow: "inset 0 0 150px 80px rgba(0,0,0,0.9)", borderRadius: "8px" }}
+          />
+          <img
+            src={bookFinalImg}
+            alt=""
+            className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none"
+            draggable={false}
+          />
 
-        <SpineEffect burst={false} />
+          <SpineEffect burst={false} />
 
-        {/* Left page */}
-        <div
-          ref={leftContentRef}
-          className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
-          style={{
-            left: "22%", top: "18%", width: "22%", height: "60%",
-            padding: "12px 2px 40px 4px",
-          }}
-        >
-          {leftPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}
-          <div className="absolute bottom-[4px] left-0 right-0 flex justify-center select-none"
-               style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontWeight: "bold", fontStyle: "italic", fontSize: "16px", opacity: 0.9, letterSpacing: "1px" }}>
-            — {leftPageNum} —
-          </div>
-        </div>
-
-        {/* Right page */}
-        <div
-          className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
-          style={{
-            left: "54%", top: "18%", width: "26%", height: "60%",
-            padding: "12px 2px 40px 4px",
-          }}
-        >
-          {rightPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}
-          {rightPageEntries.length > 0 && (
+          {/* Left page */}
+          <div
+            ref={leftContentRef}
+            className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
+            style={{
+              left: "22%", top: "18%", width: "22%", height: "60%",
+              padding: "12px 2px 40px 4px",
+            }}
+          >
+            {leftPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}
             <div className="absolute bottom-[4px] left-0 right-0 flex justify-center select-none"
                  style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontWeight: "bold", fontStyle: "italic", fontSize: "16px", opacity: 0.9, letterSpacing: "1px" }}>
-              — {rightPageNum} —
+              — {leftPageNum} —
             </div>
-          )}
+          </div>
+
+          {/* Right page */}
+          <div
+            className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
+            style={{
+              left: "54%", top: "18%", width: "26%", height: "60%",
+              padding: "12px 2px 40px 4px",
+            }}
+          >
+            {rightPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}
+            {rightPageEntries.length > 0 && (
+              <div className="absolute bottom-[4px] left-0 right-0 flex justify-center select-none"
+                   style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontWeight: "bold", fontStyle: "italic", fontSize: "16px", opacity: 0.9, letterSpacing: "1px" }}>
+                — {rightPageNum} —
+              </div>
+            )}
+          </div>
         </div>
-        </div>
-      </div>
       </div>
     </div>
   );

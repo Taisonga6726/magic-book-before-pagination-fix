@@ -138,8 +138,8 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "13%", top: "18%", width: "33%", height: "55%",
-            padding: "45px 30px 40px 50px",
+            left: "15%", top: "25%", width: "28%", height: "47%",
+            padding: "20px 20px 30px 25px",
           }}
         >
           {leftPageEntries.map((entry, i) => renderEntry(entry, spreadStart + i))}
@@ -153,8 +153,8 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "53%", top: "18%", width: "33%", height: "55%",
-            padding: "45px 50px 40px 30px",
+            left: "55%", top: "25%", width: "28%", height: "47%",
+            padding: "20px 25px 30px 20px",
           }}
         >
           {rightPageEntries.map((entry, i) => renderEntry(entry, spreadStart + ITEMS_PER_PAGE + i))}

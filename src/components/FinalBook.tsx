@@ -138,7 +138,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "18%", top: "24%", width: "28%", height: "48%",
+            left: "20%", top: "27%", width: "26%", height: "44%",
             padding: "12px 10px 24px 20px",
           }}
         >

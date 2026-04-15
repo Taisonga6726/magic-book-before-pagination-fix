@@ -22,87 +22,20 @@ interface FinalBookProps {
   onPageNav?: (nav: PageNav) => void;
 }
 
+const ITEMS_PER_PAGE = 3;
+const ITEMS_PER_SPREAD = ITEMS_PER_PAGE * 2;
+
 const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) => {
   const [currentSpread, setCurrentSpread] = useState(0);
   const [flipping, setFlipping] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
   const [burst, setBurst] = useState(false);
-  const [pages, setPages] = useState<Entry[][]>([]);
   const flipAudio = useRef<HTMLAudioElement | null>(null);
-  const leftPageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     flipAudio.current = new Audio("/page-flip.mp3");
     flipAudio.current.volume = 0.5;
   }, []);
-
-  // Compute pages dynamically based on height measurement
-  useEffect(() => {
-    if (entries.length === 0) {
-      setPages([]);
-      return;
-    }
-
-    const computePages = () => {
-      const container = leftPageRef.current;
-      if (!container) {
-        const fallback: Entry[][] = [];
-        for (let i = 0; i < entries.length; i += 7) {
-          fallback.push(entries.slice(i, i + 7));
-        }
-        setPages(fallback);
-        return;
-      }
-
-      const style = getComputedStyle(container);
-      const paddingTop = parseFloat(style.paddingTop);
-      const paddingBottom = parseFloat(style.paddingBottom);
-      const availableHeight = container.clientHeight - paddingTop - paddingBottom;
-      const contentWidth = container.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
-
-      const measureDiv = document.createElement("div");
-      measureDiv.style.cssText = `position:fixed;visibility:hidden;top:-9999px;left:-9999px;width:${contentWidth}px;`;
-      document.body.appendChild(measureDiv);
-
-      const result: Entry[][] = [];
-      let currentPageEntries: Entry[] = [];
-      let currentHeight = 0;
-      let globalIdx = 0;
-
-      entries.forEach((entry) => {
-        const el = document.createElement("div");
-        el.style.marginBottom = "2px";
-        el.innerHTML = `
-          <div style="display:flex;align-items:baseline;gap:4px">
-            <span style="font-size:1.5rem;font-weight:700;color:#1a1440">${globalIdx + 1}.</span>
-            <span style="font-size:1.5rem;line-height:1.25;font-family:'Cormorant Garamond',serif;font-style:italic;color:#1a1440">${entry.word}</span>
-          </div>
-          ${entry.description ? `<div style="font-size:0.875rem;margin-top:0;margin-left:24px;color:#2a1f5a">— ${entry.description}</div>` : ""}
-          <div style="height:28px"></div>
-          <div style="height:24px"></div>
-        `;
-        measureDiv.appendChild(el);
-        const h = el.offsetHeight + 4;
-        measureDiv.removeChild(el);
-
-        if (currentHeight + h > availableHeight && currentPageEntries.length > 0) {
-          result.push(currentPageEntries);
-          currentPageEntries = [entry];
-          currentHeight = h;
-        } else {
-          currentPageEntries.push(entry);
-          currentHeight += h;
-        }
-        globalIdx++;
-      });
-
-      if (currentPageEntries.length > 0) result.push(currentPageEntries);
-      document.body.removeChild(measureDiv);
-      setPages(result.length > 0 ? result : [[]]);
-    };
-
-    setTimeout(computePages, 100);
-  }, [entries]);
 
   const playFlipSound = useCallback(() => {
     if (flipAudio.current) {
@@ -111,44 +44,13 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     }
   }, []);
 
-  const totalSpreads = Math.max(1, Math.ceil(pages.length / 2));
+  const totalSpreads = Math.max(1, Math.ceil(entries.length / ITEMS_PER_SPREAD));
   const hasNext = currentSpread < totalSpreads - 1;
   const hasPrev = currentSpread > 0;
 
-  const handleFlipFromBar = useCallback((direction: "next" | "prev") => {
-    if (flipping) return;
-    if (direction === "next" && !hasNext) return;
-    if (direction === "prev" && !hasPrev) return;
-    playFlipSound();
-    setFlipping(true);
-    setBurst(false);
-    requestAnimationFrame(() => setBurst(true));
-    setTimeout(() => {
-      setCurrentSpread((s) => direction === "next" ? s + 1 : s - 1);
-      setFlipping(false);
-      setBurst(false);
-    }, 1000);
-  }, [flipping, hasNext, hasPrev, playFlipSound]);
-
-  useEffect(() => {
-    onPageNav?.({
-      hasPrev,
-      hasNext,
-      onPrev: () => handleFlipFromBar("prev"),
-      onNext: () => handleFlipFromBar("next"),
-    });
-  }, [hasPrev, hasNext, onPageNav, handleFlipFromBar]);
-
-  const leftPageIdx = currentSpread * 2;
-  const rightPageIdx = currentSpread * 2 + 1;
-  const leftEntries = pages[leftPageIdx] || [];
-  const rightEntries = pages[rightPageIdx] || [];
-
-  let leftGlobalStart = 0;
-  for (let i = 0; i < leftPageIdx; i++) {
-    leftGlobalStart += (pages[i]?.length || 0);
-  }
-  const rightGlobalStart = leftGlobalStart + leftEntries.length;
+  const start = currentSpread * ITEMS_PER_SPREAD;
+  const leftEntries = entries.slice(start, start + ITEMS_PER_PAGE);
+  const rightEntries = entries.slice(start + ITEMS_PER_PAGE, start + ITEMS_PER_SPREAD);
 
   const handleFlip = useCallback((direction: "next" | "prev") => {
     if (flipping) return;

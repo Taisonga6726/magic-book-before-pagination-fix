@@ -92,9 +92,9 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
   const renderEntry = (entry: Entry, globalIdx: number) => (
     <div key={globalIdx} className="flex flex-col mb-0">
-      <div className="pb-0.5 text-sm font-semibold leading-tight"
-           style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>
-        {globalIdx + 1}. {renderInkWord(entry.word)}
+      <div className="pb-0.5 text-sm leading-tight"
+           style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textAlign: "justify", lineHeight: "1.15" }}>
+        <span className="font-semibold">{globalIdx + 1}.</span> {renderInkWord(entry.word)}
       </div>
       {entry.description && (
         <div className="text-sm font-handwriting leading-tight mt-0" style={{ color: "#1a1030", textAlign: "justify", lineHeight: "1.15" }}>

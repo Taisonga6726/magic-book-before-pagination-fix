@@ -112,55 +112,84 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
   return (
     <div className="fixed inset-0 w-screen h-screen overflow-hidden z-40">
       <div className="relative w-full h-full flex items-center justify-center">
-      <div
-        className="relative w-full h-full magic-cursor scene-fade-in"
-        style={{ transform: "translateY(-3%)" }}
-      >
-      <div
-        className="absolute inset-0 pointer-events-none z-10"
-        style={{ boxShadow: "inset 0 0 80px 40px rgba(0,0,0,0.6)", borderRadius: "8px" }}
-      />
-      <img
-        src={bookFinalImg}
-        alt=""
-        className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none"
-        draggable={false}
-      />
+        {/* Book container: matches image aspect ratio and scales like object-contain */}
+        <div
+          className="relative magic-cursor scene-fade-in"
+          style={{
+            aspectRatio: "1920 / 1288",
+            maxWidth: "100%",
+            maxHeight: "100%",
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            /* Mimic object-contain: constrain by both axes */
+            ...((() => {
+              // CSS handles this via aspect-ratio + max-width/max-height
+              return {};
+            })()),
+          }}
+        >
+          {/* Use a nested div that truly mimics object-contain sizing */}
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <div
+              className="relative"
+              style={{
+                aspectRatio: "1920 / 1288",
+                maxWidth: "100%",
+                maxHeight: "100%",
+                width: "auto",
+                height: "100%",
+              }}
+            >
+              <div
+                className="absolute inset-0 pointer-events-none z-10"
+                style={{ boxShadow: "inset 0 0 80px 40px rgba(0,0,0,0.6)", borderRadius: "8px" }}
+              />
+              <img
+                src={bookFinalImg}
+                alt=""
+                className="w-full h-full pointer-events-none select-none"
+                draggable={false}
+              />
 
-      <SpineEffect burst={false} />
+              <SpineEffect burst={false} />
 
-      {/* Left page */}
-      <div
-        className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0 relative"
-        style={{
-          left: "20%", top: "22%", width: "27%", height: "54%",
-          padding: "12px 10px 20px 28px",
-        }}
-      >
-        {leftPageEntries.map((entry, i) => renderEntry(entry, spreadStart + i))}
-        <div className="absolute bottom-1 left-0 right-0 text-center select-none"
-             style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "13px", opacity: 0.55, letterSpacing: "2px" }}>
-          — Стр. {leftPageNum} —
-        </div>
-      </div>
+              {/* Left page - percentages now relative to the book image container */}
+              <div
+                className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
+                style={{
+                  left: "13%", top: "12%", width: "35%", height: "68%",
+                  padding: "18px 14px 24px 32px",
+                }}
+              >
+                {leftPageEntries.map((entry, i) => renderEntry(entry, spreadStart + i))}
+                <div className="absolute bottom-2 left-0 right-0 text-center select-none"
+                     style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "13px", opacity: 0.55, letterSpacing: "2px" }}>
+                  — Стр. {leftPageNum} —
+                </div>
+              </div>
 
-      {/* Right page */}
-      <div
-        className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0 relative"
-        style={{
-          left: "53%", top: "22%", width: "27%", height: "54%",
-          padding: "12px 28px 20px 10px",
-        }}
-      >
-        {rightPageEntries.map((entry, i) => renderEntry(entry, spreadStart + ITEMS_PER_PAGE + i))}
-        {rightPageEntries.length > 0 && (
-          <div className="absolute bottom-1 left-0 right-0 text-center select-none"
-               style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "13px", opacity: 0.55, letterSpacing: "2px" }}>
-            — Стр. {rightPageNum} —
+              {/* Right page */}
+              <div
+                className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
+                style={{
+                  left: "52%", top: "12%", width: "35%", height: "68%",
+                  padding: "18px 32px 24px 14px",
+                }}
+              >
+                {rightPageEntries.map((entry, i) => renderEntry(entry, spreadStart + ITEMS_PER_PAGE + i))}
+                {rightPageEntries.length > 0 && (
+                  <div className="absolute bottom-2 left-0 right-0 text-center select-none"
+                       style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "13px", opacity: 0.55, letterSpacing: "2px" }}>
+                    — Стр. {rightPageNum} —
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-        )}
-      </div>
-    </div>
+        </div>
       </div>
     </div>
   );

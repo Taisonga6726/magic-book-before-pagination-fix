@@ -214,29 +214,6 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           — {entry.description}
         </div>
       )}
-      <div className="flex gap-2 mt-1 ml-6">
-        <button
-          onClick={() => updateReaction(globalIdx, "fire")}
-          className="text-xs px-1.5 py-0.5 rounded hover:bg-yellow-100/30 transition-colors"
-          style={{ color: "#1a1440" }}
-        >
-          🔥 {entry.reactions?.fire || 0}
-        </button>
-        <button
-          onClick={() => updateReaction(globalIdx, "love")}
-          className="text-xs px-1.5 py-0.5 rounded hover:bg-pink-100/30 transition-colors"
-          style={{ color: "#1a1440" }}
-        >
-          ❤️ {entry.reactions?.love || 0}
-        </button>
-        <button
-          onClick={() => updateReaction(globalIdx, "rocket")}
-          className="text-xs px-1.5 py-0.5 rounded hover:bg-blue-100/30 transition-colors"
-          style={{ color: "#1a1440" }}
-        >
-          🚀 {entry.reactions?.rocket || 0}
-        </button>
-      </div>
     </div>
   );
 

@@ -353,11 +353,8 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
 
                   return (
                     <div key={globalIdx} className="text-ink">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-2xl font-bold" style={{ color: "#1a1440" }}>{globalIdx + 1}.</span>
-                        <span className="text-2xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)" }}>
-                          {entry.word}
-                        </span>
+                      <div className="text-2xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)", textAlign: "justify", lineHeight: "1.15" }}>
+                        <span className="font-bold">{globalIdx + 1}.</span> {entry.word}
                       </div>
                       {entry.description && (
                         <div className="font-handwriting text-base mt-0.5" style={{ color: "#2a1f5a", textAlign: "justify", lineHeight: "1.15" }}>
@@ -370,11 +367,9 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
 
                 {isLastPage && liveText && (
                   <div className="text-ink">
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-bold" style={{ color: "#1a1440" }}>{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>
-                      <span className="text-2xl leading-tight inline-flex items-end" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)" }}>
-                        <InkWriteEffect text={word} className="ink-fresh" />
-                      </span>
+                    <div className="text-2xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)", textAlign: "justify", lineHeight: "1.15" }}>
+                      <span className="font-bold">{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>{" "}
+                      <InkWriteEffect text={word} className="ink-fresh" />
                     </div>
                     {description && (
                       <div className="font-handwriting text-base mt-0.5 ink-fresh" style={{ color: "#2a1f5a", textAlign: "justify", lineHeight: "1.15" }}>

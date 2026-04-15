@@ -1,69 +1,81 @@
 
 
-# Plan: Fix book content — structured list layout
+# Plan: Final book dictionary layout + green stats button
+
+## Current State
+- **FinalBook.tsx**: Already uses flex overlay with `inset-0` padding-based layout. Content is structured with `renderEntry`. Reactions are interactive buttons inside entries.
+- **FinalScreen.tsx**: Already horizontal layout with two blocks. Uses `bg-black/40` for word count.
+- **Index.tsx**: No emoji buttons found — already clean.
 
 ## Changes
 
-### 1. `src/components/FinalBook.tsx` — Replace absolute page containers with flex layout
+### 1. `src/components/FinalBook.tsx` — Adjust page content containers
 
-**Lines 153-195**: Replace both left and right page `<div>` containers. Remove `absolute` positioning with manual `left/top/width/height` styles. Instead, overlay a single flex container over the book image:
+Replace current padding-based overlay (line 140) with the user's requested layout using `w-[68%]`, `mt-[14%]`, `mb-[12%]` margins instead of outer padding. Remove reaction buttons — make reactions display-only (no `<button>`, just text).
 
+**Lines 140-165** — Replace overlay:
 ```tsx
-{/* Page content overlay */}
-<div className="absolute inset-0 flex z-20" style={{ padding: "14% 12% 18% 12%" }}>
-  {/* Left page */}
-  <div className="w-1/2 h-full flex justify-center overflow-hidden">
-    <div className="w-[80%] flex flex-col gap-5">
-      <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "right center" }}>
-        {leftEntries.map((entry, i) => renderEntry(entry, start + i))}
-        {leftEntries.length === 0 && (
-          <p className="font-handwriting text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>Пустая страница</p>
-        )}
-      </div>
+<div className="absolute inset-0 flex z-20 pointer-events-auto">
+  <div className="w-1/2 flex justify-center">
+    <div className="w-[68%] mt-[14%] mb-[12%] flex flex-col gap-6 overflow-hidden">
+      {leftEntries.map((entry, i) => renderEntry(entry, start + i))}
+      {leftEntries.length === 0 && (
+        <p className="font-handwriting text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>Пустая страница</p>
+      )}
     </div>
   </div>
-  {/* Right page */}
-  <div className="w-1/2 h-full flex justify-center overflow-hidden">
-    <div className="w-[80%] flex flex-col gap-5">
-      <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "left center" }}>
-        {rightEntries.map((entry, i) => renderEntry(entry, start + ITEMS_PER_PAGE + i))}
-        {rightEntries.length === 0 && leftEntries.length > 0 && <p> </p>}
-      </div>
+  <div className="w-1/2 flex justify-center">
+    <div className="w-[68%] mt-[14%] mb-[12%] flex flex-col gap-6 overflow-hidden">
+      {rightEntries.map((entry, i) => renderEntry(entry, start + ITEMS_PER_PAGE + i))}
     </div>
   </div>
 </div>
 ```
 
-**Lines 101-131** — Update `renderEntry` to use structured form-like layout:
-
+**Lines 101-117** — Simplify `renderEntry` to display-only (no buttons):
 ```tsx
 const renderEntry = (entry: Entry, globalIdx: number) => (
   <div key={globalIdx} className="flex flex-col">
-    <div className="text-lg font-semibold border-b border-black/20 pb-1" style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>
+    <div className="border-b border-black/30 pb-1 text-lg font-semibold"
+         style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>
       {globalIdx + 1}. {renderInkWord(entry.word)}
     </div>
     {entry.description && (
-      <div className="text-sm mt-1 opacity-80 font-handwriting" style={{ color: "#2a1f5a" }}>
+      <div className="mt-1 text-sm opacity-80 font-handwriting" style={{ color: "#2a1f5a" }}>
         — {entry.description}
       </div>
     )}
-    <div className="flex gap-4 mt-1.5 text-sm">
-      <button onClick={() => updateReaction(globalIdx, "fire")} className="opacity-70 hover:opacity-100" style={{ background: "none", border: "none", cursor: "pointer" }}>🔥 {entry.reactions?.fire || 0}</button>
-      <button onClick={() => updateReaction(globalIdx, "love")} className="opacity-70 hover:opacity-100" style={{ background: "none", border: "none", cursor: "pointer" }}>❤️ {entry.reactions?.love || 0}</button>
-      <button onClick={() => updateReaction(globalIdx, "rocket")} className="opacity-70 hover:opacity-100" style={{ background: "none", border: "none", cursor: "pointer" }}>🚀 {entry.reactions?.rocket || 0}</button>
+    <div className="flex gap-4 mt-2 text-sm" style={{ color: "#2a1f5a" }}>
+      🔥 {entry.reactions?.fire || 0}  ❤️ {entry.reactions?.love || 0}  🚀 {entry.reactions?.rocket || 0}
     </div>
   </div>
 );
 ```
 
-**Also move page counter** inside the new flex overlay container.
+### 2. `src/components/FinalScreen.tsx` — Green word count button
 
-### 2. `src/components/FinalScreen.tsx` — Make word count block bigger
+**Lines 27-36** — Replace word count block with green gradient style:
+```tsx
+<div className="absolute bottom-28 left-1/2 -translate-x-1/2 flex items-center gap-6 text-white pointer-events-none">
+  <div className="px-6 py-3 rounded-xl text-lg font-semibold"
+       style={{
+         background: "linear-gradient(135deg, #22c55e, #4ade80)",
+         color: "#022c22",
+         boxShadow: "0 0 20px rgba(34,197,94,0.4)"
+       }}>
+    Всего слов: {entries.length}
+  </div>
+  <div className="flex items-center gap-5 px-5 py-3 rounded-xl bg-black/30 backdrop-blur-md text-2xl">
+    <div>🔥 {totalFire}</div>
+    <div>❤️ {totalLove}</div>
+    <div>🚀 {totalRocket}</div>
+  </div>
+</div>
+```
 
-Line 28: increase text size from `text-xl` to `text-2xl` and add more padding. Reactions block stays `text-2xl` (down from `text-3xl`) so word count is visually dominant.
-
-### 3. `src/pages/Index.tsx` — Already clean, no emoji buttons to remove
+### 3. `src/pages/Index.tsx` — No changes needed
+Already clean, no emoji buttons.
 
 ### Unchanged
-- Animations, flip logic, spine effect, backgrounds, pagination constants, book image
+- Pagination constants, flip animations, spine effect, backgrounds, data flow, page counter
 

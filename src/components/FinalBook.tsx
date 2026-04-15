@@ -138,13 +138,13 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "16%", top: "29%", width: "27%", height: "43%",
-            padding: "10px 15px 28px 20px",
+            left: "19%", top: "30%", width: "24%", height: "42%",
+            padding: "8px 10px 28px 10px",
           }}
         >
           {leftPageEntries.map((entry, i) => renderEntry(entry, spreadStart + i))}
-          <div className="absolute bottom-[4px] left-[8px] select-none"
-               style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "15px", opacity: 0.9, letterSpacing: "1px" }}>
+          <div className="absolute bottom-[4px] left-0 right-0 flex justify-center select-none"
+               style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontWeight: "bold", fontStyle: "italic", fontSize: "16px", opacity: 0.9, letterSpacing: "1px" }}>
             — {leftPageNum} —
           </div>
         </div>
@@ -153,14 +153,14 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "56%", top: "29%", width: "27%", height: "43%",
-            padding: "10px 20px 28px 15px",
+            left: "57%", top: "30%", width: "24%", height: "42%",
+            padding: "8px 10px 28px 10px",
           }}
         >
           {rightPageEntries.map((entry, i) => renderEntry(entry, spreadStart + ITEMS_PER_PAGE + i))}
           {rightPageEntries.length > 0 && (
-            <div className="absolute bottom-[4px] right-[8px] select-none"
-                 style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "15px", opacity: 0.9, letterSpacing: "1px" }}>
+            <div className="absolute bottom-[4px] left-0 right-0 flex justify-center select-none"
+                 style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontWeight: "bold", fontStyle: "italic", fontSize: "16px", opacity: 0.9, letterSpacing: "1px" }}>
               — {rightPageNum} —
             </div>
           )}

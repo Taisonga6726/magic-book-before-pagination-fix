@@ -22,25 +22,66 @@ interface FinalBookProps {
   onPageNav?: (nav: PageNav) => void;
 }
 
-const ITEMS_PER_PAGE = 4;
-const ITEMS_PER_SPREAD = 8;
-
 const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) => {
   const flipAudio = useRef<HTMLAudioElement | null>(null);
   const [currentSpread, setCurrentSpread] = useState(0);
+  const [pages, setPages] = useState<Entry[][]>([]);
+  const leftContentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     flipAudio.current = new Audio("/page-flip.mp3");
     flipAudio.current.volume = 0.5;
   }, []);
 
-  // Auto-navigate to spread containing the last entry
+  // Dynamic pagination — measure entry heights like MagicBook
   useEffect(() => {
-    if (entries.length > 0) {
-      const lastSpread = Math.floor((entries.length - 1) / ITEMS_PER_SPREAD);
+    if (entries.length === 0) {
+      setPages([]);
+      return;
+    }
+
+    const container = leftContentRef.current;
+    if (!container) return;
+    const availableHeight = container.clientHeight;
+
+    const measure = document.createElement("div");
+    measure.style.cssText = `position:absolute;visibility:hidden;width:${container.offsetWidth}px;font-family:'Cormorant Garamond',serif;padding:0;`;
+    container.appendChild(measure);
+
+    const result: Entry[][] = [[]];
+    let currentHeight = 0;
+
+    for (let i = 0; i < entries.length; i++) {
+      measure.innerHTML = `
+        <div style="margin-bottom:4px">
+          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;text-align:justify;font-style:italic">
+            ${i + 1}. ${entries[i].word}
+          </div>
+          ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:justify;margin-top:2px">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
+          <div style="font-size:10px;text-align:right;margin-top:1px">🔥 0 ❤️ 0 🚀 0</div>
+        </div>`;
+      const h = measure.offsetHeight;
+
+      if (currentHeight + h > availableHeight && result[result.length - 1].length > 0) {
+        result.push([entries[i]]);
+        currentHeight = h;
+      } else {
+        result[result.length - 1].push(entries[i]);
+        currentHeight += h;
+      }
+    }
+
+    container.removeChild(measure);
+    setPages(result);
+  }, [entries]);
+
+  // Auto-navigate to last spread
+  useEffect(() => {
+    if (pages.length > 0) {
+      const lastSpread = Math.floor((pages.length - 1) / 2);
       setCurrentSpread(lastSpread);
     }
-  }, [entries.length]);
+  }, [pages.length]);
 
   const playFlipSound = useCallback(() => {
     if (flipAudio.current) {
@@ -49,16 +90,17 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     }
   }, []);
 
+  const totalSpreads = Math.max(1, Math.ceil(pages.length / 2));
+
   // Wire page nav to ControlBar
   useEffect(() => {
-    const totalSpreads = Math.max(1, Math.ceil(entries.length / ITEMS_PER_SPREAD));
     onPageNav?.({
       hasPrev: currentSpread > 0,
       hasNext: currentSpread < totalSpreads - 1,
       onPrev: () => { playFlipSound(); setCurrentSpread(s => s - 1); },
       onNext: () => { playFlipSound(); setCurrentSpread(s => s + 1); },
     });
-  }, [currentSpread, entries.length, onPageNav, playFlipSound]);
+  }, [currentSpread, totalSpreads, onPageNav, playFlipSound]);
 
   const handleBack = useCallback(() => {
     playFlipSound();
@@ -81,23 +123,24 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     );
   }, [setEntries]);
 
-  // Pagination: slice for current spread
-  const spreadStart = currentSpread * ITEMS_PER_SPREAD;
-  const spreadEntries = entries.slice(spreadStart, spreadStart + ITEMS_PER_SPREAD);
-  const leftPageEntries = spreadEntries.slice(0, ITEMS_PER_PAGE);
-  const rightPageEntries = spreadEntries.slice(ITEMS_PER_PAGE);
+  // Get global index for an entry
+  const getGlobalIndex = (entry: Entry) => entries.indexOf(entry);
 
-  const leftPageNum = currentSpread * 2 + 1;
-  const rightPageNum = currentSpread * 2 + 2;
+  const leftPageIdx = currentSpread * 2;
+  const rightPageIdx = currentSpread * 2 + 1;
+  const leftPageEntries = pages[leftPageIdx] || [];
+  const rightPageEntries = pages[rightPageIdx] || [];
+  const leftPageNum = leftPageIdx + 1;
+  const rightPageNum = rightPageIdx + 1;
 
   const renderEntry = (entry: Entry, globalIdx: number) => (
     <div key={globalIdx} className="flex flex-col mb-0">
-      <div className="pb-0.5 text-sm leading-tight"
+      <div className="pb-0.5 text-xl leading-tight"
            style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textAlign: "justify", lineHeight: "1.15" }}>
-        <span className="font-semibold">{globalIdx + 1}.</span> {renderInkWord(entry.word)}
+        <span className="font-bold">{globalIdx + 1}.</span> {renderInkWord(entry.word)}
       </div>
       {entry.description && (
-        <div className="text-sm font-handwriting leading-tight mt-0" style={{ color: "#1a1030", textAlign: "justify", lineHeight: "1.15" }}>
+        <div className="text-base font-handwriting leading-tight mt-0" style={{ color: "#1a1030", textAlign: "justify", lineHeight: "1.15" }}>
           — {entry.description.replace(/^[—–\-]\s*/, "")}
         </div>
       )}
@@ -111,7 +154,6 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
   return (
     <div className="fixed inset-0 w-screen h-screen overflow-hidden z-40 flex items-center justify-center">
-      {/* Container sized by the image naturally (object-contain behavior via aspect-ratio) */}
       <div
         className="relative magic-cursor scene-fade-in"
         style={{
@@ -134,15 +176,16 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
         <SpineEffect burst={false} />
 
-        {/* Left page — percentages relative to the book image */}
+        {/* Left page */}
         <div
+          ref={leftContentRef}
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "28%", top: "32%", width: "21%", height: "40%",
-            padding: "8px 4px 28px 2px",
+            left: "22%", top: "18%", width: "22%", height: "60%",
+            padding: "12px 2px 40px 4px",
           }}
         >
-          {leftPageEntries.map((entry, i) => renderEntry(entry, spreadStart + i))}
+          {leftPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}
           <div className="absolute bottom-[4px] left-0 right-0 flex justify-center select-none"
                style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontWeight: "bold", fontStyle: "italic", fontSize: "16px", opacity: 0.9, letterSpacing: "1px" }}>
             — {leftPageNum} —
@@ -153,11 +196,11 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "51%", top: "32%", width: "24%", height: "40%",
-            padding: "8px 6px 28px 4px",
+            left: "54%", top: "18%", width: "26%", height: "60%",
+            padding: "12px 2px 40px 4px",
           }}
         >
-          {rightPageEntries.map((entry, i) => renderEntry(entry, spreadStart + ITEMS_PER_PAGE + i))}
+          {rightPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}
           {rightPageEntries.length > 0 && (
             <div className="absolute bottom-[4px] left-0 right-0 flex justify-center select-none"
                  style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontWeight: "bold", fontStyle: "italic", fontSize: "16px", opacity: 0.9, letterSpacing: "1px" }}>

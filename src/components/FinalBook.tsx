@@ -91,13 +91,13 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
   const rightPageNum = currentSpread * 2 + 2;
 
   const renderEntry = (entry: Entry, globalIdx: number) => (
-    <div key={globalIdx} className="flex flex-col mb-1">
+    <div key={globalIdx} className="flex flex-col mb-0.5">
       <div className="border-b border-black/30 pb-0.5 text-base font-semibold leading-tight"
            style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>
         {globalIdx + 1}. {renderInkWord(entry.word)}
       </div>
       {entry.description && (
-        <div className="text-sm font-handwriting leading-tight" style={{ color: "#1a1030" }}>
+        <div className="text-xs font-handwriting leading-tight" style={{ color: "#1a1030" }}>
           — {entry.description}
         </div>
       )}
@@ -138,14 +138,14 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "20%", top: "29%", width: "26%", height: "44%",
-            padding: "12px 10px 24px 20px",
+            left: "13%", top: "18%", width: "33%", height: "55%",
+            padding: "45px 30px 40px 50px",
           }}
         >
           {leftPageEntries.map((entry, i) => renderEntry(entry, spreadStart + i))}
-          <div className="absolute bottom-2 left-0 right-0 text-center select-none"
-               style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "15px", opacity: 0.85, letterSpacing: "2px" }}>
-            — Стр. {leftPageNum} —
+          <div className="absolute bottom-[6px] left-0 right-0 flex justify-center select-none"
+               style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "18px", opacity: 1, letterSpacing: "2px" }}>
+            <span style={{ background: "rgba(26,20,64,0.08)", borderRadius: "12px", padding: "2px 16px" }}>— Стр. {leftPageNum} —</span>
           </div>
         </div>
 
@@ -153,15 +153,15 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <div
           className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
           style={{
-            left: "55%", top: "29%", width: "26%", height: "44%",
-            padding: "12px 20px 24px 10px",
+            left: "53%", top: "18%", width: "33%", height: "55%",
+            padding: "45px 50px 40px 30px",
           }}
         >
           {rightPageEntries.map((entry, i) => renderEntry(entry, spreadStart + ITEMS_PER_PAGE + i))}
           {rightPageEntries.length > 0 && (
-            <div className="absolute bottom-2 left-0 right-0 text-center select-none"
-                 style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "15px", opacity: 0.85, letterSpacing: "2px" }}>
-              — Стр. {rightPageNum} —
+            <div className="absolute bottom-[6px] left-0 right-0 flex justify-center select-none"
+                 style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "18px", opacity: 1, letterSpacing: "2px" }}>
+              <span style={{ background: "rgba(26,20,64,0.08)", borderRadius: "12px", padding: "2px 16px" }}>— Стр. {rightPageNum} —</span>
             </div>
           )}
         </div>

@@ -1,34 +1,38 @@
 
 
-# Plan: Fix numbering — switch to fixed items-per-spread pagination
+# Plan: Final fixes — stats layout + content positioning
 
-## Problem
-Current dynamic height-based pagination produces variable page sizes, causing unpredictable numbering. The user wants fixed, predictable pagination with continuous numbering.
+## Analysis
+
+1. **Bottom emoji buttons in `Index.tsx`**: Already removed — no such buttons exist.
+2. **FinalBook content positioning**: Currently uses `absolute` with `left: "12%", top: "14%", width: "36%"` etc. — this positions content over the book image but the user reports words rendering outside.
+3. **FinalScreen stats**: Currently vertical (`flex-col`), user wants horizontal single-line layout.
 
 ## Changes
 
-### `src/components/FinalBook.tsx`
+### 1. `src/components/FinalScreen.tsx` (lines 27-39) — Horizontal stats layout
 
-1. **Replace dynamic pagination with fixed spread-based logic:**
-   - Remove `pages` state, `computePages` useEffect, and measurement div logic (lines 30, 40-105)
-   - Add constants: `ITEMS_PER_PAGE = 3`, `ITEMS_PER_SPREAD = 6`
-   - Calculate `start = currentSpread * ITEMS_PER_SPREAD`
-   - Left page: `entries.slice(start, start + ITEMS_PER_PAGE)`
-   - Right page: `entries.slice(start + ITEMS_PER_PAGE, start + ITEMS_PER_SPREAD)`
+Replace the vertical `flex-col justify-end` container with a single horizontal row at the bottom:
 
-2. **Fix totalSpreads calculation:**
-   - `totalSpreads = Math.max(1, Math.ceil(entries.length / ITEMS_PER_SPREAD))`
+```tsx
+<div className="absolute bottom-28 left-1/2 -translate-x-1/2 flex items-center gap-8 text-white pointer-events-none">
+  <div className="px-5 py-2 rounded-xl bg-black/40 backdrop-blur-md text-xl font-handwriting">
+    Всего слов: {entries.length}
+  </div>
+  <div className="flex items-center gap-6 px-6 py-3 rounded-xl bg-black/30 backdrop-blur-md text-3xl">
+    <div>🔥 {totalFire}</div>
+    <div>❤️ {totalLove}</div>
+    <div>🚀 {totalRocket}</div>
+  </div>
+</div>
+```
 
-3. **Remove old index variables** (`leftGlobalStart`, `rightGlobalStart`, `leftPageIdx`, `rightPageIdx`)
+Word count on the left, reactions on the right, one horizontal line.
 
-4. **Fix numbering in renderEntry calls:**
-   - Left: `renderEntry(entry, start + i)`
-   - Right: `renderEntry(entry, start + ITEMS_PER_PAGE + i)`
+### 2. `src/components/FinalBook.tsx` (lines 153-195) — Tighten page content positioning
 
-5. **Reactions use same index** — already correct since `renderEntry` passes `globalIdx` to `updateReaction`
+Adjust the left/right page containers to ensure content stays strictly within the book pages. Increase `top` to `16%`, reduce `height` to `66%`, and add `overflow: hidden` safeguard to both pages. This keeps entries inside the visible book area without changing the overall layout or design.
 
-6. **Remove `leftPageRef`** — no longer needed for measurement
-
-### No changes to
-- Layout, styles, animations, flip logic, reactions UI, SpineEffect, FinalScreen, Index.tsx
+### Unchanged
+- Animations, flip logic, book design, backgrounds, numbering logic, reactions in catalog
 

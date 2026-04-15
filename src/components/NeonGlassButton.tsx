@@ -5,16 +5,17 @@ interface NeonGlassButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   className?: string;
+  accent?: boolean;
 }
 
-const NeonGlassButton: React.FC<NeonGlassButtonProps> = ({ children, onClick, disabled, className = "" }) => {
+const NeonGlassButton: React.FC<NeonGlassButtonProps> = ({ children, onClick, disabled, accent, className = "" }) => {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`neon-btn-glow transition-all duration-200 cursor-pointer select-none ${disabled ? "opacity-40 cursor-not-allowed" : "hover:scale-105"} ${className}`}
+      className={`neon-btn-glow transition-all duration-200 cursor-pointer select-none ${disabled ? "opacity-40 cursor-not-allowed" : "hover:scale-105"} ${accent && !disabled ? "animate-neon-pulse" : ""} ${className}`}
       style={{
-        background: "rgba(80, 40, 160, 0.35)",
+        background: accent ? "linear-gradient(135deg, #a855f7, #ec4899)" : "rgba(80, 40, 160, 0.35)",
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
         border: "2px solid rgba(100, 160, 255, 0.5)",

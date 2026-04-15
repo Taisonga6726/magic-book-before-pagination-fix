@@ -17,11 +17,12 @@ interface PageNav {
 
 interface FinalBookProps {
   entries: Entry[];
+  setEntries: React.Dispatch<React.SetStateAction<Entry[]>>;
   onBack: () => void;
   onPageNav?: (nav: PageNav) => void;
 }
 
-const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
+const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) => {
   const [currentSpread, setCurrentSpread] = useState(0);
   const [flipping, setFlipping] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
@@ -77,6 +78,7 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
             <span style="font-size:1.5rem;line-height:1.25;font-family:'Cormorant Garamond',serif;font-style:italic;color:#1a1440">${entry.word}</span>
           </div>
           ${entry.description ? `<div style="font-size:0.875rem;margin-top:0;margin-left:24px;color:#2a1f5a">— ${entry.description}</div>` : ""}
+          <div style="height:28px"></div>
           <div style="height:24px"></div>
         `;
         measureDiv.appendChild(el);
@@ -186,6 +188,14 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
     </span>
   );
 
+  const updateReaction = useCallback((globalIdx: number, type: "fire" | "love" | "rocket") => {
+    setEntries((prev) =>
+      prev.map((w, i) =>
+        i === globalIdx ? { ...w, reactions: { ...w.reactions, [type]: (w.reactions?.[type] || 0) + 1 } } : w
+      )
+    );
+  }, [setEntries]);
+
   const renderEntry = (entry: Entry, globalIdx: number) => (
     <div key={globalIdx} className="text-ink">
       <div className="flex items-baseline gap-1">
@@ -204,6 +214,17 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
           — {entry.description}
         </div>
       )}
+      <div className="mt-1 flex gap-3">
+        <button onClick={() => updateReaction(globalIdx, "fire")} className="text-sm opacity-70 hover:opacity-100 transition-opacity" style={{ background: "none", border: "none", cursor: "pointer" }}>
+          🔥 {entry.reactions?.fire || 0}
+        </button>
+        <button onClick={() => updateReaction(globalIdx, "love")} className="text-sm opacity-70 hover:opacity-100 transition-opacity" style={{ background: "none", border: "none", cursor: "pointer" }}>
+          ❤️ {entry.reactions?.love || 0}
+        </button>
+        <button onClick={() => updateReaction(globalIdx, "rocket")} className="text-sm opacity-70 hover:opacity-100 transition-opacity" style={{ background: "none", border: "none", cursor: "pointer" }}>
+          🚀 {entry.reactions?.rocket || 0}
+        </button>
+      </div>
     </div>
   );
 

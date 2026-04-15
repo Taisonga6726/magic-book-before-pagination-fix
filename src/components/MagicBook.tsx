@@ -179,15 +179,22 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
       }
     }
 
+    console.log("SAVE CLICKED", word, description);
+
     if (editIdx !== null) {
       setEntries((prev) => {
         const copy = [...prev];
         copy[editIdx] = { ...copy[editIdx], word: word.trim(), description: description.trim() };
+        console.log("UPDATED ENTRIES (edit):", copy);
         return copy;
       });
       setEditIdx(null);
     } else {
-      setEntries((prev) => [...prev, { word: word.trim(), description: description.trim(), reactions: { fire: 0, love: 0, rocket: 0 } }]);
+      setEntries((prev) => {
+        const updated = [...prev, { word: word.trim(), description: description.trim(), reactions: { fire: 0, love: 0, rocket: 0 } }];
+        console.log("UPDATED ENTRIES:", updated);
+        return updated;
+      });
     }
 
     setBurst(false);

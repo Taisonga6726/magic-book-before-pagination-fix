@@ -26,6 +26,7 @@ const ITEMS_PER_PAGE = 3;
 const ITEMS_PER_SPREAD = ITEMS_PER_PAGE * 2;
 
 const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) => {
+  console.log("FinalBook entries:", entries.length, entries);
   const [currentSpread, setCurrentSpread] = useState(0);
   const [flipping, setFlipping] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);

@@ -1,63 +1,45 @@
 
 
-# Plan: Position word list inside book pages
+# Plan: Fix text positioning and clickable reactions in FinalBook
 
-## Root Cause
+## Changes
 
-FinalBook renders content in a fullscreen overlay (`absolute inset-0 flex` with `w-1/2` columns). The book image uses `object-contain`, so the actual paper area is smaller than the viewport. The content ends up aligned to the screen edges, not to the book pages.
+### 1. `src/components/FinalBook.tsx` — Adjust page container padding
 
-MagicBook already solves this correctly — it uses absolute positioning with percentage coordinates that match the book's paper zones:
-- Left page: `left: 18%, top: 20%, width: 30%, height: 58%`
-- Right page: `left: 52%, top: 18%, width: 36%, height: 60%`
+**Left page** (line 114-118): Shrink container inward from ornament edges, shift text toward spine:
+```
+left: "20%", top: "22%", width: "27%", height: "54%",
+padding: "16px 12px 16px 30px"
+```
+- `padding-left: 30px` — away from outer ornament
+- `padding-right: 12px` — closer to spine (center)
 
-## Change
+**Right page** (line 126-130): Mirror asymmetry:
+```
+left: "53%", top: "22%", width: "27%", height: "54%",
+padding: "16px 30px 16px 12px"
+```
+- `padding-left: 12px` — closer to spine
+- `padding-right: 30px` — away from outer ornament
 
-### `src/components/FinalBook.tsx` — Replace fullscreen overlay with page-bound containers
+### 2. `src/components/FinalBook.tsx` — Make reactions clickable
 
-**Remove** (lines 110-124):
+Replace static `<span>` elements in `renderEntry` (lines 82-86) with clickable buttons:
 ```tsx
-<div className="absolute inset-0 flex z-20 pointer-events-auto">
-  <div className="w-1/2 flex justify-center">
-    <div className="w-[68%] mt-[14%] mb-[12%] ...">
-      ...
-    </div>
-  </div>
-  <div className="w-1/2 flex justify-center">
-    ...
-  </div>
+<div className="flex gap-4 mt-2 text-sm" style={{ color: "#2a1f5a" }}>
+  <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
+  <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
+  <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
 </div>
 ```
 
-**Replace with** two absolute containers matching MagicBook's geometry:
-```tsx
-{/* Left page */}
-<div
-  className="absolute z-20 overflow-y-auto pointer-events-auto"
-  style={{
-    left: "18%", top: "20%", width: "30%", height: "58%",
-    padding: "10px 14px 10px 24px",
-    scrollbarWidth: "none",
-  }}
->
-  {leftEntries.map((entry, i) => renderEntry(entry, i))}
-</div>
+### 3. `src/components/FinalBook.tsx` — Ensure vignette doesn't block clicks
 
-{/* Right page */}
-<div
-  className="absolute z-20 overflow-y-auto pointer-events-auto"
-  style={{
-    left: "52%", top: "18%", width: "36%", height: "60%",
-    padding: "12px 20px 10px 20px",
-    scrollbarWidth: "none",
-  }}
->
-  {rightEntries.map((entry, i) => renderEntry(entry, splitIndex + i))}
-</div>
-```
+The vignette overlay (line 97-100) has `pointer-events-none` — already correct. The page containers have `pointer-events-auto` — also correct. No change needed here.
 
-### Nothing else changes
-- Entry split logic stays the same
-- `renderEntry` stays the same
-- Book image, vignette, SpineEffect, audio — untouched
-- Save logic in MagicBook — untouched
+### Unchanged
+- Container coordinates (left/top positions stay close to current)
+- Book image, SpineEffect, animations
+- Save logic, entry split logic
+- Design, colors, fonts
 

@@ -97,7 +97,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         {globalIdx + 1}. {renderInkWord(entry.word)}
       </div>
       {entry.description && (
-        <div className="text-sm font-handwriting leading-tight mt-0" style={{ color: "#1a1030", textAlign: "justify" }}>
+        <div className="text-sm font-handwriting leading-tight mt-0" style={{ color: "#1a1030", textAlign: "justify", lineHeight: "1.15" }}>
           — {entry.description}
         </div>
       )}

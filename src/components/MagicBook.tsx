@@ -333,7 +333,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
       <div
         className="absolute font-handwriting no-scroll"
         style={{
-          left: "54%", top: "18%", width: "23%", height: "60%",
+          left: "52%", top: "18%", width: "25%", height: "60%",
           padding: "12px 8px 40px 4px",
           overflow: "hidden", overflowWrap: "break-word", wordBreak: "break-word",
           perspective: "1200px",
@@ -346,7 +346,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
                 Здесь появятся ваши записи…
               </p>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-1">
                 {pageEntries.map((entry, i) => {
                   const globalIdx = currentPageStart + i;
                   if (editIdx === globalIdx && liveText) return null;
@@ -360,7 +360,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
                         </span>
                       </div>
                       {entry.description && (
-                        <div className="font-handwriting text-lg mt-0.5" style={{ color: "#2a1f5a", textAlign: "justify" }}>
+                        <div className="font-handwriting text-base mt-0.5" style={{ color: "#2a1f5a", textAlign: "justify", lineHeight: "1.15" }}>
                           — {entry.description}
                         </div>
                       )}
@@ -377,7 +377,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
                       </span>
                     </div>
                     {description && (
-                      <div className="font-handwriting text-lg mt-0.5 ink-fresh" style={{ color: "#2a1f5a", textAlign: "justify" }}>
+                      <div className="font-handwriting text-base mt-0.5 ink-fresh" style={{ color: "#2a1f5a", textAlign: "justify", lineHeight: "1.15" }}>
                         — <InkWriteEffect text={description} className="" />
                       </div>
                     )}

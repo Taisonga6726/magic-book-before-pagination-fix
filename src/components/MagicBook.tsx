@@ -129,10 +129,11 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
 
     for (let i = 0; i < entries.length; i++) {
       measure.innerHTML = `
-        <div style="margin-bottom:8px">
-          <div><span style="font-size:1.5rem;font-weight:700">${i + 1}.</span>
-          <span style="font-size:1.5rem">${entries[i].word}</span></div>
-          ${entries[i].description ? `<div style="font-size:1.125rem;margin-left:1.75rem">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
+        <div style="margin-bottom:4px">
+          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;text-align:justify;font-style:italic">
+            ${i + 1}. ${entries[i].word}
+          </div>
+          ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:justify;margin-top:2px">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
         </div>`;
       const h = measure.offsetHeight;
 

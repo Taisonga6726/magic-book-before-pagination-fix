@@ -333,7 +333,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
       <div
         className="absolute font-handwriting no-scroll"
         style={{
-          left: "52%", top: "18%", width: "25%", height: "60%",
+          left: "54%", top: "18%", width: "23%", height: "60%",
           padding: "12px 8px 40px 4px",
           overflow: "hidden", overflowWrap: "break-word", wordBreak: "break-word",
           perspective: "1200px",
@@ -353,7 +353,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
 
                   return (
                     <div key={globalIdx} className="text-ink">
-                      <div className="text-2xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)", textAlign: "justify", lineHeight: "1.15" }}>
+                      <div className="text-xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)", textAlign: "justify", lineHeight: "1.15" }}>
                         <span className="font-bold">{globalIdx + 1}.</span> {entry.word}
                       </div>
                       {entry.description && (
@@ -367,7 +367,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
 
                 {isLastPage && liveText && (
                   <div className="text-ink">
-                    <div className="text-2xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)", textAlign: "justify", lineHeight: "1.15" }}>
+                    <div className="text-xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)", textAlign: "justify", lineHeight: "1.15" }}>
                       <span className="font-bold">{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>{" "}
                       <InkWriteEffect text={word} className="ink-fresh" />
                     </div>

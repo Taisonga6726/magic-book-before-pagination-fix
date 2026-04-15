@@ -1,46 +1,32 @@
 
-
-# Plan: Add reactions to words + stats on final screen
-
-## Context
-The app already has word input, saving, and book display. This plan adds emoji reactions per word and aggregate stats on the final screen.
+# Plan: Clean UX — Remove reactions from book + improve stats
 
 ## Changes
 
-### 1. Update Entry interface (all files using it)
-Add `reactions` field to the `Entry` interface:
-```ts
-interface Entry {
-  word: string;
-  description: string;
-  reactions: { fire: number; love: number; rocket: number };
-}
-```
-Files affected: `src/pages/Index.tsx`, `src/components/MagicBook.tsx`, `src/components/FinalBook.tsx`
+### 1. `src/components/FinalBook.tsx` — Remove reactions from book pages
+Delete the reaction buttons block (🔥 ❤️ 🚀) from word entries. Keep only word, description, and numbering.
 
-### 2. `src/components/MagicBook.tsx` — Initialize reactions on save
-Update `handleSave` to include `reactions: { fire: 0, love: 0, rocket: 0 }` when creating new entries.
+### 2. `src/components/MagicBook.tsx` — Fix input layout (left page)
+Replace current input form with clean positioned block:
+- Input for word with underline border
+- Textarea for description
+- Save button below
 
-### 3. `src/components/FinalBook.tsx` — Add reaction buttons to entries
-- Accept `setEntries` prop (currently missing)
-- Add `updateReaction(globalIdx, type)` function that increments the reaction count
-- Render 🔥 ❤️ 🚀 buttons below each entry with counts
+### 3. `src/components/FinalScreen.tsx` — BIG centered stats
+Replace current stats overlay with centered large display:
+- "Всего слов: X" as large text (text-3xl)
+- 🔥 ❤️ 🚀 reactions in row with large counts (text-4xl)
+- Full flex centering in overlay
 
-### 4. `src/pages/Index.tsx` — Pass `setEntries` to FinalBook
-```tsx
-<FinalBook entries={entries} setEntries={setEntries} onBack={...} onPageNav={...} />
-```
+### 4. Reaction placement policy
+Reactions removed from:
+- Book pages (FinalBook)
+- Input form (MagicBook)
 
-### 5. `src/components/FinalScreen.tsx` — Show stats
-- Accept `entries` prop
-- Display total word count and aggregate reaction totals (🔥, ❤️, 🚀)
+Reactions will only exist in:
+- Catalog/reading view (future implementation)
 
-### 6. `src/pages/Index.tsx` — Pass entries to FinalScreen
-```tsx
-<FinalScreen entries={entries} onBack={() => setMode("form")} />
-```
-
-### What stays unchanged
-- Book design, animations, intro video, page flipping, neon effects — all untouched
-- localStorage sync already works via existing `useEffect`
-
+### Unchanged
+- Book magic effects, animations, page flipping
+- Save logic, localStorage sync
+- Intro video, cover image

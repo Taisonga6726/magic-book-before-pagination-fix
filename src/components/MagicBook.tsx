@@ -333,7 +333,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
       <div
         className="absolute font-handwriting no-scroll"
         style={{
-          left: "51%", top: "18%", width: "25%", height: "60%",
+          left: "51%", top: "18%", width: "26%", height: "60%",
           padding: "12px 8px 40px 8px",
           overflow: "hidden", overflowWrap: "break-word", wordBreak: "break-word",
           perspective: "1200px",
@@ -360,7 +360,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
                         </span>
                       </div>
                       {entry.description && (
-                        <div className="font-handwriting text-lg mt-0.5 ml-7" style={{ color: "#2a1f5a", textAlign: "justify" }}>
+                        <div className="font-handwriting text-lg mt-0.5" style={{ color: "#2a1f5a", textAlign: "justify" }}>
                           — {entry.description}
                         </div>
                       )}
@@ -377,7 +377,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
                       </span>
                     </div>
                     {description && (
-                      <div className="font-handwriting text-lg mt-0.5 ml-7 ink-fresh" style={{ color: "#2a1f5a", textAlign: "justify" }}>
+                      <div className="font-handwriting text-lg mt-0.5 ink-fresh" style={{ color: "#2a1f5a", textAlign: "justify" }}>
                         — <InkWriteEffect text={description} className="" />
                       </div>
                     )}

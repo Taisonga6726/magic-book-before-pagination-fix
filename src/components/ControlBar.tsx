@@ -23,7 +23,7 @@ const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onRes
       style={{
         position: "fixed",
         bottom: "20px",
-        left: "50%",
+        left: "42%",
         transform: "translateX(-50%)",
         zIndex: 100,
         background: "rgba(30, 15, 60, 0.5)",

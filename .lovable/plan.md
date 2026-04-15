@@ -1,36 +1,31 @@
 
 
-# Plan: Fine-tune entry positioning & styling in FinalBook
+# Plan: Align entries within ornament & shift reactions right
+
+## Problem
+From the screenshot: right page entries overflow past the right ornament border. Reactions (🔥❤️🚀) are aligned left but should be pushed right.
 
 ## Changes in `src/components/FinalBook.tsx`
 
-### 1. Left page container (line 141-142)
+### 1. Right page — narrow and pull away from right ornament (line 156)
 ```
-left: "25%" → "27%"     ← ещё правее
-top: "30%" → "32%"      ← чуть ниже
-width: "20%" → "18%"    ← уже, чтобы не вылезать
-height: "42%" → "40%"
+left: "52%" → "53%"
+width: "24%" → "21%"
+padding: "8px 14px 28px 2px" → "8px 10px 28px 4px"
 ```
+Narrower width + more right padding keeps text from hitting the right ornament.
 
-### 2. Right page container (line 156-157)
+### 2. Left page — slight width reduction (line 141)
 ```
-left: "53%" → "52%"     ← ближе к переплёту
-top: "30%" → "32%"      ← тоже ниже
-width: "24%" → "24%"    ← без изменений
-height: "42%" → "40%"
-padding: "8px 14px 28px 4px" → "8px 14px 28px 2px"  ← левый отступ минимальный
+width: "18%" → "17%"
 ```
+Tighter to avoid touching left ornament edge.
 
-### 3. Увеличить шрифт описания (line 100)
+### 3. Reactions — align right instead of left (line 104)
 ```
-text-xs → text-sm
+justify-start → justify-end
 ```
+Reactions shift to the right side of each entry.
 
-### 4. Реакции — сдвинуть к переплёту (line 104)
-```
-justify-end → justify-start
-```
-Реакции будут выровнены к левому краю (т.е. к переплёту на левой странице, и тоже к переплёту на правой).
-
-Итого: контент садится глубже в орнамент, описание крупнее, реакции ближе к корешку.
+No other changes — vertical positioning stays at `top: 32%`, `height: 40%`.
 

@@ -10,6 +10,7 @@ import { toast } from "@/hooks/use-toast";
 interface Entry {
   word: string;
   description: string;
+  reactions: { fire: number; love: number; rocket: number };
 }
 
 interface PageNav {

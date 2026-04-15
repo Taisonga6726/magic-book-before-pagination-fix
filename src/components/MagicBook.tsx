@@ -6,6 +6,7 @@ import InkWriteEffect from "./InkWriteEffect";
 interface Entry {
   word: string;
   description: string;
+  reactions: { fire: number; love: number; rocket: number };
 }
 
 interface PageNav {
@@ -181,12 +182,12 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
     if (editIdx !== null) {
       setEntries((prev) => {
         const copy = [...prev];
-        copy[editIdx] = { word: word.trim(), description: description.trim() };
+        copy[editIdx] = { ...copy[editIdx], word: word.trim(), description: description.trim() };
         return copy;
       });
       setEditIdx(null);
     } else {
-      setEntries((prev) => [...prev, { word: word.trim(), description: description.trim() }]);
+      setEntries((prev) => [...prev, { word: word.trim(), description: description.trim(), reactions: { fire: 0, love: 0, rocket: 0 } }]);
     }
 
     setBurst(false);

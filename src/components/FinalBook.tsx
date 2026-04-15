@@ -1,10 +1,11 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, Dispatch, SetStateAction } from "react";
 const bookFinalImg = "/images/open-book.png";
 import SpineEffect from "./SpineEffect";
 
 interface Entry {
   word: string;
   description: string;
+  reactions: { fire: number; love: number; rocket: number };
 }
 
 interface PageNav {
@@ -16,11 +17,12 @@ interface PageNav {
 
 interface FinalBookProps {
   entries: Entry[];
+  setEntries: Dispatch<SetStateAction<Entry[]>>;
   onBack: () => void;
   onPageNav?: (nav: PageNav) => void;
 }
 
-const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
+const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) => {
   const [currentSpread, setCurrentSpread] = useState(0);
   const [flipping, setFlipping] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
@@ -44,7 +46,6 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
     const computePages = () => {
       const container = leftPageRef.current;
       if (!container) {
-        // Fallback: estimate 7 entries per page
         const fallback: Entry[][] = [];
         for (let i = 0; i < entries.length; i += 7) {
           fallback.push(entries.slice(i, i + 7));
@@ -59,7 +60,6 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
       const availableHeight = container.clientHeight - paddingTop - paddingBottom;
       const contentWidth = container.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
 
-      // Measure entries using a hidden container
       const measureDiv = document.createElement("div");
       measureDiv.style.cssText = `position:fixed;visibility:hidden;top:-9999px;left:-9999px;width:${contentWidth}px;`;
       document.body.appendChild(measureDiv);
@@ -78,6 +78,7 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
             <span style="font-size:1.5rem;line-height:1.25;font-family:'Cormorant Garamond',serif;font-style:italic;color:#1a1440">${entry.word}</span>
           </div>
           ${entry.description ? `<div style="font-size:0.875rem;margin-top:0;margin-left:24px;color:#2a1f5a">— ${entry.description}</div>` : ""}
+          <div style="height:24px"></div>
         `;
         measureDiv.appendChild(el);
         const h = el.offsetHeight + 4;
@@ -109,7 +110,6 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
     }
   }, []);
 
-  // Each spread shows 2 pages (left + right)
   const totalSpreads = Math.max(1, Math.ceil(pages.length / 2));
   const hasNext = currentSpread < totalSpreads - 1;
   const hasPrev = currentSpread > 0;
@@ -143,7 +143,6 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
   const leftEntries = pages[leftPageIdx] || [];
   const rightEntries = pages[rightPageIdx] || [];
 
-  // Compute global start indices
   let leftGlobalStart = 0;
   for (let i = 0; i < leftPageIdx; i++) {
     leftGlobalStart += (pages[i]?.length || 0);
@@ -179,6 +178,16 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
     }, 400);
   }, [fadingOut, flipping, playFlipSound, onBack]);
 
+  const updateReaction = useCallback((globalIdx: number, type: "fire" | "love" | "rocket") => {
+    setEntries((prev) =>
+      prev.map((w, i) =>
+        i === globalIdx
+          ? { ...w, reactions: { ...w.reactions, [type]: (w.reactions?.[type] || 0) + 1 } }
+          : w
+      )
+    );
+  }, [setEntries]);
+
   const renderInkWord = (text: string) => (
     <span>
       {text.split("").map((ch, i) => (
@@ -205,6 +214,29 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
           — {entry.description}
         </div>
       )}
+      <div className="flex gap-2 mt-1 ml-6">
+        <button
+          onClick={() => updateReaction(globalIdx, "fire")}
+          className="text-xs px-1.5 py-0.5 rounded hover:bg-yellow-100/30 transition-colors"
+          style={{ color: "#1a1440" }}
+        >
+          🔥 {entry.reactions?.fire || 0}
+        </button>
+        <button
+          onClick={() => updateReaction(globalIdx, "love")}
+          className="text-xs px-1.5 py-0.5 rounded hover:bg-pink-100/30 transition-colors"
+          style={{ color: "#1a1440" }}
+        >
+          ❤️ {entry.reactions?.love || 0}
+        </button>
+        <button
+          onClick={() => updateReaction(globalIdx, "rocket")}
+          className="text-xs px-1.5 py-0.5 rounded hover:bg-blue-100/30 transition-colors"
+          style={{ color: "#1a1440" }}
+        >
+          🚀 {entry.reactions?.rocket || 0}
+        </button>
+      </div>
     </div>
   );
 
@@ -273,9 +305,6 @@ const FinalBook = ({ entries, onBack, onPageNav }: FinalBookProps) => {
         </div>
       </div>
 
-      {/* Navigation buttons hidden — managed by ControlBar */}
-
-      {/* Page indicator */}
       <div
         className="absolute bottom-[8%] right-[14%] font-handwriting text-xs z-20"
         style={{ color: "hsl(var(--ink) / 0.3)" }}

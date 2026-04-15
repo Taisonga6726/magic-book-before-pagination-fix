@@ -169,11 +169,11 @@ const Index = () => {
         </div>
       )}
       {mode === "reading" && (
-        <FinalBook entries={entries} onBack={() => setMode("form")} onPageNav={handlePageNav} />
+        <FinalBook entries={entries} setEntries={setEntries} onBack={() => setMode("form")} onPageNav={handlePageNav} />
       )}
 
       {mode === "final" && (
-        <FinalScreen onBack={() => setMode("form")} />
+        <FinalScreen entries={entries} onBack={() => setMode("form")} />
       )}
       </div>
 

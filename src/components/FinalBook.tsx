@@ -99,33 +99,19 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
   }, [setEntries]);
 
   const renderEntry = (entry: Entry, globalIdx: number) => (
-    <div key={globalIdx} className="text-ink">
-      <div className="flex items-baseline gap-1">
-        <span className="text-2xl font-bold" style={{ color: "#1a1440" }}>{globalIdx + 1}.</span>
-        <span className="text-2xl leading-tight" style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontStyle: "italic",
-          color: "#1a1440",
-          textShadow: "0 0 2px rgba(20,10,50,0.15)",
-        }}>
-          {renderInkWord(entry.word)}
-        </span>
+    <div key={globalIdx} className="flex flex-col">
+      <div className="text-lg font-semibold border-b border-black/20 pb-1" style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>
+        {globalIdx + 1}. {renderInkWord(entry.word)}
       </div>
       {entry.description && (
-        <div className="font-handwriting text-sm ml-6" style={{ color: "#2a1f5a", textShadow: "0 0 2px rgba(20,10,50,0.1)" }}>
+        <div className="text-sm mt-1 opacity-80 font-handwriting" style={{ color: "#2a1f5a" }}>
           — {entry.description}
         </div>
       )}
-      <div className="mt-1 flex gap-3">
-        <button onClick={() => updateReaction(globalIdx, "fire")} className="text-sm opacity-70 hover:opacity-100 transition-opacity" style={{ background: "none", border: "none", cursor: "pointer" }}>
-          🔥 {entry.reactions?.fire || 0}
-        </button>
-        <button onClick={() => updateReaction(globalIdx, "love")} className="text-sm opacity-70 hover:opacity-100 transition-opacity" style={{ background: "none", border: "none", cursor: "pointer" }}>
-          ❤️ {entry.reactions?.love || 0}
-        </button>
-        <button onClick={() => updateReaction(globalIdx, "rocket")} className="text-sm opacity-70 hover:opacity-100 transition-opacity" style={{ background: "none", border: "none", cursor: "pointer" }}>
-          🚀 {entry.reactions?.rocket || 0}
-        </button>
+      <div className="flex gap-4 mt-1.5 text-sm">
+        <button onClick={() => updateReaction(globalIdx, "fire")} className="opacity-70 hover:opacity-100" style={{ background: "none", border: "none", cursor: "pointer" }}>🔥 {entry.reactions?.fire || 0}</button>
+        <button onClick={() => updateReaction(globalIdx, "love")} className="opacity-70 hover:opacity-100" style={{ background: "none", border: "none", cursor: "pointer" }}>❤️ {entry.reactions?.love || 0}</button>
+        <button onClick={() => updateReaction(globalIdx, "rocket")} className="opacity-70 hover:opacity-100" style={{ background: "none", border: "none", cursor: "pointer" }}>🚀 {entry.reactions?.rocket || 0}</button>
       </div>
     </div>
   );
@@ -150,55 +136,32 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
       <SpineEffect burst={burst} />
 
-      {/* Left page */}
-      <div
-        className="absolute font-handwriting no-scroll z-20"
-        style={{
-          left: "12%", top: "16%", width: "36%", height: "66%",
-          padding: "16px 20px 20px 20px",
-          overflow: "hidden",
-          perspective: "1200px",
-        }}
-      >
-        <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "right center" }}>
-          <div className="space-y-0.5">
-            {leftEntries.map((entry, i) => renderEntry(entry, start + i))}
+      {/* Page content overlay */}
+      <div className="absolute inset-0 flex z-20" style={{ padding: "14% 12% 18% 12%" }}>
+        {/* Left page */}
+        <div className="w-1/2 h-full flex justify-center overflow-hidden">
+          <div className="w-[80%] flex flex-col gap-5">
+            <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "right center" }}>
+              {leftEntries.map((entry, i) => renderEntry(entry, start + i))}
+              {leftEntries.length === 0 && (
+                <p className="font-handwriting text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>Пустая страница</p>
+              )}
+            </div>
           </div>
-          {leftEntries.length === 0 && (
-            <p className="font-handwriting text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
-              Пустая страница
-            </p>
-          )}
         </div>
-      </div>
-
-      {/* Right page */}
-      <div
-        className="absolute font-handwriting no-scroll z-20"
-        style={{
-          left: "52%", top: "16%", width: "36%", height: "66%",
-          padding: "16px 20px 20px 20px",
-          overflow: "hidden", overflowWrap: "break-word", wordBreak: "break-word",
-          perspective: "1200px",
-        }}
-      >
-        <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "left center" }}>
-          <div className="space-y-0.5">
-            {rightEntries.map((entry, i) => renderEntry(entry, start + ITEMS_PER_PAGE + i))}
+        {/* Right page */}
+        <div className="w-1/2 h-full flex justify-center overflow-hidden">
+          <div className="w-[80%] flex flex-col gap-5">
+            <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "left center" }}>
+              {rightEntries.map((entry, i) => renderEntry(entry, start + ITEMS_PER_PAGE + i))}
+              {rightEntries.length === 0 && leftEntries.length > 0 && <p> </p>}
+            </div>
           </div>
-          {rightEntries.length === 0 && leftEntries.length > 0 && (
-            <p className="font-handwriting text-xl mt-8 text-center" style={{ color: "hsl(var(--ink) / 0.25)" }}>
-              {" "}
-            </p>
-          )}
         </div>
-      </div>
-
-      <div
-        className="absolute bottom-[8%] right-[14%] font-handwriting text-xs z-20"
-        style={{ color: "hsl(var(--ink) / 0.3)" }}
-      >
-        {currentSpread + 1} / {totalSpreads}
+        {/* Page counter */}
+        <div className="absolute bottom-4 right-8 font-handwriting text-xs" style={{ color: "hsl(var(--ink) / 0.3)" }}>
+          {currentSpread + 1} / {totalSpreads}
+        </div>
       </div>
     </div>
       </div>

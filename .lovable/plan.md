@@ -1,46 +1,63 @@
 
-Цель: сделать `FinalBook` максимально прямым и детерминированным, чтобы слова рендерились внутри открытой книги без логики, которая может их скрывать.
 
-1. `src/components/FinalBook.tsx` — упростить рендер до прямого вывода списка
-- Убрать из режима чтения всё, что связано со spread/pagination и может прятать контент:
-  - `ITEMS_PER_PAGE`, `ITEMS_PER_SPREAD`
-  - `currentSpread`, `totalSpreads`, `hasPrev`, `hasNext`
-  - `start`, текущие slice по spread
-  - `handleFlip`
-  - счётчик страниц
-  - `Пустая страница` и любые fallback-условия
-- Оставить только каркас книги и два контейнера страниц.
-- Разбить `entries` один раз на две видимые колонки, чтобы все текущие слова были видны сразу, без перелистывания:
-  - `const splitIndex = Math.ceil(entries.length / 2)`
-  - `leftEntries = entries.slice(0, splitIndex)`
-  - `rightEntries = entries.slice(splitIndex)`
+# Plan: Position word list inside book pages
 
-2. `src/components/FinalBook.tsx` — рендерить записи как словарь
-- Использовать простой `renderEntry`, соответствующий вашему формату:
+## Root Cause
+
+FinalBook renders content in a fullscreen overlay (`absolute inset-0 flex` with `w-1/2` columns). The book image uses `object-contain`, so the actual paper area is smaller than the viewport. The content ends up aligned to the screen edges, not to the book pages.
+
+MagicBook already solves this correctly — it uses absolute positioning with percentage coordinates that match the book's paper zones:
+- Left page: `left: 18%, top: 20%, width: 30%, height: 58%`
+- Right page: `left: 52%, top: 18%, width: 36%, height: 60%`
+
+## Change
+
+### `src/components/FinalBook.tsx` — Replace fullscreen overlay with page-bound containers
+
+**Remove** (lines 110-124):
 ```tsx
-<div key={idx}>
-  <div>{idx + 1}. {entry.word}</div>
-  <div>— {entry.description}</div>
-  <div>🔥 {entry.reactions?.fire || 0} ❤️ {entry.reactions?.love || 0} 🚀 {entry.reactions?.rocket || 0}</div>
+<div className="absolute inset-0 flex z-20 pointer-events-auto">
+  <div className="w-1/2 flex justify-center">
+    <div className="w-[68%] mt-[14%] mb-[12%] ...">
+      ...
+    </div>
+  </div>
+  <div className="w-1/2 flex justify-center">
+    ...
+  </div>
 </div>
 ```
-- Левую страницу заполнять `leftEntries.map(...)`, правую — `rightEntries.map(...)`.
-- Не добавлять условий, которые скрывают список. Если в `entries` есть хотя бы одно слово, оно обязано появиться на странице.
 
-3. `src/components/FinalBook.tsx` — убрать всё, что может физически обрезать список
-- Убрать у внутренних текстовых контейнеров clipping, который может скрывать записи (`overflow-hidden` внутри области текста).
-- Сохранить текущий фон книги, позиционирование книги на экране, шрифты и визуальный стиль страницы.
+**Replace with** two absolute containers matching MagicBook's geometry:
+```tsx
+{/* Left page */}
+<div
+  className="absolute z-20 overflow-y-auto pointer-events-auto"
+  style={{
+    left: "18%", top: "20%", width: "30%", height: "58%",
+    padding: "10px 14px 10px 24px",
+    scrollbarWidth: "none",
+  }}
+>
+  {leftEntries.map((entry, i) => renderEntry(entry, i))}
+</div>
 
-4. `src/components/FinalBook.tsx` / `src/pages/Index.tsx` — отключить лишнюю навигацию в reading
-- Так как сложная пагинация убирается, `FinalBook` должен сбрасывать `onPageNav`, чтобы в `ControlBar` не оставались старые кнопки prev/next из form-режима.
-- Видео-flow и переходы `form → preview → reading` не менять.
+{/* Right page */}
+<div
+  className="absolute z-20 overflow-y-auto pointer-events-auto"
+  style={{
+    left: "52%", top: "18%", width: "36%", height: "60%",
+    padding: "12px 20px 10px 20px",
+    scrollbarWidth: "none",
+  }}
+>
+  {rightEntries.map((entry, i) => renderEntry(entry, splitIndex + i))}
+</div>
+```
 
-5. `src/components/MagicBook.tsx` и `src/pages/Index.tsx` — только cleanup
-- Сохранение не трогать: оно уже работает.
-- Удалить временные debug `console.log`, чтобы код снова соответствовал требованию “без диагностики”.
+### Nothing else changes
+- Entry split logic stays the same
+- `renderEntry` stays the same
+- Book image, vignette, SpineEffect, audio — untouched
+- Save logic in MagicBook — untouched
 
-Технически итог:
-- Источник данных остаётся один: `entries`.
-- `MagicBook` только добавляет записи.
-- `FinalBook` только напрямую отображает `entries`.
-- После открытия книги пользователь сразу видит список слов внутри страниц, без пустых заглушек и без скрывающих условий.

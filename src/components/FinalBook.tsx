@@ -100,18 +100,19 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
   const renderEntry = (entry: Entry, globalIdx: number) => (
     <div key={globalIdx} className="flex flex-col">
-      <div className="text-lg font-semibold border-b border-black/20 pb-1" style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>
+      <div className="border-b border-black/30 pb-1 text-lg font-semibold"
+           style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>
         {globalIdx + 1}. {renderInkWord(entry.word)}
       </div>
       {entry.description && (
-        <div className="text-sm mt-1 opacity-80 font-handwriting" style={{ color: "#2a1f5a" }}>
+        <div className="mt-1 text-sm opacity-80 font-handwriting" style={{ color: "#2a1f5a" }}>
           — {entry.description}
         </div>
       )}
-      <div className="flex gap-4 mt-1.5 text-sm">
-        <button onClick={() => updateReaction(globalIdx, "fire")} className="opacity-70 hover:opacity-100" style={{ background: "none", border: "none", cursor: "pointer" }}>🔥 {entry.reactions?.fire || 0}</button>
-        <button onClick={() => updateReaction(globalIdx, "love")} className="opacity-70 hover:opacity-100" style={{ background: "none", border: "none", cursor: "pointer" }}>❤️ {entry.reactions?.love || 0}</button>
-        <button onClick={() => updateReaction(globalIdx, "rocket")} className="opacity-70 hover:opacity-100" style={{ background: "none", border: "none", cursor: "pointer" }}>🚀 {entry.reactions?.rocket || 0}</button>
+      <div className="flex gap-4 mt-2 text-sm" style={{ color: "#2a1f5a" }}>
+        <span>🔥 {entry.reactions?.fire || 0}</span>
+        <span>❤️ {entry.reactions?.love || 0}</span>
+        <span>🚀 {entry.reactions?.rocket || 0}</span>
       </div>
     </div>
   );
@@ -137,10 +138,10 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
       <SpineEffect burst={burst} />
 
       {/* Page content overlay */}
-      <div className="absolute inset-0 flex z-20" style={{ padding: "14% 12% 18% 12%" }}>
+      <div className="absolute inset-0 flex z-20 pointer-events-auto">
         {/* Left page */}
-        <div className="w-1/2 h-full flex justify-center overflow-hidden">
-          <div className="w-[80%] flex flex-col gap-5">
+        <div className="w-1/2 flex justify-center">
+          <div className="w-[68%] mt-[14%] mb-[12%] flex flex-col gap-6 overflow-hidden">
             <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "right center" }}>
               {leftEntries.map((entry, i) => renderEntry(entry, start + i))}
               {leftEntries.length === 0 && (
@@ -150,8 +151,8 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           </div>
         </div>
         {/* Right page */}
-        <div className="w-1/2 h-full flex justify-center overflow-hidden">
-          <div className="w-[80%] flex flex-col gap-5">
+        <div className="w-1/2 flex justify-center">
+          <div className="w-[68%] mt-[14%] mb-[12%] flex flex-col gap-6 overflow-hidden">
             <div className={flipping ? "page-flip-anim" : ""} style={{ transformOrigin: "left center" }}>
               {rightEntries.map((entry, i) => renderEntry(entry, start + ITEMS_PER_PAGE + i))}
               {rightEntries.length === 0 && leftEntries.length > 0 && <p> </p>}

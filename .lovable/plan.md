@@ -1,38 +1,56 @@
 
 
-# Plan: Fix entry positioning — fit inside ornamental borders
-
-## Problem
-Screenshot shows entries overflow above and left of the page ornaments. The red boxes in the screenshot show where the actual writable page area is — content must stay inside those ornamental frames.
-
-## Analysis of ornament positions (from screenshot)
-The ornamental inner frame on each page starts roughly:
-- **Left page**: `left: 15%`, `top: 24%`, `width: 28%`, `height: 48%`
-- **Right page**: `left: 54%`, `top: 24%`, `width: 28%`, `height: 48%`
-
-Current values have `top: 18%` (too high) and `width: 33%` (too wide), `left: 13%` (too far left).
+# Plan: Final alignment inside ornament + page numbers in corners
 
 ## Changes in `src/components/FinalBook.tsx`
 
-### 1. Left page container (line 141)
+### 1. Shift content down & tighten height (lines 141, 156)
+
+**Left page:**
 ```
-left: 13% → 15%
-top: 18% → 25%
-width: 33% → 28%
-height: 55% → 47%
-padding: 45px 30px 40px 50px → 20px 20px 30px 25px
+left: 15% → 16%
+top: 25% → 29%
+width: 28% → 27%
+height: 47% → 43%
+padding: 20px 20px 30px 25px → 10px 15px 28px 20px
 ```
 
-### 2. Right page container (line 156)
+**Right page:**
 ```
-left: 53% → 55%
-top: 18% → 25%
-width: 33% → 28%
-height: 55% → 47%
-padding: 45px 50px 40px 30px → 20px 25px 30px 20px
+left: 55% → 56%
+top: 25% → 29%
+width: 28% → 27%
+height: 47% → 43%
+padding: 20px 25px 30px 20px → 10px 20px 28px 15px
 ```
 
-Smaller padding since the container itself is now tighter. Page numbers stay at `bottom: 6px` inside these containers.
+### 2. Page numbers — corners instead of center (lines 146-149, 161-165)
 
-No logic changes — positioning only.
+**Left page** — bottom-left corner:
+```tsx
+<div className="absolute bottom-[4px] left-[8px] select-none"
+     style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "15px", opacity: 0.9, letterSpacing: "1px" }}>
+  — {leftPageNum} —
+</div>
+```
+
+**Right page** — bottom-right corner:
+```tsx
+<div className="absolute bottom-[4px] right-[8px] select-none"
+     style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "15px", opacity: 0.9, letterSpacing: "1px" }}>
+  — {rightPageNum} —
+</div>
+```
+
+Remove the pill background span — just plain number text in the corner, like a real book.
+
+### 3. Compact entries (renderEntry, lines 93-110)
+
+- Remove `border-b` from word line — cleaner look
+- Reduce word size: `text-base` → `text-sm`
+- Reactions: `text-xs` → `text-[10px]`, tighter gap `gap-3` → `gap-2`
+- Entry margin: `mb-0.5` stays
+- Description: keep `text-xs`, add `mt-0` explicitly
+
+Result: notebook-style entries, 4 fit comfortably in 43% height.
 

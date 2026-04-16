@@ -12,12 +12,11 @@ interface ControlBarProps {
   mode: "form" | "preview" | "reading" | "final";
   setMode: (mode: "form" | "preview" | "reading" | "final") => void;
   onAddWord: () => void;
-  onRestart: () => void;
   onShare: () => void;
   pageNav?: PageNav | null;
 }
 
-const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onRestart, onShare, pageNav }) => {
+const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onShare, pageNav }) => {
   return (
     <div
       style={{
@@ -71,7 +70,6 @@ const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onRes
 
       {mode === "final" && (
         <>
-          <NeonGlassButton onClick={onRestart}>🔄 начать заново</NeonGlassButton>
           <NeonGlassButton onClick={() => setMode("form")}>📖 к книге</NeonGlassButton>
           <NeonGlassButton onClick={onShare}>📤 поделиться</NeonGlassButton>
         </>

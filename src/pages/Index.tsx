@@ -182,7 +182,6 @@ const Index = () => {
         mode={mode}
         setMode={setMode}
         onAddWord={handleAddWord}
-        onRestart={handleRestart}
         onShare={handleShare}
         pageNav={pageNav}
       />

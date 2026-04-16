@@ -20,11 +20,23 @@ interface PageNav {
   onNext: () => void;
 }
 
+const INITIAL_ENTRIES: Entry[] = [
+  { word: "Вайбкодинг", description: "Программирование в потоке вдохновения", reactions: { fire: 0, love: 0, rocket: 0 } },
+  { word: "Промпт", description: "Магическое заклинание для нейросети", reactions: { fire: 0, love: 0, rocket: 0 } },
+  { word: "Нейросеть", description: "Цифровой мозг, обучённый на данных", reactions: { fire: 0, love: 0, rocket: 0 } },
+  { word: "Токен", description: "Единица смысла в языке машин", reactions: { fire: 0, love: 0, rocket: 0 } },
+  { word: "Галлюцинация", description: "Когда ИИ уверенно выдумывает факты", reactions: { fire: 0, love: 0, rocket: 0 } },
+  { word: "Эмбеддинг", description: "Превращение слов в числовые координаты", reactions: { fire: 0, love: 0, rocket: 0 } },
+  { word: "Файнтюнинг", description: "Тонкая настройка модели под задачу", reactions: { fire: 0, love: 0, rocket: 0 } },
+  { word: "Трансформер", description: "Архитектура, изменившая мир ИИ", reactions: { fire: 0, love: 0, rocket: 0 } },
+];
+
 const Index = () => {
   const [mode, setMode] = useState<"form" | "preview" | "reading" | "final">("form");
   const [entries, setEntries] = useState<Entry[]>(() => {
     const saved = localStorage.getItem("magic-book-entries");
-    return saved ? JSON.parse(saved) : [];
+    const parsed = saved ? JSON.parse(saved) : [];
+    return parsed.length > 0 ? parsed : INITIAL_ENTRIES;
   });
   const [pageNav, setPageNav] = useState<PageNav | null>(null);
   const [flipping, setFlipping] = useState(false);
@@ -39,7 +51,6 @@ const Index = () => {
     flipAudio.current.volume = 0.5;
   }, []);
 
-
   const playFlipSound = useCallback(() => {
     if (flipAudio.current) {
       flipAudio.current.currentTime = 0;
@@ -48,24 +59,10 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    const cleared = localStorage.getItem("magic-book-initial-clean");
-    if (!cleared) {
-      localStorage.removeItem("magic-book-entries");
-      localStorage.setItem("magic-book-initial-clean", "true");
-      setEntries([]);
-    }
-  }, []);
-
-  useEffect(() => {
     localStorage.setItem("magic-book-entries", JSON.stringify(entries));
   }, [entries]);
 
   const handleAddWord = () => {
-    setMode("form");
-  };
-
-  const handleRestart = () => {
-    setEntries([]);
     setMode("form");
   };
 
@@ -182,7 +179,6 @@ const Index = () => {
         mode={mode}
         setMode={setMode}
         onAddWord={handleAddWord}
-        onRestart={handleRestart}
         onShare={handleShare}
         pageNav={pageNav}
       />

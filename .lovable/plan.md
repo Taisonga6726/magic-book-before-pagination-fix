@@ -1,20 +1,37 @@
 
 
-# Plan: Fine-tune FinalBook left page positioning
+# Plan: Зафиксировать слова, убрать сброс, восстановить данные
 
-## Current Issue
-From the live screenshot: entries on the left page start too high — "1. Вайбкодинг" touches/overlaps the top ornament border. The left edge is also tight.
+## Изменения
 
-## Changes in `src/components/FinalBook.tsx`
+### 1. `src/pages/Index.tsx`
 
-### Left page container (line 177)
-- `top: "18%"` → `"20%"` — push text down away from top ornament
-- `height: "60%"` → `"56%"` — reduce height to keep text away from bottom ornament too
-- Keep `left: "22%"`, `width: "24%"`, `padding: "12px 8px 40px 12px"` — horizontal alignment looked good
+**Удалить блок очистки** (строки 50–57) — `magic-book-initial-clean` useEffect полностью убирается.
 
-### Right page (lines 192-193)
-No changes — right page is empty on this test but its MagicBook-matched coordinates should be correct.
+**Добавить INITIAL_ENTRIES** перед компонентом — список всех ранее внесённых слов (нужен точный список от вас, либо я вставлю те что были видны на скриншотах: Вайбкодинг, Промпт, Нейросеть, Токен, Галлюцинация, Эмбеддинг, Файнтюнинг, Трансформер).
 
-## Result
-Text on the left page will have visible clearance from the top ornament, matching the visual balance of the right page.
+**Изменить инициализацию entries** (строки 25–28):
+```tsx
+const [entries, setEntries] = useState<Entry[]>(() => {
+  const saved = localStorage.getItem("magic-book-entries");
+  const parsed = saved ? JSON.parse(saved) : [];
+  return parsed.length > 0 ? parsed : INITIAL_ENTRIES;
+});
+```
+
+**Убрать handleRestart** (строки 67–70) — функция сброса удаляется полностью.
+
+### 2. `src/components/ControlBar.tsx`
+
+**Удалить кнопку "начать заново"** из режима `final` (строка 74). Убрать `onRestart` из props интерфейса.
+
+### 3. `src/pages/Index.tsx` — убрать onRestart из ControlBar
+
+Удалить проп `onRestart={handleRestart}` из JSX ControlBar.
+
+## Результат
+- Книга никогда не обнуляется
+- Кнопка сброса отсутствует в UI
+- При пустом localStorage загружаются зафиксированные слова
+- Новые слова добавляются в конец через `setEntries(prev => [...prev, newEntry])`
 

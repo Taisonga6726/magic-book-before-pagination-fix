@@ -174,8 +174,8 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
             ref={leftContentRef}
             className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
             style={{
-              left: "20%", top: "18%", width: "26%", height: "60%",
-              padding: "12px 4px 40px 2px",
+               left: "22%", top: "18%", width: "24%", height: "60%",
+               padding: "12px 8px 40px 12px",
             }}
           >
             {leftPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}

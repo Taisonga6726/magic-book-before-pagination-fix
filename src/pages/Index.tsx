@@ -26,6 +26,15 @@ const Index = () => {
     const saved = localStorage.getItem("magic-book-entries");
     return saved ? JSON.parse(saved) : [];
   });
+
+  useEffect(() => {
+    if (!localStorage.getItem("magic-book-test-cleaned")) {
+      localStorage.removeItem("magic-book-entries");
+      localStorage.setItem("magic-book-test-cleaned", "true");
+      setEntries([]);
+    }
+  }, []);
+
   const [pageNav, setPageNav] = useState<PageNav | null>(null);
   const [flipping, setFlipping] = useState(false);
   const [videoFinished, setVideoFinished] = useState(false);

@@ -1,27 +1,34 @@
 
 
-# Plan: Убрать INITIAL_ENTRIES и выровнять левую страницу
+# Plan: Очистить тестовые слова из localStorage
 
-## 1. `src/pages/Index.tsx`
+## Проблема
+Код уже чист — никаких `INITIAL_ENTRIES` или `DEMO_ENTRIES` нет. Но 8 тестовых слов были сохранены в `localStorage` браузера во время предыдущего сеанса и продолжают отображаться.
 
-**Удалить** строки 23–32 (весь массив `INITIAL_ENTRIES`).
+## Решение
 
-**Заменить** инициализацию entries (строки 36–40):
+### `src/pages/Index.tsx` — одноразовая очистка тестовых данных
+
+Добавить `useEffect`, который при первом запуске проверяет флаг `magic-book-test-cleaned`. Если флаг не установлен — очищает `magic-book-entries` и ставит флаг. Это сработает один раз, после чего книга будет пустой и готова к заполнению реальными словами.
+
 ```tsx
-const [entries, setEntries] = useState<Entry[]>(() => {
-  const saved = localStorage.getItem("magic-book-entries");
-  return saved ? JSON.parse(saved) : [];
-});
+useEffect(() => {
+  if (!localStorage.getItem("magic-book-test-cleaned")) {
+    localStorage.removeItem("magic-book-entries");
+    localStorage.setItem("magic-book-test-cleaned", "true");
+    setEntries([]);
+  }
+}, []);
 ```
 
-## 2. `src/components/FinalBook.tsx` — левая страница (строка 177)
-
-Изменить:
-- `left: "22%"` → `"24%"`
-- `padding: "12px 8px 40px 12px"` → `"12px 8px 40px 16px"`
+После очистки:
+- Книга пуста при первом открытии
+- Пользователь вводит слова через MagicBook
+- Слова сохраняются в localStorage как обычно
+- Тестовые данные больше не появляются
 
 ## Не затрагивается
-- Правая страница
-- Логика сохранения/добавления
-- localStorage
+- Логика сохранения и добавления слов
+- MagicBook / FinalBook компоненты
+- Структура Entry
 

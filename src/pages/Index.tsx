@@ -10,7 +10,7 @@ import { toast } from "@/hooks/use-toast";
 interface Entry {
   word: string;
   description: string;
-  reactions: { fire: number; love: number; rocket: number };
+  reactions: { fire: number; love: number; rocket: number; laugh: number; like: number };
   images?: string[];
 }
 

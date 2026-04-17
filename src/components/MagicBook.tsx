@@ -6,7 +6,7 @@ import InkWriteEffect from "./InkWriteEffect";
 interface Entry {
   word: string;
   description: string;
-  reactions: { fire: number; love: number; rocket: number };
+  reactions: { fire: number; love: number; rocket: number; laugh: number; like: number };
   images?: string[];
 }
 
@@ -227,7 +227,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
     } else {
       setEntries((prev) => [
         ...prev,
-        { word: word.trim(), description: description.trim().replace(/^[—–-]\s*/, ""), reactions: { fire: 0, love: 0, rocket: 0 }, images: pastedImages },
+        { word: word.trim(), description: description.trim().replace(/^[—–-]\s*/, ""), reactions: { fire: 0, love: 0, rocket: 0, laugh: 0, like: 0 }, images: pastedImages },
       ]);
     }
 

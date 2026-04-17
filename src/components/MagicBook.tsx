@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo, Dispatch, SetStateAction } from "react";
 import bookImg from "@/assets/book.png";
 import SpineEffect from "./SpineEffect";
 import InkWriteEffect from "./InkWriteEffect";
@@ -7,6 +7,7 @@ interface Entry {
   word: string;
   description: string;
   reactions: { fire: number; love: number; rocket: number };
+  images?: string[];
 }
 
 interface PageNav {

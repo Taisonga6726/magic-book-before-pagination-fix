@@ -330,6 +330,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
             ref={descRef}
             value={description}
             onChange={(e) => { setDescription(e.target.value); playPenSound(); }}
+            onPaste={handleDescPaste}
             placeholder="Описание…"
             className="magic-textarea w-full h-full font-handwriting text-lg notebook-lines magic-cursor-write"
             style={{ minHeight: "160px", lineHeight: "22px" }}
@@ -421,9 +422,12 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
                       </div>
                       {entry.description && (
                         <div className="font-handwriting text-base" style={{ color: "#2a1f5a", textAlign: "justify", lineHeight: "1.15" }}>
-                          — {entry.description.replace(/^[—–\-]\s*/, "")}
+                          — {entry.description.replace(/^[—–-]\s*/, "")}
                         </div>
                       )}
+                      {entry.images?.map((src, k) => (
+                        <img key={k} src={src} alt="" style={{ display: "block", maxWidth: "100%", height: "auto", margin: "8px 0" }} />
+                      ))}
                     </div>
                   );
                 })}
@@ -439,6 +443,9 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
                         — <InkWriteEffect text={description} className="" />
                       </div>
                     )}
+                    {pastedImages.map((src, k) => (
+                      <img key={k} src={src} alt="" style={{ display: "block", maxWidth: "100%", height: "auto", margin: "8px 0" }} />
+                    ))}
                   </div>
                 )}
               </div>

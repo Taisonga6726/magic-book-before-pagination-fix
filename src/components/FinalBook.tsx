@@ -44,8 +44,11 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     if (!container) return;
     const availableHeight = container.clientHeight - 20;
 
+    // Measure with the narrower (right) page width so right-side pagination is safe.
+    // Left page is wider (31% vs 26%) — it will simply have a bit of headroom.
+    const measureWidth = Math.floor(container.offsetWidth * (26 / 31));
     const measure = document.createElement("div");
-    measure.style.cssText = `position:absolute;visibility:hidden;width:${container.offsetWidth}px;font-family:'Cormorant Garamond',serif;padding:0;`;
+    measure.style.cssText = `position:absolute;visibility:hidden;width:${measureWidth}px;font-family:'Cormorant Garamond',serif;padding:0;`;
     container.appendChild(measure);
 
     const result: Entry[][] = [[]];

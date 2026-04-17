@@ -42,7 +42,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
     const container = leftContentRef.current;
     if (!container) return;
-    const availableHeight = container.clientHeight - 24;
+    const availableHeight = container.clientHeight - 4;
 
     const measure = document.createElement("div");
     measure.style.cssText = `position:absolute;visibility:hidden;width:${container.offsetWidth}px;font-family:'Cormorant Garamond',serif;padding:0;`;
@@ -175,7 +175,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
             className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
             style={{
                left: "17.5%", top: "21%", width: "27.5%", height: "58%",
-               padding: "8px 4px 24px 4px",
+               padding: "8px 4px 20px 4px",
             }}
           >
             {leftPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}
@@ -190,7 +190,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
             className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
             style={{
               left: "54%", top: "21%", width: "26%", height: "54%",
-              padding: "8px 4px 24px 4px",
+              padding: "8px 4px 20px 4px",
             }}
           >
             {rightPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}

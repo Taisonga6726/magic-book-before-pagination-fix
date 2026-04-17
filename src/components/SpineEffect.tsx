@@ -45,18 +45,48 @@ const SpineEffect = ({ burst }: SpineEffectProps) => {
   }, [burst]);
 
   return (
-    <div className="absolute left-1/2 top-0 bottom-0 w-8 -translate-x-1/2 pointer-events-none z-20">
-      {/* Constant spine glow */}
+    <div className="absolute left-1/2 top-0 bottom-0 w-10 -translate-x-1/2 pointer-events-none z-20 overflow-hidden">
+      <style>{`
+        @keyframes spine-energy-flow {
+          0% { transform: translateY(-30%); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(130%); opacity: 0; }
+        }
+        @keyframes spine-pulse {
+          0%, 100% { opacity: 0.8; }
+          50% { opacity: 1; }
+        }
+      `}</style>
+
+      {/* Base neon ribbon glow */}
       <div
-        className="absolute inset-0"
+        className="absolute left-1/2 top-0 bottom-0 -translate-x-1/2"
         style={{
-          background: `linear-gradient(to bottom, 
-            hsl(265 60% 50% / 0.05), 
-            hsl(40 80% 50% / 0.15) 50%, 
-            hsl(265 60% 50% / 0.05))`,
-          animation: "spine-glow 4s ease-in-out infinite",
+          width: "6px",
+          background:
+            "linear-gradient(to bottom, transparent, rgba(80,120,255,0.6), rgba(160,90,255,0.7), rgba(80,120,255,0.6), transparent)",
+          filter: "blur(2px) drop-shadow(0 0 8px rgba(120,140,255,0.8))",
+          mixBlendMode: "screen",
+          animation: "spine-pulse 3s ease-in-out infinite",
         }}
       />
+
+      {/* Running energy pulse */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2"
+        style={{
+          width: "8px",
+          height: "40px",
+          top: 0,
+          background:
+            "linear-gradient(to bottom, transparent, rgba(180,200,255,0.95), rgba(255,255,255,0.9), rgba(180,200,255,0.95), transparent)",
+          filter: "blur(3px) drop-shadow(0 0 12px rgba(140,170,255,1))",
+          mixBlendMode: "screen",
+          animation: "spine-energy-flow 2.8s linear infinite",
+        }}
+      />
+
       {/* Burst particles */}
       {particles.map((p) => {
         const rad = (p.angle * Math.PI) / 180;

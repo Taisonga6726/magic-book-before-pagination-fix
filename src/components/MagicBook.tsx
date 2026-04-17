@@ -28,6 +28,7 @@ interface MagicBookProps {
 const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: MagicBookProps) => {
   const [word, setWord] = useState("");
   const [description, setDescription] = useState("");
+  const [pastedImages, setPastedImages] = useState<string[]>([]);
 
   const entriesRef = useRef(entries);
   useEffect(() => { entriesRef.current = entries; }, [entries]);

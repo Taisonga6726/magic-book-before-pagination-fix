@@ -220,14 +220,14 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
     if (editIdx !== null) {
       setEntries((prev) => {
         const copy = [...prev];
-        copy[editIdx] = { ...copy[editIdx], word: word.trim(), description: description.trim().replace(/^[—–\-]\s*/, "") };
+        copy[editIdx] = { ...copy[editIdx], word: word.trim(), description: description.trim().replace(/^[—–-]\s*/, ""), images: pastedImages };
         return copy;
       });
       setEditIdx(null);
     } else {
       setEntries((prev) => [
         ...prev,
-        { word: word.trim(), description: description.trim().replace(/^[—–\-]\s*/, ""), reactions: { fire: 0, love: 0, rocket: 0 } },
+        { word: word.trim(), description: description.trim().replace(/^[—–-]\s*/, ""), reactions: { fire: 0, love: 0, rocket: 0 }, images: pastedImages },
       ]);
     }
 
@@ -237,10 +237,11 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
 
     setWord("");
     setDescription("");
+    setPastedImages([]);
 
     setShowSavedOverlay(true);
     setTimeout(() => setShowSavedOverlay(false), 1500);
-  }, [word, description, editIdx, entries, setEntries]);
+  }, [word, description, editIdx, pastedImages, setEntries]);
 
   const handleEdit = useCallback(() => {
     if (entries.length === 0) return;
@@ -248,9 +249,33 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
     const entry = entries[lastIdx];
     setWord(entry.word);
     setDescription(entry.description);
+    setPastedImages(entry.images ?? []);
     setEditIdx(lastIdx);
     setTimeout(() => wordInputRef.current?.focus(), 50);
   }, [entries]);
+
+  const handleDescPaste = useCallback((e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    const imageItems: DataTransferItem[] = [];
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.startsWith("image/")) imageItems.push(items[i]);
+    }
+    if (imageItems.length === 0) return;
+    e.preventDefault();
+    imageItems.forEach((it) => {
+      const file = it.getAsFile();
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result;
+        if (typeof result === "string") {
+          setPastedImages((prev) => [...prev, result]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  }, []);
 
 
   const handleFinish = useCallback(() => {

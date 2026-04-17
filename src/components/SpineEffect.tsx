@@ -45,7 +45,10 @@ const SpineEffect = ({ burst }: SpineEffectProps) => {
   }, [burst]);
 
   return (
-    <div className="absolute left-1/2 top-0 bottom-0 w-10 -translate-x-1/2 pointer-events-none z-20 overflow-hidden">
+    <div
+      className="absolute left-1/2 w-10 -translate-x-1/2 pointer-events-none z-20 overflow-hidden"
+      style={{ top: "12%", bottom: "12%" }}
+    >
       <style>{`
         @keyframes spine-energy-flow {
           0% { transform: translateY(-30%); opacity: 0; }

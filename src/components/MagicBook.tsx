@@ -251,7 +251,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
     setDescription(entry.description);
     setPastedImages(entry.images ?? []);
     setEditIdx(lastIdx);
-    setTimeout(() => wordInputRef.current?.focus(), 50);
+    setTimeout(() => descRef.current?.focus(), 50);
   }, [entries]);
 
   const handleDescPaste = useCallback((e: React.ClipboardEvent<HTMLTextAreaElement>) => {
@@ -444,7 +444,34 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
                       </div>
                     )}
                     {pastedImages.map((src, k) => (
-                      <img key={k} src={src} alt="" style={{ display: "block", maxWidth: "100%", height: "auto", margin: "8px 0" }} />
+                      <div key={k} style={{ position: "relative", margin: "8px 0" }}>
+                        <img src={src} alt="" style={{ display: "block", maxWidth: "100%", height: "auto" }} />
+                        <button
+                          type="button"
+                          onClick={() => setPastedImages((prev) => prev.filter((_, idx) => idx !== k))}
+                          aria-label="Удалить изображение"
+                          style={{
+                            position: "absolute",
+                            top: 4,
+                            right: 4,
+                            width: 22,
+                            height: 22,
+                            borderRadius: "50%",
+                            background: "rgba(0,0,0,0.6)",
+                            color: "#fff",
+                            border: "none",
+                            cursor: "pointer",
+                            fontSize: 14,
+                            lineHeight: 1,
+                            padding: 0,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
                     ))}
                   </div>
                 )}

@@ -1,54 +1,49 @@
 
 
 ## Цель
-Перенести превью вставленных картинок и кнопку «×» с правой страницы (preview) на левую страницу (форму ввода) — прямо под textarea description. Правая страница больше не показывает черновик изображения. Это убирает «лишний» черновик-запись справа (то самое, что пользователь воспринял как нежелательную тестовую запись).
+Добавить две новые реакции — 😂 (laugh) и 👍 (like) — в конец списка реакций. Текущие 🔥 ❤️ 🚀 не трогаем.
 
-## Изменения в `src/components/MagicBook.tsx`
+## Изменения
 
-### 1. Левая страница — добавить блок миниатюр под textarea
-В блоке формы (строка 338, сразу после `</div>` writing-zone и перед строкой действий «сохранить | редактировать») вставить рендер `pastedImages` с кнопкой удаления:
-
-```tsx
-{pastedImages.length > 0 && (
-  <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 6 }}>
-    {pastedImages.map((src, k) => (
-      <div key={k} style={{ position: "relative" }}>
-        <img src={src} alt="" style={{ display: "block", maxHeight: 64, width: "auto", borderRadius: 4 }} />
-        <button
-          type="button"
-          onClick={() => setPastedImages(prev => prev.filter((_, idx) => idx !== k))}
-          aria-label="Удалить изображение"
-          style={{ position: "absolute", top: -6, right: -6, width: 18, height: 18,
-            borderRadius: "50%", background: "rgba(0,0,0,0.7)", color: "#fff",
-            border: "none", cursor: "pointer", fontSize: 12, lineHeight: 1, padding: 0,
-            display: "flex", alignItems: "center", justifyContent: "center" }}
-        >×</button>
-      </div>
-    ))}
-  </div>
-)}
+### 1. `src/pages/Index.tsx` (строка 13)
+Расширить тип:
+```ts
+reactions: { fire: number; love: number; rocket: number; laugh: number; like: number };
 ```
 
-Размер миниатюр (`maxHeight: 64`) подобран чтобы поместиться в зону формы без скролла (`overflow:hidden` на контейнере уже стоит — лишнее обрежется, но при 1–3 картинках видно всё).
+### 2. `src/components/MagicBook.tsx`
+- Строка 9 — тот же тип.
+- Строка 230 — инициализация новой записи: `reactions: { fire: 0, love: 0, rocket: 0, laugh: 0, like: 0 }`.
 
-### 2. Правая страница — убрать рендер `pastedImages`
-Строки 446–475 (блок `pastedImages.map(...)` внутри live-черновика) — **удалить полностью**. Live-черновик слова и описания справа остаётся как есть (`InkWriteEffect`), но без картинок. Картинка появится справа только после «сохранить» через существующий блок `entry.images?.map(...)` (строки 428–430).
+### 3. `src/components/FinalBook.tsx`
+- Строка 8 — тот же тип.
+- Строка 83 (measure-блок) — `reactions.textContent = "🔥 0 ❤️ 0 🚀 0 😂 0 👍 0";` чтобы пагинация учла дополнительную ширину.
+- Строка 159 — расширить тип в `updateReaction`: `"fire" | "love" | "rocket" | "laugh" | "like"`.
+- Строки 202–206 — в конец блока кнопок добавить две кнопки:
+```tsx
+<button type="button" onClick={() => updateReaction(globalIdx, "laugh")} className="cursor-pointer hover:scale-110 transition-transform">😂 {entry.reactions?.laugh || 0}</button>
+<button type="button" onClick={() => updateReaction(globalIdx, "like")} className="cursor-pointer hover:scale-110 transition-transform">👍 {entry.reactions?.like || 0}</button>
+```
 
-### 3. Measure-логика пагинации — без изменений
-Measure уже учитывает `entries[i].images` (строки 151–156). Черновик `pastedImages` в measure не участвовал и сейчас не участвует — корректно.
+### 4. `src/components/FinalScreen.tsx`
+- Строка 6 — тот же тип.
+- Строки 15–17 — добавить `totalLaugh`, `totalLike`.
+- Строки 37–39 — добавить `<div>😂 {totalLaugh}</div>` и `<div>👍 {totalLike}</div>` в конец.
 
-## Что НЕ трогаем
-- `renderEntry` (структуру и порядок description → images для сохранённых записей)
-- `handleSave`, `handleEdit`, `handleDescPaste`
-- Нумерацию (`globalIdx + 1`, `entries.length + 1`)
-- Пагинацию, перелистывание, реакции, FinalBook, ControlBar
+## Обратная совместимость
+Старые записи в localStorage не имеют полей `laugh`/`like`. Везде используется `entry.reactions?.laugh || 0`, поэтому undefined корректно даст 0. При первом клике `(w.reactions?.[type] || 0) + 1` создаст поле. Миграция не требуется.
+
+## Что НЕ меняем
+- Стили, размеры, расположение блока реакций
+- Порядок существующих реакций (🔥 ❤️ 🚀 остаются первыми)
+- Логику `updateReaction`, сохранение в localStorage
+- MagicBook UI (там реакций нет — только сохранение)
+- Пагинация: единственный риск — ширина строки реакций в measure; обновление текста measure (п.3) это покрывает
 
 ## Критерии приёмки
-- Ctrl+V в textarea → миниатюра появляется **слева, под полем описания**
-- На правой странице черновика картинки **нет**
-- Кнопка «×» на миниатюре удаляет картинку из `pastedImages`
-- После «сохранить» запись со словом + описанием + картинкой появляется справа (через существующий рендер)
-- Нумерация продолжается корректно (33 → 34)
-- В FinalBook запись отображается с картинкой и реакциями
-- Скроллов нет, пагинация и перелистывание не сломаны
+- В FinalBook у каждой записи 5 кнопок: 🔥 ❤️ 🚀 😂 👍
+- Клики увеличивают счётчики, сохраняются в localStorage
+- На финальном экране totals: 🔥 ❤️ 🚀 😂 👍
+- Старые записи продолжают работать (счётчики стартуют с 0)
+- Пагинация и перелистывание не сломаны
 

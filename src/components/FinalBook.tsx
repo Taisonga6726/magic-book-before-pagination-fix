@@ -56,12 +56,12 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
     for (let i = 0; i < entries.length; i++) {
       measure.innerHTML = `
-        <div style="margin-bottom:4px;display:flex;align-items:flex-start">
-          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;min-width:1.6em;flex-shrink:0;padding-right:0.3em;text-align:left">${i + 1}.</div>
+        <div style="margin-bottom:0.6em;display:flex;align-items:flex-start;width:100%">
+          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;min-width:1.4em;flex-shrink:0;text-align:left">${i + 1}.</div>
           <div style="flex:1;min-width:0">
             <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;text-align:left">${entries[i].word}</div>
-            ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:left;margin-top:2px">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
-            <div style="font-size:10px;text-align:right;margin-top:1px">🔥 0 ❤️ 0 🚀 0</div>
+            ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:left">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
+            <div style="font-size:13px;text-align:right">🔥 0 ❤️ 0 🚀 0</div>
           </div>
         </div>`;
       const h = measure.offsetHeight;

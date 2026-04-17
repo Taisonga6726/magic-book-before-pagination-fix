@@ -1,6 +1,7 @@
 import { useCallback, useRef, useEffect, useState } from "react";
 import bookFinalImg from "@/assets/book.png";
 import SpineEffect from "./SpineEffect";
+import FinalBookMagicFX from "./FinalBookMagicFX";
 
 interface Entry {
   word: string;
@@ -223,6 +224,8 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
             className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none"
             draggable={false}
           />
+
+          <FinalBookMagicFX />
 
           <SpineEffect burst={false} />
 

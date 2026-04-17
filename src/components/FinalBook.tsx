@@ -139,50 +139,35 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
   const renderEntry = (entry: Entry, globalIdx: number, side: "left" | "right") => {
     if (side === "left") {
-      // Left page: number column at ornament, all content (word/description/reactions)
-      // in a single right-side column so they share the same left edge — no "ladder".
+      // Left page: number and word in a single inline line — no extra gap, no ladder.
       return (
-        <div key={globalIdx} className="flex mb-0 w-full items-start" style={{ padding: 0, margin: 0 }}>
+        <div key={globalIdx} className="flex flex-col mb-0 w-full items-start" style={{ padding: 0, margin: 0, textIndent: 0 }}>
           <div
-            className="text-xl font-bold"
+            className="pb-0.5 text-xl leading-tight font-bold w-full"
             style={{
-              flexShrink: 0,
-              width: "2.4em",
               color: "#1a1440",
               fontFamily: "'Cormorant Garamond', serif",
               fontStyle: "italic",
               lineHeight: "1.15",
+              padding: 0,
+              margin: 0,
               textAlign: "left",
             }}
           >
-            {globalIdx + 1}.
+            {globalIdx + 1}. {renderInkWord(entry.word)}
           </div>
-          <div className="flex-1 flex flex-col" style={{ minWidth: 0 }}>
+          {entry.description && (
             <div
-              className="pb-0.5 text-xl leading-tight font-bold"
-              style={{
-                color: "#1a1440",
-                fontFamily: "'Cormorant Garamond', serif",
-                fontStyle: "italic",
-                lineHeight: "1.15",
-                textAlign: "left",
-              }}
+              className="text-base font-handwriting leading-tight mt-0 w-full"
+              style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15", padding: 0, margin: 0, textIndent: 0 }}
             >
-              {renderInkWord(entry.word)}
+              — {entry.description.replace(/^[—–\-]\s*/, "")}
             </div>
-            {entry.description && (
-              <div
-                className="text-base font-handwriting leading-tight mt-0"
-                style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15" }}
-              >
-                — {entry.description.replace(/^[—–\-]\s*/, "")}
-              </div>
-            )}
-            <div className="flex gap-2 text-[13px] justify-end" style={{ color: "#1a1440" }}>
-              <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
-              <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
-              <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
-            </div>
+          )}
+          <div className="flex gap-2 text-[13px] w-full justify-end" style={{ color: "#1a1440" }}>
+            <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
+            <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
+            <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
           </div>
         </div>
       );

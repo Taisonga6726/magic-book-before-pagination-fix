@@ -56,12 +56,12 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
     for (let i = 0; i < entries.length; i++) {
       measure.innerHTML = `
-        <div style="margin-bottom:4px;display:flex;align-items:flex-start">
-          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;min-width:1.6em;flex-shrink:0;padding-right:0.3em;text-align:left">${i + 1}.</div>
+        <div style="margin-bottom:0.6em;display:flex;align-items:flex-start;width:100%">
+          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;min-width:1.4em;flex-shrink:0;text-align:left">${i + 1}.</div>
           <div style="flex:1;min-width:0">
             <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;text-align:left">${entries[i].word}</div>
-            ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:left;margin-top:2px">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
-            <div style="font-size:10px;text-align:right;margin-top:1px">🔥 0 ❤️ 0 🚀 0</div>
+            ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:left">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
+            <div style="font-size:13px;text-align:right">🔥 0 ❤️ 0 🚀 0</div>
           </div>
         </div>`;
       const h = measure.offsetHeight;
@@ -137,69 +137,41 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
   const leftPageNum = leftPageIdx + 1;
   const rightPageNum = rightPageIdx + 1;
 
-  const renderEntry = (entry: Entry, globalIdx: number, side: "left" | "right") => {
-    if (side === "left") {
-      // Left page: hanging indent — number in narrow column, word/description/reactions in flexible column.
-      return (
-        <div key={globalIdx} className="flex mb-0 w-full items-start" style={{ padding: 0, margin: 0 }}>
-          <div
-            className="text-xl leading-tight font-bold"
-            style={{
-              color: "#1a1440",
-              fontFamily: "'Cormorant Garamond', serif",
-              fontStyle: "italic",
-              lineHeight: "1.15",
-              minWidth: "1.6em",
-              flexShrink: 0,
-              paddingRight: "0.3em",
-              textAlign: "left",
-            }}
-          >
-            {globalIdx + 1}.
-          </div>
-          <div className="flex-1 flex flex-col" style={{ minWidth: 0 }}>
-            <div
-              className="pb-0.5 text-xl leading-tight font-bold w-full"
-              style={{
-                color: "#1a1440",
-                fontFamily: "'Cormorant Garamond', serif",
-                fontStyle: "italic",
-                lineHeight: "1.15",
-                padding: 0,
-                margin: 0,
-                textAlign: "left",
-              }}
-            >
-              {renderInkWord(entry.word)}
-            </div>
-            {entry.description && (
-              <div
-                className="text-base font-handwriting leading-tight mt-0 w-full"
-                style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15", padding: 0, margin: 0, textIndent: 0 }}
-              >
-                — {entry.description.replace(/^[—–\-]\s*/, "")}
-              </div>
-            )}
-            <div className="flex gap-2 text-[13px] w-full justify-end" style={{ color: "#1a1440" }}>
-              <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
-              <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
-              <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // Right page — keep original layout untouched
-    return (
-      <div key={globalIdx} className="flex flex-col mb-0 w-full items-start" style={{ paddingLeft: 0, marginLeft: 0, textIndent: 0 }}>
-        <div className="pb-0.5 text-xl leading-tight font-bold w-full flex"
-             style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", lineHeight: "1.15", padding: 0, margin: 0 }}>
-          <span style={{ flexShrink: 0, width: "2.4em", textAlign: "left" }}>{globalIdx + 1}.</span>
-          <span style={{ flex: 1, textAlign: "left" }}>{renderInkWord(entry.word)}</span>
+  const renderEntry = (entry: Entry, globalIdx: number) => (
+    <div key={globalIdx} className="flex w-full items-start" style={{ marginBottom: "0.6em" }}>
+      <div
+        style={{
+          color: "#1a1440",
+          fontFamily: "'Cormorant Garamond', serif",
+          fontStyle: "italic",
+          fontWeight: 700,
+          fontSize: "1.25rem",
+          lineHeight: "1.15",
+          minWidth: "1.4em",
+          flexShrink: 0,
+          textAlign: "left",
+        }}
+      >
+        {globalIdx + 1}.
+      </div>
+      <div className="flex-1 flex flex-col" style={{ minWidth: 0 }}>
+        <div
+          className="text-xl font-bold w-full"
+          style={{
+            color: "#1a1440",
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            lineHeight: "1.15",
+            textAlign: "left",
+          }}
+        >
+          {renderInkWord(entry.word)}
         </div>
         {entry.description && (
-          <div className="text-base font-handwriting leading-tight mt-0 w-full" style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15", padding: 0, margin: 0, textIndent: 0 }}>
+          <div
+            className="text-base font-handwriting w-full"
+            style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15" }}
+          >
             — {entry.description.replace(/^[—–\-]\s*/, "")}
           </div>
         )}
@@ -209,8 +181,8 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
 
   return (
     <div className="fixed inset-0 w-screen h-screen overflow-hidden z-40">
@@ -234,11 +206,11 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
             ref={leftContentRef}
             className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
             style={{
-               left: "18%", top: "21%", width: "31%", height: "54%",
+               left: "18%", top: "19%", width: "31%", height: "60%",
                padding: "8px 2px 20px 2px",
             }}
           >
-            {leftPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry), "left"))}
+            {leftPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}
             <div className="absolute bottom-[4px] left-0 right-0 flex justify-center select-none"
                  style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontWeight: "bold", fontStyle: "italic", fontSize: "16px", opacity: 0.9, letterSpacing: "1px" }}>
               — {leftPageNum} —
@@ -249,11 +221,11 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           <div
             className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
             style={{
-              left: "54%", top: "21%", width: "26%", height: "54%",
+              left: "54%", top: "19%", width: "26%", height: "60%",
               padding: "8px 4px 20px 4px",
             }}
           >
-            {rightPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry), "right"))}
+            {rightPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}
             {rightPageEntries.length > 0 && (
               <div className="absolute bottom-[4px] left-0 right-0 flex justify-center select-none"
                    style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontWeight: "bold", fontStyle: "italic", fontSize: "16px", opacity: 0.9, letterSpacing: "1px" }}>

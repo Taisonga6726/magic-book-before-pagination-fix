@@ -133,7 +133,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
   const leftPageNum = leftPageIdx + 1;
   const rightPageNum = rightPageIdx + 1;
 
-  const renderEntry = (entry: Entry, globalIdx: number) => (
+  const renderEntry = (entry: Entry, globalIdx: number, side: "left" | "right") => (
     <div key={globalIdx} className="flex flex-col mb-0 w-full items-start">
       <div className="pb-0.5 text-xl leading-tight font-bold w-full"
            style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textAlign: "left", lineHeight: "1.15", padding: 0, margin: 0 }}>
@@ -144,7 +144,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           — {entry.description.replace(/^[—–\-]\s*/, "")}
         </div>
       )}
-      <div className="flex gap-2 text-[13px] justify-end" style={{ color: "#1a1440" }}>
+      <div className={`flex gap-2 text-[13px] w-full ${side === "right" ? "justify-start" : "justify-end"}`} style={{ color: "#1a1440" }}>
         <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>

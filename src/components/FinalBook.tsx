@@ -136,9 +136,10 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
   const renderEntry = (entry: Entry, globalIdx: number, side: "left" | "right") => (
     <div key={globalIdx} className="flex flex-col mb-0 w-full items-start" style={{ paddingLeft: 0, marginLeft: 0, textIndent: 0 }}>
-      <div className="pb-0.5 text-xl leading-tight font-bold w-full"
-           style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textAlign: "left", lineHeight: "1.15", padding: 0, margin: 0, textIndent: 0 }}>
-        <span style={{ whiteSpace: "nowrap" }}>{globalIdx + 1}. </span>{renderInkWord(entry.word)}
+      <div className="pb-0.5 text-xl leading-tight font-bold w-full flex"
+           style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", lineHeight: "1.15", padding: 0, margin: 0 }}>
+        <span style={{ flexShrink: 0, width: "2.4em", textAlign: "left" }}>{globalIdx + 1}.</span>
+        <span style={{ flex: 1, textAlign: "left" }}>{renderInkWord(entry.word)}</span>
       </div>
       {entry.description && (
         <div className="text-base font-handwriting leading-tight mt-0 w-full" style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15", padding: 0, margin: 0, textIndent: 0 }}>

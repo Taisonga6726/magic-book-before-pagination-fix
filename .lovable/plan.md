@@ -1,49 +1,31 @@
 
 
 ## Цель
-Добавить две новые реакции — 😂 (laugh) и 👍 (like) — в конец списка реакций. Текущие 🔥 ❤️ 🚀 не трогаем.
+Поднять блок «Всего слов + реакции» на финальном экране ближе к надписи «AI CREATOR» на `final-screen.png`. Убрать пустой зазор.
 
-## Изменения
+## Изменение
+Файл: `src/components/FinalScreen.tsx`, строка 26.
 
-### 1. `src/pages/Index.tsx` (строка 13)
-Расширить тип:
-```ts
-reactions: { fire: number; love: number; rocket: number; laugh: number; like: number };
-```
-
-### 2. `src/components/MagicBook.tsx`
-- Строка 9 — тот же тип.
-- Строка 230 — инициализация новой записи: `reactions: { fire: 0, love: 0, rocket: 0, laugh: 0, like: 0 }`.
-
-### 3. `src/components/FinalBook.tsx`
-- Строка 8 — тот же тип.
-- Строка 83 (measure-блок) — `reactions.textContent = "🔥 0 ❤️ 0 🚀 0 😂 0 👍 0";` чтобы пагинация учла дополнительную ширину.
-- Строка 159 — расширить тип в `updateReaction`: `"fire" | "love" | "rocket" | "laugh" | "like"`.
-- Строки 202–206 — в конец блока кнопок добавить две кнопки:
+Заменить:
 ```tsx
-<button type="button" onClick={() => updateReaction(globalIdx, "laugh")} className="cursor-pointer hover:scale-110 transition-transform">😂 {entry.reactions?.laugh || 0}</button>
-<button type="button" onClick={() => updateReaction(globalIdx, "like")} className="cursor-pointer hover:scale-110 transition-transform">👍 {entry.reactions?.like || 0}</button>
+<div className="absolute bottom-28 left-1/2 -translate-x-1/2 flex items-center gap-6 text-white pointer-events-none">
+```
+на:
+```tsx
+<div className="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-12 flex items-center gap-6 text-white pointer-events-none">
 ```
 
-### 4. `src/components/FinalScreen.tsx`
-- Строка 6 — тот же тип.
-- Строки 15–17 — добавить `totalLaugh`, `totalLike`.
-- Строки 37–39 — добавить `<div>😂 {totalLaugh}</div>` и `<div>👍 {totalLike}</div>` в конец.
+Привязка к центру (`top-1/2 + translate-y-12`) даёт стабильную позицию относительно центрированного `final-screen.png` (`object-contain`) — блок встаёт прямо под «AI CREATOR» независимо от высоты экрана. Если по факту окажется чуть выше/ниже идеала — подкрутим одно число (`translate-y-8` / `translate-y-16` / `translate-y-20`).
 
-## Обратная совместимость
-Старые записи в localStorage не имеют полей `laugh`/`like`. Везде используется `entry.reactions?.laugh || 0`, поэтому undefined корректно даст 0. При первом клике `(w.reactions?.[type] || 0) + 1` создаст поле. Миграция не требуется.
-
-## Что НЕ меняем
-- Стили, размеры, расположение блока реакций
-- Порядок существующих реакций (🔥 ❤️ 🚀 остаются первыми)
-- Логику `updateReaction`, сохранение в localStorage
-- MagicBook UI (там реакций нет — только сохранение)
-- Пагинация: единственный риск — ширина строки реакций в measure; обновление текста measure (п.3) это покрывает
+## Что НЕ трогаем
+- Скрины, вставку, удаление, записи, нумерацию, логику реакций
+- Верстку книги, MagicBook, FinalBook, ControlBar
+- Стили блока (градиент, blur, размеры, эмодзи, тексты)
+- Изображение `final-screen.png` и его позиционирование
 
 ## Критерии приёмки
-- В FinalBook у каждой записи 5 кнопок: 🔥 ❤️ 🚀 😂 👍
-- Клики увеличивают счётчики, сохраняются в localStorage
-- На финальном экране totals: 🔥 ❤️ 🚀 😂 👍
-- Старые записи продолжают работать (счётчики стартуют с 0)
-- Пагинация и перелистывание не сломаны
+- Блок визуально под «AI CREATOR», без пустого зазора
+- Стили и содержимое блока не изменились
+- Стабильная позиция на разных высотах экрана
+- Остальной функционал не затронут
 

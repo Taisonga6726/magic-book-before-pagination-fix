@@ -174,7 +174,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
             ref={leftContentRef}
             className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
             style={{
-               left: "20%", top: "18%", width: "26%", height: "60%",
+               left: "17%", top: "18%", width: "29%", height: "60%",
                padding: "12px 2px 40px 4px",
             }}
           >

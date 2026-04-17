@@ -27,13 +27,6 @@ const Index = () => {
     return saved ? JSON.parse(saved) : [];
   });
 
-  useEffect(() => {
-    if (!localStorage.getItem("magic-book-test-cleaned")) {
-      localStorage.removeItem("magic-book-entries");
-      localStorage.setItem("magic-book-test-cleaned", "true");
-      setEntries([]);
-    }
-  }, []);
 
   const [pageNav, setPageNav] = useState<PageNav | null>(null);
   const [flipping, setFlipping] = useState(false);
@@ -56,6 +49,10 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
+    if (entries.length === 0) {
+      const existing = localStorage.getItem("magic-book-entries");
+      if (existing && existing !== "[]") return;
+    }
     localStorage.setItem("magic-book-entries", JSON.stringify(entries));
   }, [entries]);
 

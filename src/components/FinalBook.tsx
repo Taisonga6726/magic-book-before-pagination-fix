@@ -221,11 +221,11 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           <div
             className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
             style={{
-              left: "54%", top: "21%", width: "26%", height: "54%",
+              left: "54%", top: "19%", width: "26%", height: "60%",
               padding: "8px 4px 20px 4px",
             }}
           >
-            {rightPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry), "right"))}
+            {rightPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}
             {rightPageEntries.length > 0 && (
               <div className="absolute bottom-[4px] left-0 right-0 flex justify-center select-none"
                    style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontWeight: "bold", fontStyle: "italic", fontSize: "16px", opacity: 0.9, letterSpacing: "1px" }}>

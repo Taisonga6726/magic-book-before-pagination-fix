@@ -56,13 +56,12 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
     for (let i = 0; i < entries.length; i++) {
       measure.innerHTML = `
-        <div style="margin-bottom:0.6em;display:flex;align-items:flex-start;width:100%">
-          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;width:2.2em;flex-shrink:0;padding-right:0.15em;text-align:left">${i + 1}.</div>
-          <div style="flex:1;min-width:0">
-            <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;text-align:left">${entries[i].word}</div>
-            ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:left">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
-            <div style="font-size:13px;text-align:right">🔥 0 ❤️ 0 🚀 0</div>
+        <div style="margin-bottom:0.6em;width:100%">
+          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;text-align:justify">
+            <span style="font-weight:700">${i + 1}.</span> ${entries[i].word}
           </div>
+          ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:justify">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
+          <div style="font-size:13px;text-align:right">🔥 0 ❤️ 0 🚀 0</div>
         </div>`;
       const h = measure.offsetHeight;
 
@@ -138,49 +137,31 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
   const rightPageNum = rightPageIdx + 1;
 
   const renderEntry = (entry: Entry, globalIdx: number) => (
-    <div key={globalIdx} className="flex w-full items-start" style={{ marginBottom: "0.6em" }}>
+    <div key={globalIdx} className="w-full" style={{ marginBottom: "0.6em" }}>
       <div
+        className="text-xl font-bold w-full"
         style={{
           color: "#1a1440",
           fontFamily: "'Cormorant Garamond', serif",
           fontStyle: "italic",
-          fontWeight: 700,
-          fontSize: "1.25rem",
           lineHeight: "1.15",
-          width: "2.2em",
-          flexShrink: 0,
-          paddingRight: "0.15em",
-          textAlign: "left",
+          textAlign: "justify",
         }}
       >
-        {globalIdx + 1}.
+        <span style={{ fontWeight: 700 }}>{globalIdx + 1}.</span> {renderInkWord(entry.word)}
       </div>
-      <div className="flex-1 flex flex-col" style={{ minWidth: 0 }}>
+      {entry.description && (
         <div
-          className="text-xl font-bold w-full"
-          style={{
-            color: "#1a1440",
-            fontFamily: "'Cormorant Garamond', serif",
-            fontStyle: "italic",
-            lineHeight: "1.15",
-            textAlign: "left",
-          }}
+          className="text-base font-handwriting w-full"
+          style={{ color: "#1a1030", textAlign: "justify", lineHeight: "1.15" }}
         >
-          {renderInkWord(entry.word)}
+          — {entry.description.replace(/^[—–\-]\s*/, "")}
         </div>
-        {entry.description && (
-          <div
-            className="text-base font-handwriting w-full"
-            style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15" }}
-          >
-            — {entry.description.replace(/^[—–\-]\s*/, "")}
-          </div>
-        )}
-        <div className="flex gap-2 text-[13px] w-full justify-end" style={{ color: "#1a1440" }}>
-          <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
-          <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
-          <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
-        </div>
+      )}
+      <div className="flex gap-2 text-[13px] w-full justify-end" style={{ color: "#1a1440" }}>
+        <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
+        <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
+        <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
       </div>
     </div>
   );

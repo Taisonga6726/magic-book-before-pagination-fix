@@ -129,11 +129,11 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
 
     for (let i = 0; i < entries.length; i++) {
       measure.innerHTML = `
-        <div style="margin-bottom:4px">
+        <div style="margin-bottom:0.6em">
           <div style="font-size:1.25rem;font-weight:700;line-height:1.15;text-align:justify;font-style:italic">
-            ${i + 1}. ${entries[i].word}
+            <span style="font-weight:700">${i + 1}.</span> ${entries[i].word}
           </div>
-          ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:justify;margin-top:2px">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
+          ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:justify">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
         </div>`;
       const h = measure.offsetHeight;
 
@@ -347,18 +347,18 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
                 Здесь появятся ваши записи…
               </p>
             ) : (
-              <div className="space-y-1">
+              <div>
                 {pageEntries.map((entry, i) => {
                   const globalIdx = currentPageStart + i;
                   if (editIdx === globalIdx && liveText) return null;
 
                   return (
-                    <div key={globalIdx} className="text-ink">
+                    <div key={globalIdx} className="text-ink" style={{ marginBottom: "0.6em" }}>
                       <div className="text-xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)", textAlign: "justify", lineHeight: "1.15" }}>
                         <span className="font-bold">{globalIdx + 1}.</span> {entry.word}
                       </div>
                       {entry.description && (
-                        <div className="font-handwriting text-base mt-0.5" style={{ color: "#2a1f5a", textAlign: "justify", lineHeight: "1.15" }}>
+                        <div className="font-handwriting text-base" style={{ color: "#2a1f5a", textAlign: "justify", lineHeight: "1.15" }}>
                           — {entry.description.replace(/^[—–\-]\s*/, "")}
                         </div>
                       )}
@@ -367,13 +367,13 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
                 })}
 
                 {isLastPage && liveText && (
-                  <div className="text-ink">
+                  <div className="text-ink" style={{ marginBottom: "0.6em" }}>
                     <div className="text-xl leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#1a1440", textShadow: "0 0 2px rgba(20,10,50,0.15)", textAlign: "justify", lineHeight: "1.15" }}>
                       <span className="font-bold">{editIdx !== null ? editIdx + 1 : entries.length + 1}.</span>{" "}
                       <InkWriteEffect text={word} className="ink-fresh" />
                     </div>
                     {description && (
-                      <div className="font-handwriting text-base mt-0.5 ink-fresh" style={{ color: "#2a1f5a", textAlign: "justify", lineHeight: "1.15" }}>
+                      <div className="font-handwriting text-base ink-fresh" style={{ color: "#2a1f5a", textAlign: "justify", lineHeight: "1.15" }}>
                         — <InkWriteEffect text={description} className="" />
                       </div>
                     )}

@@ -6,6 +6,7 @@ interface Entry {
   word: string;
   description: string;
   reactions: { fire: number; love: number; rocket: number };
+  images?: string[];
 }
 
 interface PageNav {
@@ -42,40 +43,77 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
     const container = leftContentRef.current;
     if (!container) return;
-    const availableHeight = container.clientHeight - 20;
+    let cancelled = false;
 
-    // Measure with the narrower (right) page width so right-side pagination is safe.
-    // Left page is wider (31% vs 26%) — it will simply have a bit of headroom.
-    const measureWidth = container.offsetWidth;
-    const measure = document.createElement("div");
-    measure.style.cssText = `position:absolute;visibility:hidden;width:${measureWidth}px;font-family:'Cormorant Garamond',serif;padding:0;`;
-    container.appendChild(measure);
+    (async () => {
+      const availableHeight = container.clientHeight - 20;
+      const measureWidth = container.offsetWidth;
+      const measure = document.createElement("div");
+      measure.style.cssText = `position:absolute;visibility:hidden;width:${measureWidth}px;font-family:'Cormorant Garamond',serif;padding:0;`;
+      container.appendChild(measure);
 
-    const result: Entry[][] = [[]];
-    let currentHeight = 0;
+      const result: Entry[][] = [[]];
+      let currentHeight = 0;
 
-    for (let i = 0; i < entries.length; i++) {
-      measure.innerHTML = `
-        <div style="margin-bottom:0.6em;width:100%">
-          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;text-align:left">
-            <span style="font-weight:700">${i + 1}.</span> ${entries[i].word}
-          </div>
-          ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:left">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
-          <div style="font-size:13px;text-align:right">🔥 0 ❤️ 0 🚀 0</div>
-        </div>`;
-      const h = measure.offsetHeight;
+      for (let i = 0; i < entries.length; i++) {
+        const wrap = document.createElement("div");
+        wrap.style.cssText = "margin-bottom:0.6em;width:100%";
 
-      if (currentHeight + h > availableHeight && result[result.length - 1].length > 0) {
-        result.push([entries[i]]);
-        currentHeight = h;
-      } else {
-        result[result.length - 1].push(entries[i]);
-        currentHeight += h;
+        const title = document.createElement("div");
+        title.style.cssText = "font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;text-align:left";
+        title.textContent = `${i + 1}. ${entries[i].word}`;
+        wrap.appendChild(title);
+
+        if (entries[i].description) {
+          const desc = document.createElement("div");
+          desc.style.cssText = "font-size:1rem;line-height:1.15;text-align:left";
+          desc.textContent = `— ${entries[i].description.replace(/^[—–-]\s*/, "")}`;
+          wrap.appendChild(desc);
+        }
+
+        (entries[i].images ?? []).forEach((src) => {
+          const img = document.createElement("img");
+          img.src = src;
+          img.style.cssText = "display:block;max-width:100%;height:auto;margin:8px 0";
+          wrap.appendChild(img);
+        });
+
+        const reactions = document.createElement("div");
+        reactions.style.cssText = "font-size:13px;text-align:right";
+        reactions.textContent = "🔥 0 ❤️ 0 🚀 0";
+        wrap.appendChild(reactions);
+
+        measure.innerHTML = "";
+        measure.appendChild(wrap);
+
+        const imgs = Array.from(measure.querySelectorAll("img"));
+        await Promise.all(imgs.map((img) =>
+          (img as HTMLImageElement).decode
+            ? (img as HTMLImageElement).decode().catch(() => {})
+            : new Promise<void>((r) => {
+                if ((img as HTMLImageElement).complete) r();
+                else { img.onload = () => r(); img.onerror = () => r(); }
+              })
+        ));
+
+        if (cancelled) return;
+        const h = measure.offsetHeight;
+
+        if (currentHeight + h > availableHeight && result[result.length - 1].length > 0) {
+          result.push([entries[i]]);
+          currentHeight = h;
+        } else {
+          result[result.length - 1].push(entries[i]);
+          currentHeight += h;
+        }
       }
-    }
 
-    container.removeChild(measure);
-    setPages(result);
+      if (cancelled) return;
+      container.removeChild(measure);
+      setPages(result);
+    })();
+
+    return () => { cancelled = true; };
   }, [entries]);
 
   // Auto-navigate to last spread
@@ -155,9 +193,12 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           className="text-base font-handwriting w-full"
           style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15" }}
         >
-          — {entry.description.replace(/^[—–\-]\s*/, "")}
+          — {entry.description.replace(/^[—–-]\s*/, "")}
         </div>
       )}
+      {entry.images?.map((src, k) => (
+        <img key={k} src={src} alt="" style={{ display: "block", maxWidth: "100%", height: "auto", margin: "8px 0" }} />
+      ))}
       <div className="flex gap-2 text-[13px] w-full justify-end" style={{ color: "#1a1440" }}>
         <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>

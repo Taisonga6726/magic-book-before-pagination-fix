@@ -11,6 +11,7 @@ interface Entry {
   word: string;
   description: string;
   reactions: { fire: number; love: number; rocket: number };
+  images?: string[];
 }
 
 interface PageNav {

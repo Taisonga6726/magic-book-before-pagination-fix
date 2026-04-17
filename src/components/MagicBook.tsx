@@ -7,6 +7,7 @@ interface Entry {
   word: string;
   description: string;
   reactions: { fire: number; love: number; rocket: number };
+  images?: string[];
 }
 
 interface PageNav {
@@ -27,6 +28,7 @@ interface MagicBookProps {
 const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: MagicBookProps) => {
   const [word, setWord] = useState("");
   const [description, setDescription] = useState("");
+  const [pastedImages, setPastedImages] = useState<string[]>([]);
 
   const entriesRef = useRef(entries);
   useEffect(() => { entriesRef.current = entries; }, [entries]);
@@ -118,50 +120,85 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
 
     const container = rightContentRef.current;
     if (!container) return;
-    const availableHeight = container.clientHeight;
+    let cancelled = false;
 
-    const measure = document.createElement("div");
-    measure.style.cssText = `position:absolute;visibility:hidden;width:${container.offsetWidth}px;font-family:inherit;padding:0;`;
-    container.appendChild(measure);
+    (async () => {
+      const availableHeight = container.clientHeight;
 
-    const breaks: number[] = [0];
-    let currentHeight = 0;
+      const measure = document.createElement("div");
+      measure.style.cssText = `position:absolute;visibility:hidden;width:${container.offsetWidth}px;font-family:inherit;padding:0;`;
+      container.appendChild(measure);
 
-    for (let i = 0; i < entries.length; i++) {
-      measure.innerHTML = `
-        <div style="margin-bottom:0.6em">
-          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;text-align:justify;font-style:italic">
-            <span style="font-weight:700">${i + 1}.</span> ${entries[i].word}
-          </div>
-          ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:justify">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
-        </div>`;
-      const h = measure.offsetHeight;
+      const breaks: number[] = [0];
+      let currentHeight = 0;
 
-      if (currentHeight + h > availableHeight && i > breaks[breaks.length - 1]) {
-        breaks.push(i);
-        currentHeight = h;
-      } else {
-        currentHeight += h;
+      for (let i = 0; i < entries.length; i++) {
+        const wrap = document.createElement("div");
+        wrap.style.cssText = "margin-bottom:0.6em";
+
+        const title = document.createElement("div");
+        title.style.cssText = "font-size:1.25rem;font-weight:700;line-height:1.15;text-align:justify;font-style:italic";
+        title.textContent = `${i + 1}. ${entries[i].word}`;
+        wrap.appendChild(title);
+
+        if (entries[i].description) {
+          const desc = document.createElement("div");
+          desc.style.cssText = "font-size:1rem;line-height:1.15;text-align:justify";
+          desc.textContent = `— ${entries[i].description.replace(/^[—–-]\s*/, "")}`;
+          wrap.appendChild(desc);
+        }
+
+        (entries[i].images ?? []).forEach((src) => {
+          const img = document.createElement("img");
+          img.src = src;
+          img.style.cssText = "display:block;max-width:100%;height:auto;margin:8px 0";
+          wrap.appendChild(img);
+        });
+
+        measure.innerHTML = "";
+        measure.appendChild(wrap);
+
+        const imgs = Array.from(measure.querySelectorAll("img"));
+        await Promise.all(imgs.map((img) =>
+          (img as HTMLImageElement).decode
+            ? (img as HTMLImageElement).decode().catch(() => {})
+            : new Promise<void>((r) => {
+                if ((img as HTMLImageElement).complete) r();
+                else { img.onload = () => r(); img.onerror = () => r(); }
+              })
+        ));
+
+        if (cancelled) return;
+        const h = measure.offsetHeight;
+
+        if (currentHeight + h > availableHeight && i > breaks[breaks.length - 1]) {
+          breaks.push(i);
+          currentHeight = h;
+        } else {
+          currentHeight += h;
+        }
       }
-    }
 
-    container.removeChild(measure);
+      if (cancelled) return;
+      container.removeChild(measure);
 
-    const oldLen = prevPageBreaksLen.current;
-    prevPageBreaksLen.current = breaks.length;
-    setPageBreaks(breaks);
+      const oldLen = prevPageBreaksLen.current;
+      prevPageBreaksLen.current = breaks.length;
+      setPageBreaks(breaks);
 
-    // If a new page was created, animate flip
-    if (breaks.length > oldLen && oldLen > 0) {
-      playFlipSound();
-      setFlipping(true);
-      setTimeout(() => {
+      if (breaks.length > oldLen && oldLen > 0) {
+        playFlipSound();
+        setFlipping(true);
+        setTimeout(() => {
+          setCurrentPage(breaks.length - 1);
+          setFlipping(false);
+        }, 1000);
+      } else {
         setCurrentPage(breaks.length - 1);
-        setFlipping(false);
-      }, 1000);
-    } else {
-      setCurrentPage(breaks.length - 1);
-    }
+      }
+    })();
+
+    return () => { cancelled = true; };
   }, [entries, playFlipSound]);
 
   const handleSave = useCallback(() => {
@@ -183,14 +220,14 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
     if (editIdx !== null) {
       setEntries((prev) => {
         const copy = [...prev];
-        copy[editIdx] = { ...copy[editIdx], word: word.trim(), description: description.trim().replace(/^[—–\-]\s*/, "") };
+        copy[editIdx] = { ...copy[editIdx], word: word.trim(), description: description.trim().replace(/^[—–-]\s*/, ""), images: pastedImages };
         return copy;
       });
       setEditIdx(null);
     } else {
       setEntries((prev) => [
         ...prev,
-        { word: word.trim(), description: description.trim().replace(/^[—–\-]\s*/, ""), reactions: { fire: 0, love: 0, rocket: 0 } },
+        { word: word.trim(), description: description.trim().replace(/^[—–-]\s*/, ""), reactions: { fire: 0, love: 0, rocket: 0 }, images: pastedImages },
       ]);
     }
 
@@ -200,10 +237,11 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
 
     setWord("");
     setDescription("");
+    setPastedImages([]);
 
     setShowSavedOverlay(true);
     setTimeout(() => setShowSavedOverlay(false), 1500);
-  }, [word, description, editIdx, entries, setEntries]);
+  }, [word, description, editIdx, pastedImages, setEntries]);
 
   const handleEdit = useCallback(() => {
     if (entries.length === 0) return;
@@ -211,9 +249,33 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
     const entry = entries[lastIdx];
     setWord(entry.word);
     setDescription(entry.description);
+    setPastedImages(entry.images ?? []);
     setEditIdx(lastIdx);
     setTimeout(() => wordInputRef.current?.focus(), 50);
   }, [entries]);
+
+  const handleDescPaste = useCallback((e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    const imageItems: DataTransferItem[] = [];
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.startsWith("image/")) imageItems.push(items[i]);
+    }
+    if (imageItems.length === 0) return;
+    e.preventDefault();
+    imageItems.forEach((it) => {
+      const file = it.getAsFile();
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result;
+        if (typeof result === "string") {
+          setPastedImages((prev) => [...prev, result]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  }, []);
 
 
   const handleFinish = useCallback(() => {
@@ -268,6 +330,7 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
             ref={descRef}
             value={description}
             onChange={(e) => { setDescription(e.target.value); playPenSound(); }}
+            onPaste={handleDescPaste}
             placeholder="Описание…"
             className="magic-textarea w-full h-full font-handwriting text-lg notebook-lines magic-cursor-write"
             style={{ minHeight: "160px", lineHeight: "22px" }}
@@ -359,9 +422,12 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
                       </div>
                       {entry.description && (
                         <div className="font-handwriting text-base" style={{ color: "#2a1f5a", textAlign: "justify", lineHeight: "1.15" }}>
-                          — {entry.description.replace(/^[—–\-]\s*/, "")}
+                          — {entry.description.replace(/^[—–-]\s*/, "")}
                         </div>
                       )}
+                      {entry.images?.map((src, k) => (
+                        <img key={k} src={src} alt="" style={{ display: "block", maxWidth: "100%", height: "auto", margin: "8px 0" }} />
+                      ))}
                     </div>
                   );
                 })}
@@ -377,6 +443,9 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
                         — <InkWriteEffect text={description} className="" />
                       </div>
                     )}
+                    {pastedImages.map((src, k) => (
+                      <img key={k} src={src} alt="" style={{ display: "block", maxWidth: "100%", height: "auto", margin: "8px 0" }} />
+                    ))}
                   </div>
                 )}
               </div>

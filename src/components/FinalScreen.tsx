@@ -26,7 +26,7 @@ const FinalScreen: React.FC<FinalScreenProps> = ({ entries, onBack }) => {
         className="absolute w-full h-full object-contain select-none"
         draggable={false}
       />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-40 flex items-center gap-6 text-white pointer-events-none">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-48 flex items-center gap-6 text-white pointer-events-none">
         <div className="px-6 py-3 rounded-xl text-lg font-semibold"
              style={{
                background: "linear-gradient(135deg, #22c55e, #4ade80)",

@@ -42,7 +42,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
     const container = leftContentRef.current;
     if (!container) return;
-    const availableHeight = container.clientHeight - 4;
+    const availableHeight = container.clientHeight - 20;
 
     const measure = document.createElement("div");
     measure.style.cssText = `position:absolute;visibility:hidden;width:${container.offsetWidth}px;font-family:'Cormorant Garamond',serif;padding:0;`;

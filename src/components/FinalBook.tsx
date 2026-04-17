@@ -117,13 +117,10 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     return () => { cancelled = true; };
   }, [entries]);
 
-  // Auto-navigate to last spread
+  // Always open the book from the first spread (first entered word)
   useEffect(() => {
-    if (pages.length > 0) {
-      const lastSpread = Math.floor((pages.length - 1) / 2);
-      setCurrentSpread(lastSpread);
-    }
-  }, [pages.length]);
+    setCurrentSpread(0);
+  }, []);
 
   const playFlipSound = useCallback(() => {
     if (flipAudio.current) {

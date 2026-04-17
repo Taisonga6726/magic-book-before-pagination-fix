@@ -46,7 +46,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
     // Measure with the narrower (right) page width so right-side pagination is safe.
     // Left page is wider (31% vs 26%) — it will simply have a bit of headroom.
-    const measureWidth = Math.floor(container.offsetWidth * (26 / 31));
+    const measureWidth = container.offsetWidth;
     const measure = document.createElement("div");
     measure.style.cssText = `position:absolute;visibility:hidden;width:${measureWidth}px;font-family:'Cormorant Garamond',serif;padding:0;`;
     container.appendChild(measure);
@@ -57,10 +57,10 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     for (let i = 0; i < entries.length; i++) {
       measure.innerHTML = `
         <div style="margin-bottom:0.6em;width:100%">
-          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;text-align:justify">
+          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;text-align:left">
             <span style="font-weight:700">${i + 1}.</span> ${entries[i].word}
           </div>
-          ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:justify">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
+          ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:left">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
           <div style="font-size:13px;text-align:right">🔥 0 ❤️ 0 🚀 0</div>
         </div>`;
       const h = measure.offsetHeight;
@@ -145,7 +145,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           fontFamily: "'Cormorant Garamond', serif",
           fontStyle: "italic",
           lineHeight: "1.15",
-          textAlign: "justify",
+          textAlign: "left",
         }}
       >
         <span style={{ fontWeight: 700 }}>{globalIdx + 1}.</span> {renderInkWord(entry.word)}
@@ -153,7 +153,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
       {entry.description && (
         <div
           className="text-base font-handwriting w-full"
-          style={{ color: "#1a1030", textAlign: "justify", lineHeight: "1.15" }}
+          style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15" }}
         >
           — {entry.description.replace(/^[—–\-]\s*/, "")}
         </div>
@@ -188,7 +188,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
             ref={leftContentRef}
             className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
             style={{
-               left: "20%", top: "19%", width: "29%", height: "60%",
+               left: "20%", top: "19%", width: "26%", height: "60%",
                padding: "8px 2px 20px 2px",
             }}
           >

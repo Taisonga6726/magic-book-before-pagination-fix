@@ -134,13 +134,13 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
   const rightPageNum = rightPageIdx + 1;
 
   const renderEntry = (entry: Entry, globalIdx: number) => (
-    <div key={globalIdx} className="flex flex-col mb-0">
-      <div className="pb-0.5 text-xl leading-tight font-bold"
-           style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textAlign: "left", lineHeight: "1.15" }}>
-        {globalIdx + 1}. {renderInkWord(entry.word)}
+    <div key={globalIdx} className="flex flex-col mb-0 w-full items-start">
+      <div className="pb-0.5 text-xl leading-tight font-bold w-full"
+           style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textAlign: "left", lineHeight: "1.15", padding: 0, margin: 0 }}>
+        <span>{globalIdx + 1}. </span>{renderInkWord(entry.word)}
       </div>
       {entry.description && (
-        <div className="text-base font-handwriting leading-tight mt-0" style={{ color: "#1a1030", textAlign: "justify", lineHeight: "1.15" }}>
+        <div className="text-base font-handwriting leading-tight mt-0 w-full" style={{ color: "#1a1030", textAlign: "justify", lineHeight: "1.15", padding: 0, margin: 0 }}>
           — {entry.description.replace(/^[—–\-]\s*/, "")}
         </div>
       )}
@@ -175,7 +175,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
             className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
             style={{
                left: "20%", top: "21%", width: "24%", height: "54%",
-               padding: "8px 0 20px 0",
+               padding: "8px 4px 20px 4px",
             }}
           >
             {leftPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}

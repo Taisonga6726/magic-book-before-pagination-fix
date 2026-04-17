@@ -5,7 +5,7 @@ import SpineEffect from "./SpineEffect";
 interface Entry {
   word: string;
   description: string;
-  reactions: { fire: number; love: number; rocket: number };
+  reactions: { fire: number; love: number; rocket: number; laugh: number; like: number };
   images?: string[];
 }
 
@@ -80,7 +80,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
         const reactions = document.createElement("div");
         reactions.style.cssText = "font-size:13px;text-align:right";
-        reactions.textContent = "🔥 0 ❤️ 0 🚀 0";
+        reactions.textContent = "🔥 0 ❤️ 0 🚀 0 😂 0 👍 0";
         wrap.appendChild(reactions);
 
         measure.innerHTML = "";
@@ -156,7 +156,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     </span>
   );
 
-  const updateReaction = useCallback((globalIdx: number, type: "fire" | "love" | "rocket") => {
+  const updateReaction = useCallback((globalIdx: number, type: "fire" | "love" | "rocket" | "laugh" | "like") => {
     setEntries((prev) =>
       prev.map((w, i) =>
         i === globalIdx ? { ...w, reactions: { ...w.reactions, [type]: (w.reactions?.[type] || 0) + 1 } } : w
@@ -203,6 +203,8 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
         <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
+        <button type="button" onClick={() => updateReaction(globalIdx, "laugh")} className="cursor-pointer hover:scale-110 transition-transform">😂 {entry.reactions?.laugh || 0}</button>
+        <button type="button" onClick={() => updateReaction(globalIdx, "like")} className="cursor-pointer hover:scale-110 transition-transform">👍 {entry.reactions?.like || 0}</button>
       </div>
     </div>
   );

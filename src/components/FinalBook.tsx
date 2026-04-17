@@ -178,7 +178,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
                padding: "8px 4px 20px 4px",
             }}
           >
-            {leftPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}
+            {leftPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry), "left"))}
             <div className="absolute bottom-[4px] left-0 right-0 flex justify-center select-none"
                  style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontWeight: "bold", fontStyle: "italic", fontSize: "16px", opacity: 0.9, letterSpacing: "1px" }}>
               — {leftPageNum} —
@@ -193,7 +193,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
               padding: "8px 4px 20px 4px",
             }}
           >
-            {rightPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}
+            {rightPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry), "right"))}
             {rightPageEntries.length > 0 && (
               <div className="absolute bottom-[4px] left-0 right-0 flex justify-center select-none"
                    style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontWeight: "bold", fontStyle: "italic", fontSize: "16px", opacity: 0.9, letterSpacing: "1px" }}>

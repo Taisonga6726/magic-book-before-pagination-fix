@@ -44,8 +44,11 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     if (!container) return;
     const availableHeight = container.clientHeight - 20;
 
+    // Measure with the narrower (right) page width so right-side pagination is safe.
+    // Left page is wider (31% vs 26%) — it will simply have a bit of headroom.
+    const measureWidth = Math.floor(container.offsetWidth * (26 / 31));
     const measure = document.createElement("div");
-    measure.style.cssText = `position:absolute;visibility:hidden;width:${container.offsetWidth}px;font-family:'Cormorant Garamond',serif;padding:0;`;
+    measure.style.cssText = `position:absolute;visibility:hidden;width:${measureWidth}px;font-family:'Cormorant Garamond',serif;padding:0;`;
     container.appendChild(measure);
 
     const result: Entry[][] = [[]];
@@ -134,25 +137,78 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
   const leftPageNum = leftPageIdx + 1;
   const rightPageNum = rightPageIdx + 1;
 
-  const renderEntry = (entry: Entry, globalIdx: number, side: "left" | "right") => (
-    <div key={globalIdx} className="flex flex-col mb-0 w-full items-start" style={{ paddingLeft: 0, marginLeft: 0, textIndent: 0 }}>
-      <div className="pb-0.5 text-xl leading-tight font-bold w-full flex"
-           style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", lineHeight: "1.15", padding: 0, margin: 0 }}>
-        <span style={{ flexShrink: 0, width: "2.4em", textAlign: "left" }}>{globalIdx + 1}.</span>
-        <span style={{ flex: 1, textAlign: "left" }}>{renderInkWord(entry.word)}</span>
-      </div>
-      {entry.description && (
-        <div className="text-base font-handwriting leading-tight mt-0 w-full" style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15", padding: 0, margin: 0, textIndent: 0 }}>
-          — {entry.description.replace(/^[—–\-]\s*/, "")}
+  const renderEntry = (entry: Entry, globalIdx: number, side: "left" | "right") => {
+    if (side === "left") {
+      // Left page: number column at ornament, all content (word/description/reactions)
+      // in a single right-side column so they share the same left edge — no "ladder".
+      return (
+        <div key={globalIdx} className="flex mb-0 w-full items-start" style={{ padding: 0, margin: 0 }}>
+          <div
+            className="text-xl font-bold"
+            style={{
+              flexShrink: 0,
+              width: "2.4em",
+              color: "#1a1440",
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: "italic",
+              lineHeight: "1.15",
+              textAlign: "left",
+            }}
+          >
+            {globalIdx + 1}.
+          </div>
+          <div className="flex-1 flex flex-col" style={{ minWidth: 0 }}>
+            <div
+              className="pb-0.5 text-xl leading-tight font-bold"
+              style={{
+                color: "#1a1440",
+                fontFamily: "'Cormorant Garamond', serif",
+                fontStyle: "italic",
+                lineHeight: "1.15",
+                textAlign: "left",
+              }}
+            >
+              {renderInkWord(entry.word)}
+            </div>
+            {entry.description && (
+              <div
+                className="text-base font-handwriting leading-tight mt-0"
+                style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15" }}
+              >
+                — {entry.description.replace(/^[—–\-]\s*/, "")}
+              </div>
+            )}
+            <div className="flex gap-2 text-[13px] justify-end" style={{ color: "#1a1440" }}>
+              <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
+              <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
+              <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
+            </div>
+          </div>
         </div>
-      )}
-      <div className="flex gap-2 text-[13px] w-full justify-end" style={{ color: "#1a1440" }}>
-        <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
-        <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
-        <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
+      );
+    }
+
+    // Right page — keep original layout untouched
+    return (
+      <div key={globalIdx} className="flex flex-col mb-0 w-full items-start" style={{ paddingLeft: 0, marginLeft: 0, textIndent: 0 }}>
+        <div className="pb-0.5 text-xl leading-tight font-bold w-full flex"
+             style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", lineHeight: "1.15", padding: 0, margin: 0 }}>
+          <span style={{ flexShrink: 0, width: "2.4em", textAlign: "left" }}>{globalIdx + 1}.</span>
+          <span style={{ flex: 1, textAlign: "left" }}>{renderInkWord(entry.word)}</span>
+        </div>
+        {entry.description && (
+          <div className="text-base font-handwriting leading-tight mt-0 w-full" style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15", padding: 0, margin: 0, textIndent: 0 }}>
+            — {entry.description.replace(/^[—–\-]\s*/, "")}
+          </div>
+        )}
+        <div className="flex gap-2 text-[13px] w-full justify-end" style={{ color: "#1a1440" }}>
+          <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
+          <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
+          <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="fixed inset-0 w-screen h-screen overflow-hidden z-40">
@@ -176,8 +232,8 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
             ref={leftContentRef}
             className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
             style={{
-               left: "19%", top: "21%", width: "30%", height: "54%",
-               padding: "8px 4px 20px 4px",
+               left: "18%", top: "21%", width: "31%", height: "54%",
+               padding: "8px 2px 20px 2px",
             }}
           >
             {leftPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry), "left"))}
@@ -191,7 +247,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           <div
             className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
             style={{
-              left: "51%", top: "21%", width: "30%", height: "54%",
+              left: "54%", top: "21%", width: "26%", height: "54%",
               padding: "8px 4px 20px 4px",
             }}
           >

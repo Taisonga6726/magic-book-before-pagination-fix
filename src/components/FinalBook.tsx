@@ -54,7 +54,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     for (let i = 0; i < entries.length; i++) {
       measure.innerHTML = `
         <div style="margin-bottom:4px">
-          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;text-align:justify;font-style:italic">
+          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;text-align:left;font-style:italic">
             ${i + 1}. ${entries[i].word}
           </div>
           ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:justify;margin-top:2px">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
@@ -136,7 +136,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
   const renderEntry = (entry: Entry, globalIdx: number) => (
     <div key={globalIdx} className="flex flex-col mb-0">
       <div className="pb-0.5 text-xl leading-tight font-bold"
-           style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textAlign: "justify", lineHeight: "1.15" }}>
+           style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textAlign: "left", lineHeight: "1.15" }}>
         {globalIdx + 1}. {renderInkWord(entry.word)}
       </div>
       {entry.description && (
@@ -174,8 +174,8 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
             ref={leftContentRef}
             className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
             style={{
-               left: "17%", top: "21%", width: "26%", height: "54%",
-               padding: "8px 4px 20px 4px",
+               left: "20%", top: "21%", width: "24%", height: "54%",
+               padding: "8px 0 20px 0",
             }}
           >
             {leftPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}

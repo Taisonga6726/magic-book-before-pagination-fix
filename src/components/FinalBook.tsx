@@ -145,7 +145,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           fontFamily: "'Cormorant Garamond', serif",
           fontStyle: "italic",
           lineHeight: "1.15",
-          textAlign: "justify",
+          textAlign: "left",
         }}
       >
         <span style={{ fontWeight: 700 }}>{globalIdx + 1}.</span> {renderInkWord(entry.word)}
@@ -153,7 +153,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
       {entry.description && (
         <div
           className="text-base font-handwriting w-full"
-          style={{ color: "#1a1030", textAlign: "justify", lineHeight: "1.15" }}
+          style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15" }}
         >
           — {entry.description.replace(/^[—–\-]\s*/, "")}
         </div>
@@ -188,7 +188,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
             ref={leftContentRef}
             className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
             style={{
-               left: "20%", top: "19%", width: "29%", height: "60%",
+               left: "20%", top: "19%", width: "26%", height: "60%",
                padding: "8px 2px 20px 2px",
             }}
           >

@@ -71,7 +71,6 @@ const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onSha
       {mode === "final" && (
         <>
           <NeonGlassButton onClick={() => setMode("form")}>📖 к книге</NeonGlassButton>
-          <NeonGlassButton onClick={onShare}>📤 поделиться</NeonGlassButton>
         </>
       )}
     </div>

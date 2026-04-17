@@ -144,7 +144,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           — {entry.description.replace(/^[—–\-]\s*/, "")}
         </div>
       )}
-      <div className={`flex gap-2 text-[13px] w-full ${side === "right" ? "justify-start" : "justify-end"}`} style={{ color: "#1a1440" }}>
+      <div className="flex gap-2 text-[13px] w-full justify-end" style={{ color: "#1a1440" }}>
         <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
@@ -174,7 +174,7 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
             ref={leftContentRef}
             className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
             style={{
-               left: "22%", top: "21%", width: "26%", height: "54%",
+               left: "19%", top: "21%", width: "26%", height: "54%",
                padding: "8px 4px 20px 4px",
             }}
           >

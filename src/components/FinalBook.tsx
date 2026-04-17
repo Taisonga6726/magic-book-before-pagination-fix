@@ -54,8 +54,9 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
     for (let i = 0; i < entries.length; i++) {
       measure.innerHTML = `
         <div style="margin-bottom:4px">
-          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;text-align:left;font-style:italic">
-            ${i + 1}. ${entries[i].word}
+          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;display:flex">
+            <span style="flex-shrink:0;width:2.4em;text-align:left">${i + 1}.</span>
+            <span style="flex:1;text-align:left">${entries[i].word}</span>
           </div>
           ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:justify;margin-top:2px">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
           <div style="font-size:10px;text-align:right;margin-top:1px">🔥 0 ❤️ 0 🚀 0</div>

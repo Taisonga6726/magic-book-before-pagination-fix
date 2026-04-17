@@ -134,13 +134,13 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
   const rightPageNum = rightPageIdx + 1;
 
   const renderEntry = (entry: Entry, globalIdx: number, side: "left" | "right") => (
-    <div key={globalIdx} className="flex flex-col mb-0 w-full items-start">
+    <div key={globalIdx} className="flex flex-col mb-0 w-full items-start" style={{ paddingLeft: 0, marginLeft: 0, textIndent: 0 }}>
       <div className="pb-0.5 text-xl leading-tight font-bold w-full"
-           style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textAlign: "left", lineHeight: "1.15", padding: 0, margin: 0 }}>
-        <span>{globalIdx + 1}. </span>{renderInkWord(entry.word)}
+           style={{ color: "#1a1440", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", textAlign: "left", lineHeight: "1.15", padding: 0, margin: 0, textIndent: 0 }}>
+        <span style={{ whiteSpace: "nowrap" }}>{globalIdx + 1}. </span>{renderInkWord(entry.word)}
       </div>
       {entry.description && (
-        <div className="text-base font-handwriting leading-tight mt-0 w-full" style={{ color: "#1a1030", textAlign: "justify", lineHeight: "1.15", padding: 0, margin: 0 }}>
+        <div className="text-base font-handwriting leading-tight mt-0 w-full" style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15", padding: 0, margin: 0, textIndent: 0 }}>
           — {entry.description.replace(/^[—–\-]\s*/, "")}
         </div>
       )}

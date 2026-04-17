@@ -56,13 +56,13 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
     for (let i = 0; i < entries.length; i++) {
       measure.innerHTML = `
-        <div style="margin-bottom:4px">
-          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;display:flex">
-            <span style="flex-shrink:0;width:2.4em;text-align:left">${i + 1}.</span>
-            <span style="flex:1;text-align:left">${entries[i].word}</span>
+        <div style="margin-bottom:4px;display:flex;align-items:flex-start">
+          <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;min-width:1.6em;flex-shrink:0;padding-right:0.3em;text-align:left">${i + 1}.</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:1.25rem;font-weight:700;line-height:1.15;font-style:italic;text-align:left">${entries[i].word}</div>
+            ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:left;margin-top:2px">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
+            <div style="font-size:10px;text-align:right;margin-top:1px">🔥 0 ❤️ 0 🚀 0</div>
           </div>
-          ${entries[i].description ? `<div style="font-size:1rem;line-height:1.15;text-align:justify;margin-top:2px">— ${entries[i].description.replace(/^[—–\-]\s*/, "")}</div>` : ""}
-          <div style="font-size:10px;text-align:right;margin-top:1px">🔥 0 ❤️ 0 🚀 0</div>
         </div>`;
       const h = measure.offsetHeight;
 
@@ -139,35 +139,52 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
 
   const renderEntry = (entry: Entry, globalIdx: number, side: "left" | "right") => {
     if (side === "left") {
-      // Left page: number and word in a single inline line — no extra gap, no ladder.
+      // Left page: hanging indent — number in narrow column, word/description/reactions in flexible column.
       return (
-        <div key={globalIdx} className="flex flex-col mb-0 w-full items-start" style={{ padding: 0, margin: 0, textIndent: 0 }}>
+        <div key={globalIdx} className="flex mb-0 w-full items-start" style={{ padding: 0, margin: 0 }}>
           <div
-            className="pb-0.5 text-xl leading-tight font-bold w-full"
+            className="text-xl leading-tight font-bold"
             style={{
               color: "#1a1440",
               fontFamily: "'Cormorant Garamond', serif",
               fontStyle: "italic",
               lineHeight: "1.15",
-              padding: 0,
-              margin: 0,
+              minWidth: "1.6em",
+              flexShrink: 0,
+              paddingRight: "0.3em",
               textAlign: "left",
             }}
           >
-            {globalIdx + 1}. {renderInkWord(entry.word)}
+            {globalIdx + 1}.
           </div>
-          {entry.description && (
+          <div className="flex-1 flex flex-col" style={{ minWidth: 0 }}>
             <div
-              className="text-base font-handwriting leading-tight mt-0 w-full"
-              style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15", padding: 0, margin: 0, textIndent: 0 }}
+              className="pb-0.5 text-xl leading-tight font-bold w-full"
+              style={{
+                color: "#1a1440",
+                fontFamily: "'Cormorant Garamond', serif",
+                fontStyle: "italic",
+                lineHeight: "1.15",
+                padding: 0,
+                margin: 0,
+                textAlign: "left",
+              }}
             >
-              — {entry.description.replace(/^[—–\-]\s*/, "")}
+              {renderInkWord(entry.word)}
             </div>
-          )}
-          <div className="flex gap-2 text-[13px] w-full justify-end" style={{ color: "#1a1440" }}>
-            <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
-            <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
-            <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
+            {entry.description && (
+              <div
+                className="text-base font-handwriting leading-tight mt-0 w-full"
+                style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15", padding: 0, margin: 0, textIndent: 0 }}
+              >
+                — {entry.description.replace(/^[—–\-]\s*/, "")}
+              </div>
+            )}
+            <div className="flex gap-2 text-[13px] w-full justify-end" style={{ color: "#1a1440" }}>
+              <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
+              <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>
+              <button type="button" onClick={() => updateReaction(globalIdx, "rocket")} className="cursor-pointer hover:scale-110 transition-transform">🚀 {entry.reactions?.rocket || 0}</button>
+            </div>
           </div>
         </div>
       );

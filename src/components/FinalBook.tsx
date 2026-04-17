@@ -193,9 +193,12 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
           className="text-base font-handwriting w-full"
           style={{ color: "#1a1030", textAlign: "left", lineHeight: "1.15" }}
         >
-          — {entry.description.replace(/^[—–\-]\s*/, "")}
+          — {entry.description.replace(/^[—–-]\s*/, "")}
         </div>
       )}
+      {entry.images?.map((src, k) => (
+        <img key={k} src={src} alt="" style={{ display: "block", maxWidth: "100%", height: "auto", margin: "8px 0" }} />
+      ))}
       <div className="flex gap-2 text-[13px] w-full justify-end" style={{ color: "#1a1440" }}>
         <button type="button" onClick={() => updateReaction(globalIdx, "fire")} className="cursor-pointer hover:scale-110 transition-transform">🔥 {entry.reactions?.fire || 0}</button>
         <button type="button" onClick={() => updateReaction(globalIdx, "love")} className="cursor-pointer hover:scale-110 transition-transform">❤️ {entry.reactions?.love || 0}</button>

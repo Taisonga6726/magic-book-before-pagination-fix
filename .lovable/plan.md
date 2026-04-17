@@ -1,40 +1,94 @@
 
 
-## Диагноз
+## Цель
+Paste изображений (Ctrl+V) в описание с live preview и стабильной пагинацией. Картинки хранятся отдельно от текста (`images: string[]`), description остаётся plain text. Без innerHTML, без новых библиотек.
 
-Пользователь видит на левой странице FinalBook лесенку: номера 2, 3, 4, 5 уезжают вправо относительно номера 1. Плюс правый край текста заезжает на орнамент переплёта.
+## План правок
 
-Сейчас в `FinalBook.tsx` строка 191:
-- `left: "20%"`, `width: "29%"` — левая страница
-- `textAlign: "justify"` на каждой записи
+### 1. `src/pages/Index.tsx`
+В `interface Entry` добавить опциональное поле:
+```ts
+images?: string[]
+```
+Старые записи в localStorage остаются валидными.
 
-Гипотеза по лесенке: при `text-align: justify` короткие первые строки растягиваются по ширине, и из-за этого визуально кажется, что второй–пятый номера сдвинуты. Но скорее всего реальная причина — **inline-структура `<span>1.</span> слово` с `justify`** растягивает пробел между номером и словом по-разному в зависимости от длины слова → номера остаются на месте, но визуально текст после номера «дышит» неравномерно. На скриншоте видно, что сами **номера** (2., 3., 4., 5.) физически смещены вправо относительно «1.».
+### 2. `src/components/MagicBook.tsx`
 
-Это происходит потому что `justify` применяется ко **всем** строкам блока, включая первую — и браузер раздвигает все слова, включая `N.` + первое слово записи. Чем длиннее запись (больше строк) → тем сильнее растяжение первой строки → тем правее визуально оказывается номер из-за `text-indent`-подобного эффекта от justify первого слова.
+**State:**
+```ts
+const [pastedImages, setPastedImages] = useState<string[]>([]);
+```
 
-Плюс вторая жалоба: сузить колонку, чтобы не залезала на орнамент справа.
+**Paste-обработчик** на textarea описания:
+- Перебрать `e.clipboardData.items`. Для `item.type.startsWith("image/")`:
+  - `e.preventDefault()` (только если есть image-items)
+  - `item.getAsFile()` → `FileReader.readAsDataURL` → `setPastedImages(prev => [...prev, dataUrl])`
+- Текст пастится штатно (preventDefault только при наличии image-item).
 
-## План правок (одна точка — `src/components/FinalBook.tsx`, ~строка 191 и блок renderEntry)
+**Сохранение / редактирование:**
+- `handleSave`: записать `images: pastedImages` в Entry, затем `setPastedImages([])`.
+- `handleEdit`: `setPastedImages(entry.images ?? [])`.
 
-1. **Убрать `textAlign: "justify"` со строки с номером** — оставить `textAlign: "left"` для строки `N. слово`. Justify оставить только на описании (или тоже убрать — описание короткое, justify там не нужен и тоже даёт лесенку).
-   - Это уберёт лесенку: все номера будут стоять строго по левому краю колонки.
-2. **Сузить левую колонку справа**, чтобы текст не заезжал на орнамент переплёта:
-   - `width: "29%"` → `width: "26%"` (минус 3% справа, левый край `left: 20%` не трогаем).
-   - Правый край: было 49%, станет 46% — отойдёт от центрального переплёта.
-3. **Синхронизировать hidden `measure`** под новую ширину (26%) и убрать `text-align: justify` с измерения — иначе пагинация будет считать высоту иначе, чем рендер.
+**Live preview (правая страница):**
+- Мемоизированный draftEntry:
+  ```ts
+  const draftEntry = useMemo(
+    () => ({ word: currentWord, description: currentDesc, images: pastedImages }),
+    [currentWord, currentDesc, pastedImages]
+  );
+  ```
+- Передать `draftEntry` в существующий `renderEntry(...)` — никаких структурных правок renderEntry.
 
-Правую страницу не трогаю (пользователь жаловался только на левую).
+**В `renderEntry` — единственная вставка**, после блока описания:
+```tsx
+{entry.images?.map((src, i) => (
+  <img key={i} src={src} alt=""
+    style={{display:"block", maxWidth:"100%", height:"auto", margin:"8px 0"}} />
+))}
+```
 
-## Файлы
+**Measure / пагинация (без innerHTML):**
+- В существующем measure-цикле для каждой записи после текстовых нод:
+  ```ts
+  (entry.images ?? []).forEach(src => {
+    const img = document.createElement("img");
+    img.src = src;
+    img.style.cssText = "display:block;max-width:100%;height:auto;margin:8px 0";
+    container.appendChild(img);
+  });
+  ```
+- Перед измерением высот:
+  ```ts
+  const imgs = Array.from(measureRoot.querySelectorAll("img"));
+  await Promise.all(imgs.map(img =>
+    img.decode ? img.decode().catch(()=>{}) :
+    new Promise<void>(r => { if (img.complete) r(); else { img.onload = img.onerror = () => r(); }})
+  ));
+  ```
+- Зависимости пересчёта оставить как сейчас + добавить `pastedImages` (для live preview правой страницы).
 
-- `src/components/FinalBook.tsx`:
-  - строка ~191: `width: "29%"` → `width: "26%"`
-  - в `renderEntry`: убрать `textAlign: "justify"` с обоих `<div>` (строка с номером и строка с описанием), заменить на `textAlign: "left"`
-  - в блоке `measure` (расчёт пагинации): синхронизировать ширину и убрать justify
+### 3. `src/components/FinalBook.tsx`
 
-## Результат
+- В `renderEntry` **между описанием и реакциями** добавить тот же блок с `entry.images?.map(...)`.
+- В measure-цикле — те же `createElement("img")` + ожидание `decode()` перед расчётом, без innerHTML.
+- Реакции остаются последним блоком → визуально окажутся под изображениями.
 
-- Номера 1, 2, 3, 4, 5 встанут строго по одной вертикали слева.
-- Текст левой страницы не залезает на орнамент переплёта.
-- Пагинация остаётся корректной (measure синхронизирован).
+## Что НЕ трогаем
+Координаты left/width страниц, textAlign:"left", lineHeight, шрифты, ink-эффект, перелистывание, реакции, валидацию дубликатов, ControlBar, порядок renderEntry.
+
+## Технические нюансы
+- Хранение: data URL в localStorage (~5MB лимит, для теста ок).
+- Множественный paste — накопительно.
+- Без кнопок удаления картинок (правило «no manual delete buttons»).
+- `useMemo` для draftEntry → стабильная ссылка, нет лишних пересчётов пагинации.
+- `decode()` перед measure → нет визуальных скачков при первой загрузке.
+
+## Критерии приёмки
+- Ctrl+V → картинка сразу в live preview правой страницы.
+- Save → визуально без изменений (картинка переезжает из `pastedImages` в `entry.images`).
+- Edit → картинки восстановлены в `pastedImages`.
+- FinalBook: description → images → реакции.
+- Пагинация стабильна, без скачков.
+- Нет innerHTML / dangerouslySetInnerHTML.
+- Существующая вёрстка и логика не задеты.
 

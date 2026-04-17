@@ -206,11 +206,11 @@ const FinalBook = ({ entries, setEntries, onBack, onPageNav }: FinalBookProps) =
             ref={leftContentRef}
             className="absolute z-20 overflow-hidden pointer-events-auto flex flex-col gap-0"
             style={{
-               left: "18%", top: "21%", width: "31%", height: "54%",
+               left: "18%", top: "19%", width: "31%", height: "60%",
                padding: "8px 2px 20px 2px",
             }}
           >
-            {leftPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry), "left"))}
+            {leftPageEntries.map((entry) => renderEntry(entry, getGlobalIndex(entry)))}
             <div className="absolute bottom-[4px] left-0 right-0 flex justify-center select-none"
                  style={{ color: "#0f0a2a", fontFamily: "'Cormorant Garamond', serif", fontWeight: "bold", fontStyle: "italic", fontSize: "16px", opacity: 0.9, letterSpacing: "1px" }}>
               — {leftPageNum} —

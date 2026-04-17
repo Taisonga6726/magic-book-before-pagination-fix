@@ -337,6 +337,27 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
           />
         </div>
 
+        {pastedImages.length > 0 && (
+          <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {pastedImages.map((src, k) => (
+              <div key={k} style={{ position: "relative" }}>
+                <img src={src} alt="" style={{ display: "block", maxHeight: 64, width: "auto", borderRadius: 4 }} />
+                <button
+                  type="button"
+                  onClick={() => setPastedImages((prev) => prev.filter((_, idx) => idx !== k))}
+                  aria-label="Удалить изображение"
+                  style={{
+                    position: "absolute", top: -6, right: -6, width: 18, height: 18,
+                    borderRadius: "50%", background: "rgba(0,0,0,0.7)", color: "#fff",
+                    border: "none", cursor: "pointer", fontSize: 12, lineHeight: 1, padding: 0,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}
+                >×</button>
+              </div>
+            ))}
+          </div>
+        )}
+
         <div className="mt-1 flex justify-center items-center gap-2">
           <span className="action-text cursor-pointer font-handwriting text-base font-medium" onClick={handleSave}>сохранить</span>
           <span className="font-handwriting text-base font-medium" style={{ color: "hsl(var(--ink) / 0.3)" }}>|</span>
@@ -443,36 +464,6 @@ const MagicBook = ({ entries, setEntries, onOpenCatalog, onFinish, onPageNav }: 
                         — <InkWriteEffect text={description} className="" />
                       </div>
                     )}
-                    {pastedImages.map((src, k) => (
-                      <div key={k} style={{ position: "relative", margin: "8px 0" }}>
-                        <img src={src} alt="" style={{ display: "block", maxWidth: "100%", height: "auto" }} />
-                        <button
-                          type="button"
-                          onClick={() => setPastedImages((prev) => prev.filter((_, idx) => idx !== k))}
-                          aria-label="Удалить изображение"
-                          style={{
-                            position: "absolute",
-                            top: 4,
-                            right: 4,
-                            width: 22,
-                            height: 22,
-                            borderRadius: "50%",
-                            background: "rgba(0,0,0,0.6)",
-                            color: "#fff",
-                            border: "none",
-                            cursor: "pointer",
-                            fontSize: 14,
-                            lineHeight: 1,
-                            padding: 0,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          ×
-                        </button>
-                      </div>
-                    ))}
                   </div>
                 )}
               </div>

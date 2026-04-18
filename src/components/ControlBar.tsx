@@ -13,10 +13,11 @@ interface ControlBarProps {
   setMode: (mode: "form" | "preview" | "reading" | "final") => void;
   onAddWord: () => void;
   onShare: () => void;
+  onExport: () => void;
   pageNav?: PageNav | null;
 }
 
-const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onShare, pageNav }) => {
+const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onShare, onExport, pageNav }) => {
   return (
     <div
       style={{

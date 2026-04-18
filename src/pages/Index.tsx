@@ -65,6 +65,25 @@ const Index = () => {
     toast({ title: "Функция скоро появится!", description: "Поделиться книгой можно будет в следующем обновлении." });
   };
 
+  const handleExport = () => {
+    if (!entries || entries.length === 0) {
+      toast({ title: "Словарь пуст", description: "Сначала внесите хотя бы одно слово." });
+      return;
+    }
+    const json = JSON.stringify(entries, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const date = new Date().toISOString().slice(0, 10);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `tanya-vibecoder-backup-${date}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast({ title: "Готово ✦", description: "Резервная копия словаря скачана." });
+  };
+
   const handlePageNav = useCallback((nav: PageNav) => {
     setPageNav(nav);
   }, []);

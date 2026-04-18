@@ -194,6 +194,7 @@ const Index = () => {
         setMode={setMode}
         onAddWord={handleAddWord}
         onShare={handleShare}
+        onExport={handleExport}
         pageNav={pageNav}
       />
     </div>

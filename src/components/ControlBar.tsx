@@ -66,6 +66,7 @@ const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onSha
           {pageNav?.hasNext && (
             <NeonGlassButton onClick={pageNav.onNext}>далее →</NeonGlassButton>
           )}
+          <NeonGlassButton onClick={onExport}>💾 экспорт</NeonGlassButton>
           <NeonGlassButton onClick={() => setMode("final")}>✦ завершить</NeonGlassButton>
         </>
       )}

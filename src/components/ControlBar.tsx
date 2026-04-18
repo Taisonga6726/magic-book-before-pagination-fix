@@ -13,10 +13,11 @@ interface ControlBarProps {
   setMode: (mode: "form" | "preview" | "reading" | "final") => void;
   onAddWord: () => void;
   onShare: () => void;
+  onExport: () => void;
   pageNav?: PageNav | null;
 }
 
-const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onShare, pageNav }) => {
+const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onShare, onExport, pageNav }) => {
   return (
     <div
       style={{
@@ -45,6 +46,7 @@ const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onSha
             <NeonGlassButton onClick={pageNav.onNext}>далее →</NeonGlassButton>
           )}
           <NeonGlassButton onClick={() => setMode("preview")}>📖 читать книгу</NeonGlassButton>
+          <NeonGlassButton onClick={onExport}>💾 экспорт</NeonGlassButton>
           <NeonGlassButton onClick={() => setMode("final")}>✦ завершить</NeonGlassButton>
         </>
       )}
@@ -64,6 +66,7 @@ const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onSha
           {pageNav?.hasNext && (
             <NeonGlassButton onClick={pageNav.onNext}>далее →</NeonGlassButton>
           )}
+          <NeonGlassButton onClick={onExport}>💾 экспорт</NeonGlassButton>
           <NeonGlassButton onClick={() => setMode("final")}>✦ завершить</NeonGlassButton>
         </>
       )}

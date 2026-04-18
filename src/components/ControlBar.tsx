@@ -46,6 +46,7 @@ const ControlBar: React.FC<ControlBarProps> = ({ mode, setMode, onAddWord, onSha
             <NeonGlassButton onClick={pageNav.onNext}>далее →</NeonGlassButton>
           )}
           <NeonGlassButton onClick={() => setMode("preview")}>📖 читать книгу</NeonGlassButton>
+          <NeonGlassButton onClick={onExport}>💾 экспорт</NeonGlassButton>
           <NeonGlassButton onClick={() => setMode("final")}>✦ завершить</NeonGlassButton>
         </>
       )}
